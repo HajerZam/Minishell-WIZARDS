@@ -69,14 +69,15 @@ unset	Remove environment variable
 env	Show current environment
 exit	Exit the shell
 
-## 🧪 Usage
-bash
-Copy
-Edit
-# Clone and compile
+# 🧪 Usage
+
+## Clone and compile
+
+```bash
 git clone https://github.com/yourusername/Minishell-Wizard.git
-cd Minishell-Wizard
+cd Minishell
 make
+```
 
 ## Run the wizard shell
 ./minishell
@@ -86,8 +87,6 @@ brew install readline (Mac) or sudo apt-get install libreadline-dev (Linux)
 ## 🧠 Example Commands
 
 ```bash
-Copy
-Edit
 $ echo Hello Wizard
 Hello Wizard
 
