@@ -84,7 +84,8 @@ make
 brew install readline (Mac) or sudo apt-get install libreadline-dev (Linux)
 
 ## 🧠 Example Commands
-bash
+
+```bash
 Copy
 Edit
 $ echo Hello Wizard
@@ -100,28 +101,35 @@ $ cat << EOF
 This is a heredoc
 With multiple lines!
 EOF
-🧙 Authors
+```
+
+---
+
+## 🧙 Authors
 👤 Wizard A – @HajerZam
 
 👤 Wizard B – @FedePenna
 
 With patience, GDB, and a few invocations of valgrind.
 
-📜 License
+---
+
+## 📜 License
 This project is part of the 42 school curriculum. Redistribution is governed by 42’s internal rules and honor code.
 
-🌈 Bonus Ideas (If you dare...)
-🔥 Wildcard/globbing support (*, ?)
+---
 
-🧾 Command history
+## 🌈 Bonus Ideas (If you dare...)
 
-🧠 Syntax highlighting
+- 🔥 Wildcard/globbing support (*, ?)
+- 🧾 Command history
+- 🧠 Syntax highlighting
+- 🧼 Autoformatting output
 
-🧼 Autoformatting output
+---
 
-🐚 Job control (&, fg, bg) — high level
+## 🐚 Job control (&, fg, bg) — high level
 
-✨ Made with love and pain at 42 Network
 <div align="center">
-
-</div> ```
+  ✨ Made with love and pain at 42 Network
+</div>
