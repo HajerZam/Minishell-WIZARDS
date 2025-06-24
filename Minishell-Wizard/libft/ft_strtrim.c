@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2024/12/20 19:40:42 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 15:26:05 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/libft.h"
 
-int main(void)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-    char *line;
+	size_t	i;
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+	if (s1 == NULL || set == NULL)
+		return (NULL);
+	while (*s1 && ft_strchr(set, *s1))
+		s1++;
+	i = ft_strlen(s1);
+	while (i && ft_strchr(set, *(s1 + i - 1)))
+		i--;
+	return (ft_substr(s1, 0, i));
 }

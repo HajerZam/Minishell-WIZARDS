@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2024/12/27 15:00:49 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 15:22:44 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/libft.h"
 
-int main(void)
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-    char *line;
+	t_list	*new_lst;
+	t_list	*new_node;
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+	if (!lst || !f)
+		return (NULL);
+	new_lst = NULL;
+	while (lst)
+	{
+		new_node = ft_lstnew(f(lst->content));
+		if (!new_node)
+		{
+			ft_lstclear(&new_lst, del);
+			return (NULL);
+		}
+		ft_lstadd_back(&new_lst, new_node);
+		lst = lst->next;
+	}
+	return (new_lst);
 }

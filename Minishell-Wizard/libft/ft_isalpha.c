@@ -1,33 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2024/12/17 12:43:03 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 15:21:21 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/libft.h"
 
-int main(void)
+int	ft_isalpha(int c)
 {
-    char *line;
-
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
 }

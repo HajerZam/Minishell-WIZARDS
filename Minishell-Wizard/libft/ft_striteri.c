@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2024/12/22 16:32:23 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 15:25:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/libft.h"
 
-int main(void)
+void	ft_striteri(char *s, void (*f)(unsigned int,
+char*))
 {
-    char *line;
+	int	i;
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+	if (!s)
+		return ;
+	i = 0;
+	while (s[i] != '\0')
+	{
+		(*f)(i, &s[i]);
+		i++;
+	}
 }

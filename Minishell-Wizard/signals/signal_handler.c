@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   signal_handler.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2025/06/24 14:29:31 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 14:29:31 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-int main(void)
+void handle_sigint(int sig)
 {
-    char *line;
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+}
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+void init_signals(void)
+{
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, SIG_IGN);
 }

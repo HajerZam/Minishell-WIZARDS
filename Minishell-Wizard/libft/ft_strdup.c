@@ -1,33 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 14:29:52 by halzamma         ###   ########.fr       */
+/*   Created: 2024/12/19 14:00:53 by halzamma          #+#    #+#             */
+/*   Updated: 2025/06/24 15:24:54 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/libft.h"
 
-int main(void)
+char	*ft_strdup(const char *s1)
 {
-    char *line;
+	char	*copy;
+	size_t	len;
+	size_t	i;
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
-			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
-		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
-		free(line);
-    }
-    printf("exit\n");
-    return 0;
+	if (!s1)
+		return (NULL);
+	len = 0;
+	while (s1[len])
+		len++;
+	copy = (char *)malloc(len + 1);
+	i = 0;
+	if (!copy)
+		return (NULL);
+	while (i < len)
+	{
+		copy[i] = s1[i];
+		i++;
+	}
+	copy[len] = '\0';
+	return (copy);
 }
