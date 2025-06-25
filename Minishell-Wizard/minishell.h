@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <include/libft.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -40,17 +41,29 @@ typedef enum e_lexer_state {
     STATE_IN_DOUBLE_QUOTE
 } t_lexer_state;
 
+typedef struct s_parse_vars {
+	const char		*input;
+	t_token			*token;
+	char			*buffer;
+	size_t			i;
+	size_t			j;
+	t_lexer_state	state;
+}	t_parse_vars;
+
 // lexer/tokenizer
-// Tokenizing functions
 t_token     *tokenize_input(const char *input);
 void        print_tokens(t_token *head);
 void        free_tokens(t_token *head);
+t_token     *create_token(void);
+
 
 // Internal helper functions
 void        skip_spaces(const char **ptr);
 int         is_operator(char c);
 t_token     *parse_operator(const char **ptr);
 t_token     *parse_word(const char **ptr);
+char        *strip_quotes(const char *input);
+void		handle_double_quote(t_parse_vars *v);
 
 // signals
 void init_signals(void);

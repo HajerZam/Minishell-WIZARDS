@@ -12,9 +12,11 @@
 
 #include "../minishell.h"
 
-t_token *create_token(void)
+t_token	*create_token(void)
 {
-	t_token *token = malloc(sizeof(t_token));
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
 	if (!token)
 	{
 		perror("malloc");
@@ -22,25 +24,25 @@ t_token *create_token(void)
 	}
 	token->value = NULL;
 	token->next = NULL;
-	return token;
+	return (token);
 }
 
-void skip_spaces(const char **ptr)
+void	skip_spaces(const char **ptr)
 {
 	while (**ptr && isspace(**ptr))
 		(*ptr)++;
 }
 
-int is_operator(char c)
+int	is_operator(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
 }
 
-t_token *parse_operator(const char **ptr)
+t_token	*parse_operator(const char **ptr)
 {
-	t_token *token;
+	t_token	*token;
 
-    token = create_token();
+	token = create_token();
 	if (**ptr == '|')
 	{
 		token->type = PIPE;
@@ -49,80 +51,60 @@ t_token *parse_operator(const char **ptr)
 	}
 	else if (**ptr == '<')
 	{
-		token->type = REDIR_IN;
-		token->value = strdup("<");
-		(*ptr)++;
+		if (*(*ptr + 1) == '<')
+		{
+			token->type = HEREDOC;
+			token->value = ft_strdup("<<");
+			*ptr += 2;
+		}
+		else
+		{
+			token->type = REDIR_IN;
+			token->value = ft_strdup("<");
+			(*ptr)++;
+		}
 	}
 	else if (**ptr == '>')
 	{
 		if (*(*ptr + 1) == '>')
 		{
 			token->type = REDIR_APPEND;
-			token->value = strdup(">>");
+			token->value = ft_strdup(">>");
 			(*ptr) += 2;
 		}
 		else
 		{
 			token->type = REDIR_OUT;
-			token->value = strdup(">");
+			token->value = ft_strdup(">");
 			(*ptr)++;
 		}
 	}
 	return (token);
 }
 
-char *strip_quotes(const char *input)
+char	*strip_quotes(const char *input)
 {
-    char *out = malloc(strlen(input) + 1);
-    if (!out)
-        return NULL;
+	char	*out;
+	size_t	i;
+	size_t	j;
+	char	quote;
 
-    size_t i = 0, j = 0;
-    char quote = 0;
-
-    while (input[i])
-    {
-        if (!quote && (input[i] == '\'' || input[i] == '"'))
-            quote = input[i]; // enter quote
-        else if (quote && input[i] == quote)
-            quote = 0; // exit quote
-        else
-            out[j++] = input[i];
-        i++;
-    }
-    out[j] = '\0';
-    return out;
-}
-
-t_token *parse_word(const char **ptr)
-{
-	t_token *token;
-	t_lexer_state state;
-	const char *start;
-
-    token = create_token();
-    state = STATE_GENERAL;
-    start = *ptr;
-	while (**ptr)
+	out = malloc(ft_strlen(input) + 1);
+	if (!out)
+		return (NULL);
+	i = 0;
+	j = 0;
+	quote = 0;
+	while (input[i])
 	{
-		if (state == STATE_GENERAL)
-		{
-			if (**ptr == '\'')
-				state = STATE_IN_SINGLE_QUOTE;
-			else if (**ptr == '"')
-				state = STATE_IN_DOUBLE_QUOTE;
-			else if (isspace(**ptr) || is_operator(**ptr))
-				break;
-		}
-		else if (state == STATE_IN_SINGLE_QUOTE && **ptr == '\'')
-			state = STATE_GENERAL;
-		else if (state == STATE_IN_DOUBLE_QUOTE && **ptr == '"')
-			state = STATE_GENERAL;
-		(*ptr)++;
+		if (!quote && (input[i] == '\'' || input[i] == '"'))
+			quote = input[i];
+		else if (quote && input[i] == quote)
+			quote = 0;
+		else
+			out[j++] = input[i];
+		i++;
 	}
-	token->type = WORD;
-	char *raw = strndup(start, *ptr - start);
-	token->value = strip_quotes(raw);
-	free(raw);
-	return (token);
+	out[j] = '\0';
+	return (out);
 }

@@ -24,19 +24,24 @@ BOBJECTS = $(BSOURCES:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(AR) rcs $(NAME) $(OBJS)
+	@echo "Archiving $(NAME)..."
+	@$(AR) rcs $(NAME) $(OBJS)
 
 bonus: $(OBJS) $(BOBJECTS)
-	$(AR) rcs $(NAME) $(OBJS) $(BOBJECTS)
+	@echo "Archiving bonus $(NAME)..."
+	@$(AR) rcs $(NAME) $(OBJS) $(BOBJECTS)
 
 %.o: %.c libft.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiling $<..."
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(BOBJECTS)
+	@echo "Cleaning object files..."
+	@rm -f $(OBJS) $(BOBJECTS)
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "Removing $(NAME)..."
+	@rm -f $(NAME)
 
 re: fclean all
 

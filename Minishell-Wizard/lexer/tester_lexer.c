@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+/*#include "../minishell.h"
 #include <stdio.h> // for printf
 
-const char *token_type_to_str(t_token_type type)
+const char	*token_type_to_str(t_token_type type)
 {
 	switch (type)
 	{
@@ -27,7 +27,7 @@ const char *token_type_to_str(t_token_type type)
 	}
 }
 
-void print_tokens(t_token *head)
+void	print_tokens(t_token *head)
 {
 	while (head)
 	{
@@ -36,7 +36,7 @@ void print_tokens(t_token *head)
 	}
 }
 
-void free_tokens(t_token *head)
+void	free_tokens(t_token *head)
 {
 	t_token *tmp;
 	while (head)
@@ -47,3 +47,4 @@ void free_tokens(t_token *head)
 		free(tmp);
 	}
 }
+*/

@@ -12,48 +12,48 @@
 
 #include "../minishell.h"
 
-int is_space(char c)
+int	is_space(char c)
 {
-    return (c == ' ' || (c >= 9 && c <= 13));
+	return (c == ' ' || (c >= 9 && c <= 13));
 }
 
 /*  Function to create a new token, 
 	iterate input, handle quotes, pipes, redirs, etc.*/
 
-void add_token(t_token **head, t_token *new_token)
+void	add_token(t_token **head, t_token *new_token)
 {
+	t_token	*temp;
+
 	if (!*head)
 		*head = new_token;
 	else
 	{
-		t_token *temp = *head;
+		temp = *head;
 		while (temp->next)
 			temp = temp->next;
 		temp->next = new_token;
 	}
 }
 
-t_token *tokenize_input(const char *input)
+t_token	*tokenize_input(const char *input)
 {
-	t_token *head;
-	const char *ptr;
+	t_token		*head;
+	const char	*ptr;
+	t_token		*new_token;
 
 	head = NULL;
 	ptr = input;
 	if (!input || *input == '\0')
-		return NULL;
+		return (NULL);
 	while (*ptr)
 	{
 		skip_spaces(&ptr);
 		if (*ptr == '\0')
-			break;
-
-		t_token *new_token;
+			break ;
 		if (is_operator(*ptr))
 			new_token = parse_operator(&ptr);
 		else
 			new_token = parse_word(&ptr);
-
 		add_token(&head, new_token);
 	}
 	return (head);
