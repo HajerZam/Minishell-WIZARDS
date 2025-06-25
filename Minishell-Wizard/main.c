@@ -12,22 +12,25 @@
 
 #include "minishell.h"
 
-int main(void)
+/*PS. the main is just set up for testing for now*/
+
+int	main(void)
 {
-    char *line;
+	char	*line;
+	t_token	*tokens;
 
-    init_signals();
-    while ((line = readline("minishell$ ")) != NULL)
-    {
-        if (*line)
+	init_signals();
+	line = readline("minishell$ ");
+	while (line != NULL)
+	{
+		if (*line)
 			add_history(line);
-
-		t_token *tokens = tokenize_input(line);
+		tokens = tokenize_input(line);
 		print_tokens(tokens);
-
-		// (Optional) free_tokens(tokens);
+		free_tokens(tokens);
 		free(line);
-    }
-    printf("exit\n");
-    return 0;
+		line = readline("minishell$ ");
+	}
+	printf("exit\n");
+	return (0);
 }

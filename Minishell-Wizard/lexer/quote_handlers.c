@@ -12,50 +12,21 @@
 
 #include "../minishell.h"
 
-static void	handle_escaped_double_quote(t_parse_vars *v)
+void	handle_double_quote(t_parse_vars *v)
 {
-	int		escape_count;
-	int		k;
-	char	next;
+	char	c;
 
-	escape_count = 0;
-	while (v->input[v->i] == '\\')
-	{
-		escape_count++;
-		v->i++;
-	}
-	next = v->input[v->i];
-	if (next == '"')
-	{
-		k = 0;
-		while (k++ < escape_count / 2)
-			v->buffer[v->j++] = '\\';
-		if (escape_count % 2 == 1)
-			v->buffer[v->j++] = v->input[v->i++];
-	}
-	else
-	{
-		k = 0;
-		while (k++ < escape_count)
-			v->buffer[v->j++] = '\\';
-	}
-}
-
-static void	handle_non_escaped_double_quote(t_parse_vars *v)
-{
-	if (v->input[v->i] == '"')
+	c = v->input[v->i];
+	if (c == '"')
 	{
 		v->state = STATE_GENERAL;
 		v->i++;
 	}
 	else
-		v->buffer[v->j++] = v->input[v->i++];
-}
-
-void	handle_double_quote(t_parse_vars *v)
-{
-	if (v->input[v->i] == '\\')
-		handle_escaped_double_quote(v);
-	else
-		handle_non_escaped_double_quote(v);
+	{
+		// Inside double quotes: add everything literally except we'll handle $ later
+		// For now, just adding the character
+		v->buffer[v->j++] = c;
+		v->i++;
+	}
 }

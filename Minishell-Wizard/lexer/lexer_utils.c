@@ -18,20 +18,25 @@ static void	handle_general_state(t_parse_vars *v)
 
 	c = v->input[v->i];
 	if (c == '\'')
-		v->state = STATE_IN_SINGLE_QUOTE;
-	else if (c == '"')
-		v->state = STATE_IN_DOUBLE_QUOTE;
-	else if (isspace(c) || is_operator(c))
-		return ;
-	else if (c == '\\' && v->input[v->i + 1])
 	{
-		v->i++;
-		v->buffer[v->j++] = v->input[v->i++];
-		return ;
+		v->state = STATE_IN_SINGLE_QUOTE;
+		v->i++; // Skip opening quote
+	}
+	else if (c == '"')
+	{
+		v->state = STATE_IN_DOUBLE_QUOTE;
+		v->i++; // Skip opening quote
+	}
+	else if (isspace(c) || is_operator(c))
+	{
+		return; // Stop parsing this word
 	}
 	else
+	{
+		// Just add the character - no backslash handling needed per subject
 		v->buffer[v->j++] = c;
-	v->i++;
+		v->i++;
+	}
 }
 
 static void	handle_single_quote(t_parse_vars *v)
@@ -61,7 +66,12 @@ t_token	*parse_word(const char **ptr)
 	while (v.input[v.i])
 	{
 		if (v.state == STATE_GENERAL)
+		{
 			handle_general_state(&v);
+			if (v.state == STATE_GENERAL && 
+				(isspace(v.input[v.i]) || is_operator(v.input[v.i]) || v.input[v.i] == '\0'))
+				break;
+		}
 		else if (v.state == STATE_IN_SINGLE_QUOTE)
 			handle_single_quote(&v);
 		else if (v.state == STATE_IN_DOUBLE_QUOTE)

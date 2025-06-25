@@ -6,15 +6,15 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:54:16 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/24 15:22:13 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:44:28 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft.h"
 
-void    ft_lstclear(t_list **lst, void (*del)(void *))
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	t_list *temp;
+	t_list	*temp;
 
 	if (!lst || !del)
 		return ;

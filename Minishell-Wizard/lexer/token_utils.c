@@ -46,7 +46,7 @@ t_token	*parse_operator(const char **ptr)
 	if (**ptr == '|')
 	{
 		token->type = PIPE;
-		token->value = strdup("|");
+		token->value = ft_strdup("|");
 		(*ptr)++;
 	}
 	else if (**ptr == '<')
