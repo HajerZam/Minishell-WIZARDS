@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 14:27:08 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/25 14:27:08 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/06/30 14:19:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,19 @@ static void	handle_general_state(t_parse_vars *v)
 	if (c == '\'')
 	{
 		v->state = STATE_IN_SINGLE_QUOTE;
-		v->i++; // Skip opening quote
+		v->i++;
 	}
 	else if (c == '"')
 	{
 		v->state = STATE_IN_DOUBLE_QUOTE;
-		v->i++; // Skip opening quote
+		v->i++;
 	}
 	else if (isspace(c) || is_operator(c))
 	{
-		return; // Stop parsing this word
+		return ;
 	}
 	else
 	{
-		// Just add the character - no backslash handling needed per subject
 		v->buffer[v->j++] = c;
 		v->i++;
 	}
@@ -51,6 +50,25 @@ static void	handle_single_quote(t_parse_vars *v)
 	v->i++;
 }
 
+static void	process_parse_loop(t_parse_vars *v)
+{
+	while (v->input[v->i])
+	{
+		if (v->state == STATE_GENERAL)
+		{
+			handle_general_state(v);
+			if (v->state == STATE_GENERAL
+				&& (isspace(v->input[v->i])
+					|| is_operator(v->input[v->i]) || v->input[v->i] == '\0'))
+				break ;
+		}
+		else if (v->state == STATE_IN_SINGLE_QUOTE)
+			handle_single_quote(v);
+		else if (v->state == STATE_IN_DOUBLE_QUOTE)
+			handle_double_quote(v);
+	}
+}
+
 t_token	*parse_word(const char **ptr)
 {
 	t_parse_vars	v;
@@ -63,20 +81,7 @@ t_token	*parse_word(const char **ptr)
 	v.i = 0;
 	v.j = 0;
 	v.state = STATE_GENERAL;
-	while (v.input[v.i])
-	{
-		if (v.state == STATE_GENERAL)
-		{
-			handle_general_state(&v);
-			if (v.state == STATE_GENERAL && 
-				(isspace(v.input[v.i]) || is_operator(v.input[v.i]) || v.input[v.i] == '\0'))
-				break;
-		}
-		else if (v.state == STATE_IN_SINGLE_QUOTE)
-			handle_single_quote(&v);
-		else if (v.state == STATE_IN_DOUBLE_QUOTE)
-			handle_double_quote(&v);
-	}
+	process_parse_loop(&v);
 	v.buffer[v.j] = '\0';
 	v.token->type = WORD;
 	v.token->value = strip_quotes(v.buffer);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 16:34:36 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/25 16:34:36 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/06/30 14:08:44 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ void	handle_double_quote(t_parse_vars *v)
 	}
 	else
 	{
-		// Inside double quotes: add everything literally except we'll handle $ later
-		// For now, just adding the character
 		v->buffer[v->j++] = c;
 		v->i++;
 	}
