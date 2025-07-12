@@ -12,6 +12,11 @@
 
 #include "../minishell.h"
 
+/**
+ * handles parsing when in general state (not inside quotes)
+ * detects quote boundaries and regular characters
+ * param v: Parse variables structure containing current state
+ */
 static void	handle_general_state(t_parse_vars *v)
 {
 	char	c;
@@ -38,6 +43,11 @@ static void	handle_general_state(t_parse_vars *v)
 	}
 }
 
+/**
+ * handles parsing when inside single quotes
+ * everything is literal except for the closing quote
+ * param v: Parse variables structure containing current state
+ */
 static void	handle_single_quote(t_parse_vars *v)
 {
 	char	c;
@@ -69,6 +79,12 @@ static void	process_parse_loop(t_parse_vars *v)
 	}
 }
 
+/**
+ * parses a word token from input, handling quoted strings
+ * manages state transitions between general, single-quote, and double-quote states
+ * param ptr: Pointer to current position in input (updated after parsing)
+ * returns: New token containing the parsed word
+ */
 t_token	*parse_word(const char **ptr)
 {
 	t_parse_vars	v;
