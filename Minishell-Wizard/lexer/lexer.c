@@ -17,8 +17,11 @@ int	is_space(char c)
 	return (c == ' ' || (c >= 9 && c <= 13));
 }
 
-/*  Function to create a new token, 
-	iterate input, handle quotes, pipes, redirs, etc.*/
+/**
+* add a new token to the end of the token linked list
+* parem head: pointer to the head of the token list
+* parem new_token: token to the head of the token list
+ */
 
 void	add_token(t_token **head, t_token *new_token)
 {
@@ -34,6 +37,13 @@ void	add_token(t_token **head, t_token *new_token)
 		temp->next = new_token;
 	}
 }
+
+/**
+* main tokenization logic - converts input strings into linked list of tokens
+* handles operators(|, <, >, <<, >>) and words (including quoted strings)
+* pram input: input string to tokenize
+* returns: Head of the token linked list, or NULL if input is empty
+*/
 
 t_token	*tokenize_input(const char *input)
 {
