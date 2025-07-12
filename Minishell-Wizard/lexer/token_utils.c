@@ -50,6 +50,13 @@ static void	handle_greater_operator(const char **ptr, t_token *token)
 	}
 }
 
+
+/**
+ * parses operator tokens from input (|, <, >, <<, >>)
+ * handles both single and double-character operators
+ * param ptr: Pointer to current position in input (updated after parsing)
+ * returns: New token containing the parsed operator
+ */
 t_token	*parse_operator(const char **ptr)
 {
 	t_token	*token;
