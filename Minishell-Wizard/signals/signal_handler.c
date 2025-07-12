@@ -12,6 +12,11 @@
 
 #include "../minishell.h"
 
+/**
+ * signal handler for SIGINT (Ctrl+C)
+ * displays new prompt line without terminating the shell
+ * param sig: Signal number (unused)
+ */
 void	handle_sigint(int sig)
 {
 	(void)sig;
@@ -21,6 +26,10 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
+/**
+ * initializes signal handlers for the shell
+ * sets up SIGINT handling and ignores SIGQUIT
+ */
 void	init_signals(void)
 {
 	signal(SIGINT, handle_sigint);
