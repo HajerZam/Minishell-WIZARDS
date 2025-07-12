@@ -12,6 +12,11 @@
 
 #include "../minishell.h"
 
+/**
+ * handles parsing when inside double quotes
+ * characters are mostly literal, but will need $ expansion handling later
+ * param v: Parse variables structure containing current state
+ */
 void	handle_double_quote(t_parse_vars *v)
 {
 	char	c;
