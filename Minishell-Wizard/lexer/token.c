@@ -12,6 +12,10 @@
 
 #include "../minishell.h"
 
+/**
+ * allocates and initializes a new token structure
+ * return: Pointer to new token, exits on malloc failure
+ */
 t_token	*create_token(void)
 {
 	t_token	*token;
@@ -32,6 +36,13 @@ int	is_operator(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
+
+/**
+ * removes outer quotes from a string while preserving inner content
+ * handles both single and double quotes properly
+ * param input: Input string that may contain quotes
+ * returns: New string with quotes removed, or NULL on malloc failure
+ */
 char	*strip_quotes(const char *input)
 {
 	char	*out;
