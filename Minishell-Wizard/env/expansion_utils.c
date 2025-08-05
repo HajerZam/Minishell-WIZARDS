@@ -51,8 +51,8 @@ size_t	get_var_name_len(const char *str)
  Create null-terminated key
  Return copy of value or empty string if not found
 */
-char	*get_variable_value(const char *var_name,
-						size_t var_len, t_env *env)
+char	*get_variable_value(const char *var_name, size_t var_len,
+	t_env *env, int last_exit_status)
 {
 	char	*key;
 	char	*value;
@@ -60,7 +60,7 @@ char	*get_variable_value(const char *var_name,
 
 	if (var_len == 1 && var_name[0] == '?')
 	{
-		exit_str = ft_itoa(g_last_exit_status);
+		exit_str = ft_itoa(last_exit_status);
 		return (exit_str);
 	}
 	key = ft_substr(var_name, 0, var_len);
@@ -73,9 +73,9 @@ char	*get_variable_value(const char *var_name,
 	return (ft_strdup(""));
 }
 
-char	*expand_variable(const char *input, t_env *env)
+char	*expand_variable(const char *input, t_env *env, int last_exit_status)
 {
-	return (expand_variables(input, env));
+	return (expand_variables(input, env, last_exit_status));
 }
 
 int	should_expand_variable(const char *input, size_t i)

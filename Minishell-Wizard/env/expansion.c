@@ -39,63 +39,6 @@ static char	*add_text_before_var(const char *input, t_var_data *data)
 	return (data->result);
 }
 
-static char	*process_valid_variable(const char *input, t_var_data *data,
-									size_t var_len)
-{
-	char	*var_value;
-	char	*new_result;
-
-	var_value = get_variable_value(input + *(data->i) + 1, var_len, data->env);
-	if (!var_value)
-		return (NULL);
-	new_result = ft_strjoin(data->result, var_value);
-	free(var_value);
-	*(data->i) += var_len + 1;
-	return (new_result);
-}
-
-static char	*process_variable(const char *input, t_var_data *data)
-{
-	char	*result;
-	size_t	var_len;
-
-	result = add_text_before_var(input, data);
-	if (!result)
-		return (NULL);
-	data->result = result;
-	var_len = get_var_name_len(input + *(data->i) + 1);
-	if (var_len > 0)
-		return (process_valid_variable(input, data, var_len));
-	else
-	{
-		result = ft_strjoin(data->result, "$");
-		(*(data->i))++;
-		return (result);
-	}
-}
-
-static char	*add_remaining_text(const char *input, size_t i,
-							size_t start, char *result)
-{
-	char	*temp;
-	char	*final_result;
-
-	if (i > start)
-	{
-		temp = ft_substr(input, start, i - start);
-		if (!temp)
-		{
-			free(result);
-			return (NULL);
-		}
-		final_result = ft_strjoin(result, temp);
-		free(result);
-		free(temp);
-		return (final_result);
-	}
-	return (result);
-}
-
 static char	*process_expansion_loop(const char *input, t_var_data *data)
 {
 	char	*temp;
@@ -122,7 +65,7 @@ static char	*process_expansion_loop(const char *input, t_var_data *data)
 	return (add_remaining_text(input, i, start, data->result));
 }
 
-char	*expand_variables(const char *input, t_env *env)
+char	*expand_variables(const char *input, t_env *env, int last_exit_status)
 {
 	t_var_data	data;
 	char		*result;
@@ -133,6 +76,7 @@ char	*expand_variables(const char *input, t_env *env)
 	if (!data.result)
 		return (NULL);
 	data.env = env;
+	data.last_exit_status = last_exit_status;
 	result = process_expansion_loop(input, &data);
 	if (!result)
 		free(data.result);

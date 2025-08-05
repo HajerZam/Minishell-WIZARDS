@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 14:27:08 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/30 14:19:02 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/05 14:37:10 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ static void	process_parse_loop(t_parse_vars *v)
 
 /**
  * parses a word token from input, handling quoted strings
- * manages state transitions between general, single-quote, and double-quote states
+ * manages state transitions between general, single-quote,
+ 	 and double-quote states
  * param ptr: Pointer to current position in input (updated after parsing)
  * returns: New token containing the parsed word
  */
