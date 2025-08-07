@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/*#include "../minishell.h"
+#include "../minishell.h"
 #include <stdio.h> // for printf
 
 const char	*token_type_to_str(t_token_type type)
@@ -47,4 +47,3 @@ void	free_tokens(t_token *head)
 		free(tmp);
 	}
 }
-*/

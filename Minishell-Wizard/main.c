@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 /*PS. the main is just set up for testing for now*/
-
+/*
 int	main(void)
 {
 	char	*line;
@@ -34,3 +34,4 @@ int	main(void)
 	printf("exit\n");
 	return (0);
 }
+*/
