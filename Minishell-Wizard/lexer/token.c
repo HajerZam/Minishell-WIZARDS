@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:10:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/30 14:13:41 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/05 14:36:00 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	is_operator(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
 }
-
 
 /**
  * removes outer quotes from a string while preserving inner content

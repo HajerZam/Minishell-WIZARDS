@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:32:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/06/30 14:13:19 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/05 14:37:24 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static void	handle_greater_operator(const char **ptr, t_token *token)
 		(*ptr)++;
 	}
 }
-
 
 /**
  * parses operator tokens from input (|, <, >, <<, >>)
