@@ -12,6 +12,22 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 	return (1);
 }
 
+int	handle_input_redirection(t_cmd *cmd, const char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		perror(filename);
+		return (0);
+	}
+	if (cmd->input_fd != 0)
+		close(cmd->input_fd);
+	cmd->input_fd = fd;
+	return (1);
+}
+
 int	handle_output_redirection(t_cmd *cmd, const char *filename, int append)
 {
 	if (!cmd || !filename)
