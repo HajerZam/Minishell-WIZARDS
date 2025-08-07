@@ -10,7 +10,7 @@ void	finalize_command(t_cmd *cmd)
 int	validate_parsed_command(t_cmd *cmd, t_parser *parser)
 {
 	if ((!cmd->argv || !cmd->argv[0]) && (cmd->input_fd == 0
-			&& cmd->input_fd == 1 && cmd->is_heredoc))
+			|| cmd->input_fd == 1 || cmd->is_heredoc))
 	{
 		fprintf(stderr, "Command for redirection not found\n");
 		parser->error = 1;
