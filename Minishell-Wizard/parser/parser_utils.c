@@ -1,4 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 15:00:07 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/07 15:38:11 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
 
 int	handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index,
 		int arg_count)
@@ -68,4 +80,26 @@ int	count_words_until_pipe(t_parser *parser)
 			break ;
 	}
 	return (count);
+}
+
+char	**allocate_argv(int argc)
+{
+	char	**argv;
+	int		i;
+
+	if (argc < 0)
+		return (NULL);
+	argv = malloc(sizeof(char *) * (argc + 1));
+	if (!argv)
+	{
+		ft_putstr_fd("minishell: memory allocation failed\n", 2);
+		return (NULL);
+	}
+	i = 0;
+	while (i <= argc)
+	{
+		argv[i] = NULL;
+		i++;
+	}
+	return (argv);
 }

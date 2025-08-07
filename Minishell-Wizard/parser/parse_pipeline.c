@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handler.c                                          :+:      :+:    :+:   */
+/*   parse_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fepennar <fepennar@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 19:23:20 by fepennar          #+#    #+#             */
-/*   Updated: 2025/07/26 19:23:31 by fepennar         ###   ########.fr       */
+/*   Updated: 2025/08/07 15:38:40 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	check_pipeline(t_parser *parser, t_cmd *current_cmd, t_cmd *first_cmd)
 {
 	while (parser->current && parser->current->type == PIPE)
 	{
-		consume_token(parser); // Consume the PIPE token
+		consume_token(parser);
 		if (!parser->current)
 		{
-			fprintf(stderr, "Unexpected end of input after pipe\n");
+			fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+			parser->error = 1;
+			free_cmd_list(first_cmd);
+			return (0);
+		}
+		if (parser->current->type == PIPE)
+		{
+			fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
 			parser->error = 1;
 			free_cmd_list(first_cmd);
 			return (0);
@@ -27,7 +34,7 @@ int	check_pipeline(t_parser *parser, t_cmd *current_cmd, t_cmd *first_cmd)
 		current_cmd->next = parse_command(parser);
 		if (!current_cmd->next || parser->error)
 		{
-			fprintf(stderr, "Error parsing command after pipe\n");
+			fprintf(stderr, "bash: syntax error in pipeline\n");
 			free_cmd_list(first_cmd);
 			return (0);
 		}
@@ -47,9 +54,15 @@ t_cmd	*parse_pipeline(t_parser *parser)
 		parser->error = 1;
 		return (NULL);
 	}
+	if (parser->current->type == PIPE)
+	{
+		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+		parser->error = 1;
+		return (NULL);
+	}
 	first_cmd = parse_command(parser);
 	if (!first_cmd || parser->error)
-		return (first_cmd);
+		return (first_cmd);	
 	current_cmd = first_cmd;
 	if (check_pipeline(parser, current_cmd, first_cmd) == 0)
 		return (NULL);

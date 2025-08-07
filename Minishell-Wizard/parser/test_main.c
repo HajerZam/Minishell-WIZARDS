@@ -1,18 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test_main.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 15:00:12 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/07 15:39:46 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /* test_main.c - Test program to visualize execution tree (Norma 42) */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-/* Test cases for parser */
-const char		*g_test_cases[] = {"ls", "ls -la", "echo hello world",
-			"cat < input.txt", "sort < data.txt", "ls > output.txt",
-			"echo hello >> log.txt", "cat << EOF", "sort << END",
-			"ls | grep txt", "cat file | sort", "ls -la | grep txt | sort",
-			"cat input | sort | uniq | wc -l",
-			"cat < input.txt | sort > output.txt", "ls
-			-la | grep txt > filtered.txt", NULL};
+/* Test cases for parser - FIXED: Properly formatted string array */
+const char		*g_test_cases[] = {
+	"ls", 
+	"ls -la", 
+	"echo hello world",
+	"cat < input.txt", 
+	"sort < data.txt", 
+	"ls > output.txt",
+	"echo hello >> log.txt", 
+	"cat << EOF", 
+	"sort << END",
+	"ls | grep txt", 
+	"cat file | sort", 
+	"ls -la | grep txt | sort",
+	"cat input | sort | uniq | wc -l",
+	"cat < input.txt | sort > output.txt", 
+	"ls -la | grep txt > filtered.txt", 
+	NULL
+};
 
-const char		*g_error_test_cases[] = {"|", "ls |", "ls | | grep", "ls >",
-			"< input.txt", "ls > > output.txt", NULL};
+const char		*g_error_test_cases[] = {
+	"|", 
+	"ls |", 
+	"ls | | grep", 
+	"ls >",
+	"< input.txt", 
+	"ls > > output.txt", 
+	NULL
+};
 
 /**
  * test_single_case - Test parsing of a single command line
@@ -287,13 +317,17 @@ static void	print_cmd_basic(t_cmd *cmd)
 static void	print_cmd_fds(t_cmd *cmd)
 {
 	printf("│  input_fd: %d", cmd->input_fd);
-	if (cmd->input_fd == -2)
+	if (cmd->input_fd > 2)
+		printf(" (file/pipe)");
+	else if (cmd->input_fd == -2)
 		printf(" (file redirect)");
 	else if (cmd->input_fd == -4)
 		printf(" (heredoc)");
 	printf("\n");
 	printf("│  output_fd: %d", cmd->output_fd);
-	if (cmd->output_fd == -2)
+	if (cmd->output_fd > 2)
+		printf(" (file/pipe)");
+	else if (cmd->output_fd == -2)
 		printf(" (file redirect)");
 	else if (cmd->output_fd == -3)
 		printf(" (append redirect)");
@@ -435,28 +469,6 @@ void	print_pipeline_summary(t_cmd *cmd_list)
 	if (cmd_count != 1)
 		printf("s");
 	printf(")\n");
-}
-
-char	**allocate_argv(int argc)
-{
-	char	**argv;
-	int		i;
-
-	if (argc < 0)
-		return (NULL);
-	argv = malloc(sizeof(char *) * (argc + 1));
-	if (!argv)
-	{
-		ft_putstr_fd("minishell: memory allocation failed\n", 2);
-		return (NULL);
-	}
-	i = 0;
-	while (i <= argc)
-	{
-		argv[i] = NULL;
-		i++;
-	}
-	return (argv);
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 14:33:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/07 14:40:36 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_cmd
 	int				input_fd;
 	int				output_fd;
 	struct s_cmd	*next;
-	struct s_cmd	*token;
+	struct s_cmd	*tokens;
 	int				heredoc_fd;
 	int				is_heredoc; // flag for heredoc
 	int				is_builtin;
