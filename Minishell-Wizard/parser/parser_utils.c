@@ -22,7 +22,6 @@ int	handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index,
 		return (0);
 	}
 	cmd->argv[*arg_index] = ft_strdup(parser->current->value);
-		// try the dupstring thingy if needed
 	if (!cmd->argv[*arg_index])
 	{
 		parser->error = 1;
