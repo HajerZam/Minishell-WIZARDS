@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 14:40:36 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/08 19:39:48 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <signal.h>
 # include <errno.h>
 # include <fcntl.h>
@@ -99,6 +100,18 @@ typedef struct s_var_data
 	size_t	*i;
 	size_t	*start;
 }		t_var_data;
+
+/* Execution context structure */
+typedef struct	s_exec_context
+{
+	char	**envp;
+	int		last_exit_status;
+	int		pipe_count;
+	int		**pipes;
+	pid_t	*pids;
+	int		stdin_backup;
+	int		stdout_backup;
+}		t_exec_context;
 
 /* Global variable to store last exit status */
 extern int	g_last_exit_status;
@@ -210,5 +223,36 @@ char		*get_variable_value(const char *var_name,
 size_t		get_var_name_len(const char *str);
 int			should_expand_variable(const char *input, size_t i);
 int			is_in_single_quotes(const char *str, size_t pos);
+
+/* Main execution functions */
+int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
+int			execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			execute_builtin(t_cmd *cmd, t_exec_context *ctx);
+int			execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+
+/* Pipeline management */
+int			setup_pipes(t_exec_context *ctx, int cmd_count);
+void		cleanup_pipes(t_exec_context *ctx);
+int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+
+/* Redirection handling */
+int			setup_redirections(t_cmd *cmd);
+int			restore_std_fds(t_exec_context *ctx);
+int			backup_std_fds(t_exec_context *ctx);
+
+/* Process management */
+int			wait_for_processes(t_exec_context *ctx);
+void		handle_signals_in_child(void);
+void		handle_signals_in_parent(void);
+
+/* Path resolution */
+char		*find_command_path(char *command, char **envp);
+int			is_executable_file(char *path);
+
+/* Utility functions */
+int			count_commands(t_cmd *cmd_list);
+void		cleanup_execution_context(t_exec_context *ctx);
+int			init_execution_context(t_exec_context *ctx, char **envp);
+void		print_execution_error(char *command, char *error);
 
 #endif

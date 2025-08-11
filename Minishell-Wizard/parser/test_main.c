@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 15:00:12 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 15:39:46 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/08 14:43:14 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,42 +51,50 @@ const char		*g_error_test_cases[] = {
  */
 void	test_single_case(const char *input, int should_succeed)
 {
-	t_token	*tokens;
-	t_cmd	*cmd_list;
+   t_token *tokens;
+    t_cmd *cmd_list;
 
-	printf("\n\033[34mTesting: \033[0m'%s'\n", input);
-	printf("Expected: %s\n", should_succeed ? "SUCCESS" : "FAILURE");
-	tokens = tokenize_input(input);
-	if (!tokens)
-	{
-		printf("\033[31m❌ Tokenization failed\n\033[0m");
-		return ;
-	}
-	printf("Tokens: ");
-	print_tokens(tokens);
-	cmd_list = parse_command_line(tokens);
-	if (cmd_list && should_succeed)
-	{
-		printf("\033[32m✅ Parsing succeeded\n\033[0m");
-		print_pipeline_summary(cmd_list);
-		print_execution_tree(cmd_list);
-		if (validate_pipeline(cmd_list))
-			printf("\033[32m✅ Pipeline validation passed\n\033[0m");
-		else
-			printf("\033[33m⚠️  Pipeline validation failed\n\033[0m");
-	}
-	else if (!cmd_list && !should_succeed)
-		printf("\033[32m✅ Correctly rejected invalid syntax\n\033[0m");
-	else if (cmd_list && !should_succeed)
-	{
-		printf("\033[31m❌ Should have failed but succeeded\n\033[0m");
-		print_execution_tree(cmd_list);
-	}
-	else
-		printf("\033[31m❌ Parsing failed unexpectedly\n\033[0m");
-	free_cmd_list(cmd_list);
-	free_tokens(tokens);
-	printf("\033[36m----------------------------------------\n\033[0m");
+    printf("\n\033[34mTesting: \033[0m'%s'\n", input);
+    printf("Expected: %s\n", should_succeed ? "SUCCESS" : "FAILURE");
+    
+    // Add debug output
+    printf("Debug: Input length = %zu\n", ft_strlen(input));
+    
+    tokens = tokenize_input(input);
+    if (!tokens)
+    {
+        printf("\033[31m❌ Tokenization failed for input: '%s'\n\033[0m", input);
+        if (should_succeed)
+            printf("This should have succeeded!\n");
+        return;
+    }
+    
+    printf("Tokens: ");
+    print_tokens(tokens);
+    
+    cmd_list = parse_command_line(tokens);
+    if (cmd_list && should_succeed)
+    {
+        printf("\033[32m✅ Parsing succeeded\n\033[0m");
+        print_pipeline_summary(cmd_list);
+        print_execution_tree(cmd_list);
+        if (validate_pipeline(cmd_list))
+            printf("\033[32m✅ Pipeline validation passed\n\033[0m");
+        else
+            printf("\033[33m⚠️  Pipeline validation failed\n\033[0m");
+    }
+    else if (!cmd_list && !should_succeed)
+        printf("\033[32m✅ Correctly rejected invalid syntax\n\033[0m");
+    else if (cmd_list && !should_succeed)
+    {
+        printf("\033[31m❌ Should have failed but succeeded\n\033[0m");
+        print_execution_tree(cmd_list);
+    }
+    else
+        printf("\033[31m❌ Parsing failed unexpectedly\n\033[0m");    
+    free_cmd_list(cmd_list);
+    free_tokens(tokens);
+    printf("\033[36m----------------------------------------\n\033[0m");
 }
 
 /**
@@ -136,32 +144,82 @@ void	run_all_tests(void)
 /**
  * interactive_loop - Main interactive loop
  */
-static void	interactive_loop(void)
+static void interactive_loop(void)
 {
-	char	*input;
-
-	while (1)
-	{
-		input = readline("\033[32mminishell> \033[0m");
-		if (!input)
-		{
-			printf("\n");
-			break ;
-		}
-		if (ft_strlen(input) == 0)
-		{
-			free(input);
-			continue ;
-		}
-		add_history(input);
-		if (ft_strcmp(input, "exit") == 0)
-		{
-			free(input);
-			break ;
-		}
-		test_single_case(input, 1);
-		free(input);
-	}
+    char *input;
+    
+    while (1)
+    {
+        input = readline("\033[32mminishell> \033[0m");
+        if (!input)  // Ctrl+D
+        {
+            printf("\n");
+            break;
+        }
+        
+        // ENHANCED DEBUG: Print raw input details
+        printf("DEBUG: Got input: '%s'\n", input);
+        printf("DEBUG: Input length: %zu\n", ft_strlen(input));
+        printf("DEBUG: Input address: %p\n", (void*)input);
+        
+        // Print each character with hex values
+        printf("DEBUG: Character breakdown: ");
+        for (size_t i = 0; i < ft_strlen(input); i++)
+        {
+            printf("[%zu]='%c'(0x%02X) ", i, input[i], (unsigned char)input[i]);
+        }
+        printf("\n");
+        
+        if (ft_strlen(input) == 0)  // Empty input
+        {
+            printf("DEBUG: Empty input, continuing\n");
+            free(input);
+            continue;
+        }
+        
+        add_history(input);
+        
+        // ENHANCED DEBUG: Multiple comparison methods
+        printf("DEBUG: About to compare strings...\n");
+        
+        // Method 1: ft_strcmp
+        int cmp_result = ft_strcmp(input, "exit");
+        printf("DEBUG: ft_strcmp('%s', 'exit') = %d\n", input, cmp_result);
+        
+        // Method 2: Manual character-by-character comparison
+        printf("DEBUG: Manual comparison:\n");
+        printf("  input[0]='%c'(0x%02X), 'e'=0x65: %s\n", 
+               input[0], (unsigned char)input[0], 
+               input[0] == 'e' ? "MATCH" : "NO_MATCH");
+        printf("  input[1]='%c'(0x%02X), 'x'=0x78: %s\n", 
+               input[1], (unsigned char)input[1], 
+               input[1] == 'x' ? "MATCH" : "NO_MATCH");
+        printf("  input[2]='%c'(0x%02X), 'i'=0x69: %s\n", 
+               input[2], (unsigned char)input[2], 
+               input[2] == 'i' ? "MATCH" : "NO_MATCH");
+        printf("  input[3]='%c'(0x%02X), 't'=0x74: %s\n", 
+               input[3], (unsigned char)input[3], 
+               input[3] == 't' ? "MATCH" : "NO_MATCH");
+        
+        // Method 3: Standard library strcmp for comparison
+        printf("DEBUG: stdlib strcmp('%s', 'exit') = %d\n", input, strcmp(input, "exit"));
+        
+        // Check the actual condition
+        printf("DEBUG: Condition check: cmp_result == 0 is %s\n", 
+               cmp_result == 0 ? "TRUE" : "FALSE");
+        
+        if (cmp_result == 0)
+        {
+            printf("DEBUG: Exit condition triggered!\n");
+            printf("DEBUG: This should only happen for 'exit' command\n");
+            free(input);
+            break;
+        }
+        
+        printf("DEBUG: Not exit command, proceeding to test_single_case\n");
+        test_single_case(input, 1);
+        free(input);
+    }
 }
 
 /**
