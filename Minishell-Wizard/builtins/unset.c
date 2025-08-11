@@ -12,50 +12,47 @@
 
 #include "../minishell.h"
 
-/* Validate variable name for unset - same rules as export */
-static int	is_valid_unset_name(const char *name)
+int	find_env_index(char **envp, const char *name)
 {
-	int	i;
+	int i;
+	size_t len;
 
-	if (!name || !*name)
-		return (0);
-	if (!ft_isalpha(name[0]) && name[0] != '_')
-		return (0);
-	i = 1;
-	while (name[i])
+	if (!envp || !name)
+		return (-1);
+	len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
 	{
-		if (!ft_isalnum(name[i]) && name[i] != '_')
-			return (0);
+		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+			return (i);
 		i++;
 	}
-	return (1);
+	return (-1);
 }
 
-/* Main unset builtin function
-	unset_env_var returns 1 if found and removed, 0 if not found
-	Both cases are success for unset command
-*/
-int	builtin_unset(char **args, t_env **env)
+int builtin_unset(char **argv, t_env *env)
 {
-	int	i;
-	int	exit_status;
+	int i;
+	int index;
 
-	if (!args[1])
-		return (0);
-	exit_status = 0;
+	if (!argv || !env)
+		return (1);
 	i = 1;
-	while (args[i])
+	while (argv[i])
 	{
-		if (!is_valid_unset_name(args[i]))
+		index = find_env_index(env->envp, argv[i]);
+		if (index != -1)
 		{
-			printf("unset: `%s': not a valid identifier\n", args[i]);
-			exit_status = 1;
-		}
-		else
-		{
-			unset_env_var(env, args[i]);
+			free(env->envp[index]);
+			env->envp[index] = NULL;
+			while (env->envp[index + 1])
+			{
+				env->envp[index] = env->envp[index + 1];
+				index++;
+			}
+			env->envp[index] = NULL;
 		}
 		i++;
 	}
-	return (exit_status);
+	return (0);
 }

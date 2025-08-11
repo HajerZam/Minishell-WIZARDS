@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 15:38:32 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:22:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		return (0);
 	}
 	printf("heredoc> ");
-	while ((line = readline("")))
+	line = readline("")
+	while (line)
 	{
 		if (ft_strcmp(line, delimiter) == 0)
 		{
@@ -39,6 +40,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		write(pipe_fd[1], "\n", 1);
 		free(line);
 		printf("heredoc> ");
+		line = readline("");
 	}
 	close(pipe_fd[1]);
 	if (cmd->input_fd != 0)
