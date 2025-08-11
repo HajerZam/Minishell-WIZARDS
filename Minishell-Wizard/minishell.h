@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 19:39:48 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/11 16:10:15 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,12 +183,6 @@ char		**allocate_argv(int argc);
 void		cleanup_parser_error(t_parser *parser, t_cmd *partial_cmd);
 void		safe_cmd_append(t_cmd **head, t_cmd *new_cmd);
 
-/* test_main.c */
-void		test_single_case(const char *input, int should_succeed);
-void		run_all_tests(void);
-void		interactive_mode(void);
-void		print_usage(const char *program_name);
-
 /* builtins */
 
 int			builtin_cd(char **argv, t_env *env);
@@ -205,6 +199,7 @@ int			handle_builtin(t_cmd *cmd, t_env *env);
 int			ft_strcmp(const char *s1, const char *s2);
 t_env		*init_env(char **envp);
 void		free_env(t_env *env);
+char		*add_text_before_var(const char *input, t_var_data *data);
 char		*process_valid_variable(const char *input, t_var_data *data,
 				size_t var_len);
 char		*process_variable(const char *input, t_var_data *data);
@@ -254,5 +249,6 @@ int			count_commands(t_cmd *cmd_list);
 void		cleanup_execution_context(t_exec_context *ctx);
 int			init_execution_context(t_exec_context *ctx, char **envp);
 void		print_execution_error(char *command, char *error);
+void		cleanup_execution_context(t_exec_context *ctx);
 
 #endif

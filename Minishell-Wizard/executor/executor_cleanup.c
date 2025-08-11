@@ -1,0 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor_cleanup.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/11 15:35:22 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/11 15:35:22 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+void	cleanup_execution_context(t_exec_context *ctx)
+{
+    if (!ctx)
+        return;
+    if (ctx->pipes)
+        cleanup_pipes(ctx);
+    if (ctx->pids)
+        free(ctx->pids);
+    if (ctx->stdin_backup != -1)
+        close(ctx->stdin_backup);
+    if (ctx->stdout_backup != -1)
+        close(ctx->stdout_backup);
+    free(ctx);
+}
+
+void    free_env(t_env *env)
+{
+    t_env *current;
+    t_env *next;
+
+    current = env;
+    while (current)
+    {
+        next = current->next;
+        free(current->key);
+        free(current->value);
+        free(current);
+        current = next;
+    }
+}

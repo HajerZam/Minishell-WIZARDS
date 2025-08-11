@@ -81,13 +81,4 @@ void test_env_expansion(char **envp)
     
     free_env(env);
 }
-
-int main(int argc, char **argv, char **envp)
-{
-    (void)argc;
-    (void)argv;
-    
-    test_env_expansion(envp);
-    return (0);
-}
 */

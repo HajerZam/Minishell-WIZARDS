@@ -112,6 +112,7 @@ int	execute_builtin(t_cmd *cmd, t_exec_context *ctx)
  * ctx: Execution context
  * cmd_index: Index of command in pipeline
  * Return: 0 on success, 1 on error
+ * FIXED NOTE : Removed undefined behavior with command_path variable
  */
 int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
@@ -145,12 +146,12 @@ int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 			free(command_path);
 			exit(126);
 		}
+		free(command_path);
+		exit(1);
 	}
 	else
 	{
 		ctx->pids[cmd_index] = pid;
-		if (command_path)
-			free(command_path);
 	}
 	return (0);
 }

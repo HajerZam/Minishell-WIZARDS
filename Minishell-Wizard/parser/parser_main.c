@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 14:29:31 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/07 15:38:27 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:32:04 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	check_double_pipe(t_token *current)
 		}
 		current = current->next;
 	}
+	return (1);
 }
 
 void	init_parser(t_parser *parser, t_token *tokens)
