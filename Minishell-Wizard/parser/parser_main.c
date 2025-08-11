@@ -12,6 +12,26 @@
 
 #include "../minishell.h"
 
+int	check_double_pipe(t_token *current)
+{
+	while (current)
+	{
+		if (current->type == PIPE)
+		{
+			if (!current->next)
+				return (0);
+			if (current->next->type == PIPE)
+				return (0);
+		}
+		if (is_redirection(current->type))
+		{
+			if (!current->next || current->next->type != WORD)
+				return (0);
+		}
+		current = current->next;
+	}
+}
+
 void	init_parser(t_parser *parser, t_token *tokens)
 {
 	parser->tokens = tokens;
@@ -23,49 +43,21 @@ void	init_parser(t_parser *parser, t_token *tokens)
 // FIXED: Better syntax validation
 static int	check_syntax_errors(t_token *tokens)
 {
-	t_token	*current = tokens;
-	
+	t_token	*current;
+
+	current = tokens;
 	if (!current)
 		return (1);
-	
-	// Check for leading pipe
 	if (current->type == PIPE)
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
 		return (0);
 	}
-	
-	while (current)
+	if (check_double_pipe(current))
 	{
-		if (current->type == PIPE)
-		{
-			// Check for trailing pipe
-			if (!current->next)
-			{
-				fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
-				return (0);
-			}
-			// Check for double pipe
-			if (current->next->type == PIPE)
-			{
-				fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
-				return (0);
-			}
-		}
-		
-		if (is_redirection(current->type))
-		{
-			// Check for missing filename
-			if (!current->next || current->next->type != WORD)
-			{
-				fprintf(stderr, "bash: syntax error near unexpected token `newline'\n");
-				return (0);
-			}
-		}
-		
-		current = current->next;
+		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+		return (0);
 	}
-	
 	return (1);
 }
 
@@ -76,7 +68,6 @@ int	validate_syntax(t_token *tokens)
 		fprintf(stderr, "No tokens to validate\n");
 		return (0);
 	}
-	
 	return (check_syntax_errors(tokens));
 }
 
@@ -91,8 +82,6 @@ t_cmd	*parse_command_line(t_token *tokens)
 		return (NULL);
 	init_parser(&parser, tokens);
 	result = parse_pipeline(&parser);
-	
-	// FIXED: Better error handling
 	if (parser.current && !parser.error)
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token\n");

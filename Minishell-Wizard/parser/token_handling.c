@@ -26,6 +26,7 @@ t_token	*consume_token(t_parser *parser)
 	parser->current = parser->current->next;
 	return (token);
 }
+
 t_token	*peek_token(t_parser *parser)
 {
 	if (!parser->current)
