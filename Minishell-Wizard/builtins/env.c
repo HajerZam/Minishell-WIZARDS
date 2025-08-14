@@ -15,13 +15,13 @@
 /* Print all environment variables in key=value format */
 static void	print_env_list(t_env *env)
 {
-	t_env	*current;
-
-	current = env;
-	while (current)
+	while (env)
 	{
-		printf("%s=%s\n", current->key, current->value);
-		current = current->next;
+		if (env->value)
+			printf("%s=%s\n", env->key, env->value);
+		else
+			printf("%s=\n", env->key);
+		env = env->next;
 	}
 }
 
@@ -32,9 +32,14 @@ static void	print_env_list(t_env *env)
 */
 int	builtin_env(char **args, t_env **env)
 {
-	if (args[1])
+	if (args && args[0])
 	{
-		printf("env: arguments not supported in this implementation\n");
+		fprintf(stderr, "env: '%s': No such file or directory\n", args[0]);
+		return (1);
+	}
+	if (!env || !*env)
+	{
+		fprintf(stderr, "env: No environment variables set\n");
 		return (1);
 	}
 	print_env_list(*env);

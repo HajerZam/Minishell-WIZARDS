@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:03 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:06:03 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/14 14:24:33 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int handle_builtin(t_cmd *cmd, t_env *env)
     
     if (!cmd || !cmd->argv || !cmd->argv[0] || !env)
         return (1);
-    if (is_builtin(cmd->argv[0]))
+    if (!is_builtin(cmd->argv[0]))
         return (127);
     if (!setup_builtin_fds(cmd, &saved_stdin, &saved_stdout))
     {
