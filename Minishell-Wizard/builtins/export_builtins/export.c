@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: fepennar <fepennar@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/29 12:06:59 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:06:59 by halzamma         ###   ########.fr       */
+/*   Created: 2025/07/29 12:06:59 by fepennar          #+#    #+#             */
+/*   Updated: 2025/07/29 12:06:59 by fepennar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
-/* Print all environment variables in sorted order with export format */
+/* Print all environment variables in sorted order with export format
+	Happens when export is sent with no args */
 static void	print_export_list(t_env *env)
 {
 	t_env	*current;
@@ -20,9 +21,15 @@ static void	print_export_list(t_env *env)
 	current = env;
 	while (current)
 	{
-		printf("declare -x %s=\"%s\"\n", current->key, current->value);
+		if (current->is_exported)
+		{
+			printf("declare -x %s=\"%s\"\n", current->key, current->value);
+			if (!current->value)
+				printf("=\"%s\"\n", current->value);
+		}
 		current = current->next;
 	}
+	return ;
 }
 
 /* Validate variable name - 
@@ -45,76 +52,51 @@ static int	is_valid_identifier(const char *name)
 	}
 	return (1);
 }
-
-/* Parse key=value format and extract key and value */
-static int	parse_export_arg(const char *arg, char **key, char **value)
+/*Exports an existing variable without changing it's value, (ONLY VAR)
+ * If the variable exists, it marks it as exported.
+ * If it doesn't exist, it creates a new (empty) exported variable*/
+int export_existing_var(const char *key, t_env **env)
 {
-	char	*equal_pos;
+    t_env *var_node;
 
-	equal_pos = ft_strchr(arg, '=');
-	if (!equal_pos)
-	{
-		*key = ft_strdup(arg);
-		*value = NULL;
-		return (*key != NULL);
-	}
-	*key = ft_substr(arg, 0, equal_pos - arg);
-	*value = ft_strdup(equal_pos + 1);
-	return (*key != NULL && *value != NULL);
+    var_node = find_env_var(*env, key);
+    if (var_node)
+    {
+        var_node->is_exported = 1;
+        return (var_node->value != NULL);
+    }
+    return (add_env_var_exported(env, key, NULL));
 }
-
 /* Handle single export argument */
 static int	handle_export_arg(t_env **env, const char *arg)
 {
 	char	*key;
 	char	*value;
-	int		success;
 
-	if (!parse_export_arg(arg, &key, &value))
+	if (ft_strchr(arg, '=') != NULL)
 	{
-		printf("export: memory allocation failed\n");
-		return (1);
-	}
-	if (!is_valid_identifier(key))
-	{
-		printf("export: `%s': not a valid identifier\n", arg);
+		if(!parse_assignment(arg, &key, &value))
+			return (1);
+		if (!validate_export_name(key))
+		{
+			free(key);
+			free(value);
+			return (1);
+		}
+		export_with_assignment(key, env, value);
 		free(key);
 		free(value);
-		return (1);
-	}
-	if (value)
-	{
-		if (update_env_value(env, key, value))
-			success = 0;
-		else if (add_env_var(env, key, value))
-			success = 0;
-		else
-		{
-			printf("export: failed to set variable %s\n", key);
-			success = 1;
-		}
 	}
 	else
 	{
-		if (!getenv_from_list(*env, key))
-		{
-			if (!add_env_var(env, key, ""))
-			{
-				printf("export: failed to set variable %s\n", key);
-				success = 1;
-			}
-			else
-				success = 0;
-		}
-		else
-			success = 0;
+		if (!validate_export_name(arg))
+			return (1);
+		export_esisting_var(arg, env);
 	}
-	free(key);
-	free(value);
-	return (success);
+	return (0);
 }
 
-/* Main export builtin function */
+/* Main export function returns 1 on error */
 int	builtin_export(char **args, t_env **env)
 {
 	int	i;

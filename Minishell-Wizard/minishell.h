@@ -89,6 +89,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	int				is_exported;
 	struct s_env	*next;
 }		t_env;
 
@@ -200,6 +201,20 @@ int			builtin_export(char **argv, t_env *env);
 int			builtin_unset(char **argv, t_env *env);
 int			handle_builtin(t_cmd *cmd, t_env *env);
 
+/* CD builtin functions */
+int			update_env_variables(t_env *env, const char *old_pwd);
+int			update_pwd_env(t_env *env, const char *new_pwd);
+int			update_olpwd_env(t_env *env, const char *old_pwd);
+char		*get_current_pwd(void);
+char		*resolve_cd_target(char **argv, t_env *env);
+int			update_working_directory(const char *target_pwd);
+char		*handle_cd_home(t_env *env);
+char		*handle_cd_oldpwd(t_env *env);
+char		*handle_cd_path(const char *path, t_env *env);
+char		*expand_tilde(const char *path, t_env *env);
+int			validate_cd_args(char **argv);
+void		print_cd_error(const char *path, const char *error_message);
+
 /*env management*/
 
 int			ft_strcmp(const char *s1, const char *s2);
@@ -227,7 +242,6 @@ int			is_in_single_quotes(const char *str, size_t pos);
 /* Main execution functions */
 int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
-int			execute_builtin(t_cmd *cmd, t_exec_context *ctx);
 int			execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 
 /* Pipeline management */
