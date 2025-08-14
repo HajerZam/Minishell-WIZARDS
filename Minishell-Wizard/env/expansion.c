@@ -19,7 +19,7 @@ It will return a new string with the expanded value
 If the input is NULL, it will return NULL
 If memory allocation fails, it will return NULL
 */
-static char	*add_text_before_var(const char *input, t_var_data *data)
+char	*add_text_before_var(const char *input, t_var_data *data)
 {
 	char	*temp;
 	char	*new_result;

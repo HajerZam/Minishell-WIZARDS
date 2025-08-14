@@ -7,7 +7,7 @@ CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -g
 RM          := rm -rf
 
-SRC_DIRS    := . lexer signals parser
+SRC_DIRS    := . lexer signals parser env executor builtins
 OBJ_DIR     := obj
 LIBFT_DIR   := libft
 INCLUDE_DIR := include

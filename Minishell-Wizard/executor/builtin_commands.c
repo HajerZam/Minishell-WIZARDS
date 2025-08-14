@@ -151,7 +151,6 @@ int	builtin_exit(char **argv, t_exec_context *ctx)
 	}
 	else
 		exit_code = ctx->last_exit_status;
-
 	cleanup_execution_context(ctx);
 	exit(exit_code);
 }

@@ -17,16 +17,23 @@ int	is_in_single_quotes(const char *str, size_t pos)
 {
 	size_t	i;
 	int		in_quotes;
+	int		escaped;
 
 	i = 0;
 	in_quotes = 0;
+	escaped = 0;
 	while (i < pos)
 	{
-		if (str[i] == '\'' && (i == 0 || str[i - 1] != '\\'))
+		if (str[i] == '\\' && !escaped)
+			escaped = 1;
+		else if (str[i] == quote_type && !escaped)
 			in_quotes = !in_quotes;
+		else
+			escaped = 0;
 		i++;
 	}
 	return (in_quotes);
+}
 }
 
 /* Helper function to get variable name length
