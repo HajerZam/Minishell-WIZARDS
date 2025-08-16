@@ -6,29 +6,38 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:03 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/14 14:24:33 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:36:32 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int execute_builtin(t_cmd *cmd, t_env *env)
+int execute_builtin(t_cmd *cmd, t_env *env)
 {
-    if (strcmp(cmd->argv[0], "cd") == 0)
+    char    *command;
+
+    if (!cmd || !cmd->argv || !cmd->argv[0] || !env)
+    {
+        fprintf(stderr, "Invalid command or environment\n");
+        return (1);
+    }
+    command = cmd->argv[0];
+    if (ft_strcmp(command, "cd") == 0)
         return (builtin_cd(cmd->argv, env));
-    else if (strcmp(cmd->argv[0], "echo") == 0)
+    else if (ft_strcmp(command, "echo") == 0)
         return (builtin_echo(cmd->argv));
-    else if (strcmp(cmd->argv[0], "pwd") == 0)
-        return (builtin_pwd());
-    else if (strcmp(cmd->argv[0], "exit") == 0)
-        return (builtin_exit(cmd->argv));
-    else if (strcmp(cmd->argv[0], "env") == 0)
+    else if (ft_strcmp(command, "env") == 0)
         return (builtin_env(env));
-    else if (strcmp(cmd->argv[0], "export") == 0)
+    else if (ft_strcmp(command, "exit") == 0)
+        return (builtin_exit(cmd->argv));
+    else if (ft_strcmp(command, "export") == 0)
         return (builtin_export(cmd->argv, env));
-    else if (strcmp(cmd->argv[0], "unset") == 0)
+    else if (ft_strcmp(command, "pwd") == 0)
+        return (builtin_pwd());
+    else if (ft_strcmp(command, "unset") == 0)
         return (builtin_unset(cmd->argv, env));
-    return (127); // Command not found
+    print_execution_error(command, "command not found");
+    return (127);
 }
 
 int is_builtin(const char *cmd)

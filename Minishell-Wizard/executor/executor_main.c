@@ -69,41 +69,10 @@ int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 	{
 		if (setup_redirections(cmd) != 0)
 			return (1);
-		ctx->last_exit_status = execute_builtin(cmd, ctx);
+		ctx->last_exit_status = execute_builtin(cmd, ctx->env);
 		return (0);
 	}
 	return (execute_external(cmd, ctx, cmd_index));
-}
-
-/**
- * execute_builtin - Execute a built-in command
- * cmd: Command to execute
- * ctx: Execution context
- * Return: Exit status of the built-in command
- */
-int	execute_builtin(t_cmd *cmd, t_exec_context *ctx)
-{
-	char	*command;
-
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-		return (1);
-	command = cmd->argv[0];
-	if (ft_strcmp(command, "cd") == 0)
-		return (builtin_cd(cmd->argv, ctx));
-	else if (ft_strcmp(command, "echo") == 0)
-		return (builtin_echo(cmd->argv));
-	else if (ft_strcmp(command, "env") == 0)
-		return (builtin_env(cmd->argv, ctx));
-	else if (ft_strcmp(command, "exit") == 0)
-		return (builtin_exit(cmd->argv, ctx));
-	else if (ft_strcmp(command, "export") == 0)
-		return (builtin_export(cmd->argv, ctx));
-	else if (ft_strcmp(command, "pwd") == 0)
-		return (builtin_pwd(cmd->argv));
-	else if (ft_strcmp(command, "unset") == 0)
-		return (builtin_unset(cmd->argv, ctx));
-	print_execution_error(command, "command not found");
-	return (127);
 }
 
 /**
@@ -133,8 +102,8 @@ int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 		if (setup_redirections(cmd) != 0)
 			exit(1);
 		if (cmd->is_builtin)
-			exit(execute_builtin(cmd, ctx));
-		command_path = find_command_path(cmd->argv[0], ctx->envp);
+			exit(execute_builtin(cmd, ctx->env));
+		command_path = find_command_path(cmd->argv[0]);
 		if (!command_path)
 		{
 			print_execution_error(cmd->argv[0], "command not found");

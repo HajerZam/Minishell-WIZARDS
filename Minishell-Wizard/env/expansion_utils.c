@@ -26,14 +26,13 @@ int	is_in_single_quotes(const char *str, size_t pos)
 	{
 		if (str[i] == '\\' && !escaped)
 			escaped = 1;
-		else if (str[i] == quote_type && !escaped)
+		else if (str[i] == '\'' && !escaped)
 			in_quotes = !in_quotes;
 		else
 			escaped = 0;
 		i++;
 	}
 	return (in_quotes);
-}
 }
 
 /* Helper function to get variable name length

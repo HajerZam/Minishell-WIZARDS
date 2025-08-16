@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   path_handling.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/15 21:36:02 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/15 21:37:25 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 char	*handle_cd_path(const char *path, t_env *env)
@@ -36,7 +48,7 @@ char	*handle_cd_home(t_env *env)
 
 	if (!env)
 		return (NULL);
-	home_path = ft_stdup(getenv_from_list(env, "HOME"));
+	home_path = ft_strdup(getenv_from_list(env, "HOME"));
 	if (!home_path)
 	{
 		print_cd_error(NULL, "HOME not set");

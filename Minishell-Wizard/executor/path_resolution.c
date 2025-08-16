@@ -18,7 +18,7 @@
  * envp: Environment variables array
  * Return: Full path to command or NULL if not found
  */
-char	*find_command_path(char *command, char **envp)
+char	*find_command_path(char *command)
 {
 	char	**paths;
 	char	*path_env;

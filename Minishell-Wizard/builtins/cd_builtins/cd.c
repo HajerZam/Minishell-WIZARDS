@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:30 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:06:30 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:37:17 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	update_pwd_env(t_env *env, const char *new_pwd)
 		return (0);
 	if (!update_env_value(&env, "PWD", new_pwd))
 	{
-		if (!add_env_variable(env, "PWD", new_pwd))
+		if (!add_env_var(&env, "PWD", new_pwd))
 			return (0);
 	}
 	return (1);
@@ -30,7 +30,7 @@ int	update_olpwd_env(t_env *env, const char *old_pwd)
 		return (0);
 	if (!update_env_value(&env, "OLDPWD", old_pwd))
 	{
-		if (!add_env_variable(env, "OLDPWD", old_pwd))
+		if (!add_env_var(&env, "OLDPWD", old_pwd))
 			return (0);
 	}
 	return (1);
@@ -67,7 +67,7 @@ char	*get_current_pwd(void)
 	return (result);
 }
 
-int	builtin_cd(char **argv, t_env **env)
+int	builtin_cd(char **argv, t_env *env)
 {
 	char	*old_pwd;
 	char	*target_pwd;
@@ -76,7 +76,7 @@ int	builtin_cd(char **argv, t_env **env)
 	if (!validate_cd_args(argv) || !env)
 		return (1);
 	old_pwd = get_current_pwd();
-	target_pwd = resolve_cd_target(argv, *env);
+	target_pwd = resolve_cd_target(argv, env);
 	if (!target_pwd)
 	{
 		free(old_pwd);

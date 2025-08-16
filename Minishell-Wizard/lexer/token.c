@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:10:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 16:55:27 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:19:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,3 +68,4 @@ char	*strip_quotes(const char *input)
 	out[j] = '\0';
 	return (out);
 }
+

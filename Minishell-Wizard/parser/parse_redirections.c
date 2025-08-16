@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/11 17:22:02 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:16:55 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		return (0);
 	}
 	printf("heredoc> ");
-	line = readline("")
+	line = readline("");
 	while (line)
 	{
 		if (ft_strcmp(line, delimiter) == 0)

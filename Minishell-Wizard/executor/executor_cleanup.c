@@ -26,19 +26,3 @@ void	cleanup_execution_context(t_exec_context *ctx)
         close(ctx->stdout_backup);
     free(ctx);
 }
-
-void    free_env(t_env *env)
-{
-    t_env *current;
-    t_env *next;
-
-    current = env;
-    while (current)
-    {
-        next = current->next;
-        free(current->key);
-        free(current->value);
-        free(current);
-        current = next;
-    }
-}

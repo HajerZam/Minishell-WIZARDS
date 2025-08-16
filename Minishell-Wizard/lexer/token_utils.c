@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:32:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/05 14:37:24 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:20:13 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,19 @@ t_token	*parse_operator(const char **ptr)
 	else if (**ptr == '>')
 		handle_greater_operator(ptr, token);
 	return (token);
+}
+
+void		free_tokens(t_token *head)
+{
+	t_token	*current;
+	t_token	*next;
+
+	current = head;
+	while (current)
+	{
+		next = current->next;
+		free(current->value);
+		free(current);
+		current = next;
+	}
 }

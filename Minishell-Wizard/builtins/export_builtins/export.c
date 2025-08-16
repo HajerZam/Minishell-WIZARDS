@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fepennar <fepennar@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:59 by fepennar          #+#    #+#             */
-/*   Updated: 2025/07/29 12:06:59 by fepennar         ###   ########.fr       */
+/*   Updated: 2025/08/15 21:40:12 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ static void	print_export_list(t_env *env)
 	{
 		if (current->is_exported)
 		{
-			printf("declare -x %s=\"%s\"\n", current->key, current->value);
-			if (!current->value)
-				printf("=\"%s\"\n", current->value);
+			printf("declare -x %s", current->key);
+			if (current->value)
+				printf("=\"%s\"", current->value);
+			printf("\n");
 		}
 		current = current->next;
 	}
@@ -52,6 +53,7 @@ static int	is_valid_identifier(const char *name)
 	}
 	return (1);
 }
+
 /*Exports an existing variable without changing it's value, (ONLY VAR)
  * If the variable exists, it marks it as exported.
  * If it doesn't exist, it creates a new (empty) exported variable*/
@@ -63,10 +65,11 @@ int export_existing_var(const char *key, t_env **env)
     if (var_node)
     {
         var_node->is_exported = 1;
-        return (var_node->value != NULL);
+        return (1);
     }
     return (add_env_var_exported(env, key, NULL));
 }
+
 /* Handle single export argument */
 static int	handle_export_arg(t_env **env, const char *arg)
 {
@@ -77,41 +80,47 @@ static int	handle_export_arg(t_env **env, const char *arg)
 	{
 		if(!parse_assignment(arg, &key, &value))
 			return (1);
-		if (!validate_export_name(key))
+		if (!is_valid_identifier(key))
 		{
+			printf("minishell: export: `%s': not a valid identifier\n", key);
 			free(key);
 			free(value);
 			return (1);
 		}
-		export_with_assignment(key, env, value);
+		export_with_assignment(key, value, env);
 		free(key);
 		free(value);
 	}
 	else
 	{
-		if (!validate_export_name(arg))
+		if (!is_valid_identifier(arg))
+		{
+			printf("minishell: export: `%s': not a valid identifier\n", arg);
 			return (1);
-		export_esisting_var(arg, env);
+		}
+		export_existing_var(arg, env);
 	}
 	return (0);
 }
 
 /* Main export function returns 1 on error */
-int	builtin_export(char **args, t_env **env)
+int	builtin_export(char **args, t_env *env)
 {
 	int	i;
 	int	exit_status;
+	t_env **env_ptr;
 
+	env_ptr = &env;
 	if (!args[1])
 	{
-		print_export_list(*env);
+		print_export_list(env);
 		return (0);
 	}
 	exit_status = 0;
 	i = 1;
 	while (args[i])
 	{
-		if (handle_export_arg(env, args[i]))
+		if (handle_export_arg(env_ptr, args[i]))
 			exit_status = 1;
 		i++;
 	}

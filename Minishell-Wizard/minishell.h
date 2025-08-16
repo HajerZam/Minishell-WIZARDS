@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/11 16:10:15 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/15 21:42:22 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_parser
 
 typedef struct s_env
 {
+	char			**envp;
 	char			*key;
 	char			*value;
 	int				is_exported;
@@ -106,6 +107,7 @@ typedef struct s_var_data
 typedef struct	s_exec_context
 {
 	char	**envp;
+	t_env	*env;
 	int		last_exit_status;
 	int		pipe_count;
 	int		**pipes;
@@ -115,7 +117,7 @@ typedef struct	s_exec_context
 }		t_exec_context;
 
 /* Global variable to store last exit status */
-extern int	g_last_exit_status;
+extern volatile sig_atomic_t g_signal_received;
 
 /* lexer/tokenization */
 
@@ -184,6 +186,13 @@ char		**allocate_argv(int argc);
 void		cleanup_parser_error(t_parser *parser, t_cmd *partial_cmd);
 void		safe_cmd_append(t_cmd **head, t_cmd *new_cmd);
 
+/* Export utility functions */
+int		parse_assignment(const char *arg, char **key, char **value);
+t_env	*find_env_var(t_env *env, const char *key);
+int		add_env_var_exported(t_env **env, const char *key, const char *value);
+int		export_with_assignment(const char *key, const char *value, t_env **env);
+int		export_existing_var(const char *key, t_env **env);
+
 /* builtins */
 
 int			builtin_cd(char **argv, t_env *env);
@@ -193,7 +202,11 @@ int			builtin_exit(char **argv);
 int			builtin_env(t_env *env);
 int			builtin_export(char **argv, t_env *env);
 int			builtin_unset(char **argv, t_env *env);
+int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin, int *saved_stdout);
+void		restore_builtin_fds(int saved_stdin, int saved_stdout);
 int			handle_builtin(t_cmd *cmd, t_env *env);
+int			execute_builtin(t_cmd *cmd, t_env *env);
+int			is_builtin(const char *cmd);
 
 /* CD builtin functions */
 int			update_env_variables(t_env *env, const char *old_pwd);
@@ -255,7 +268,7 @@ void		handle_signals_in_child(void);
 void		handle_signals_in_parent(void);
 
 /* Path resolution */
-char		*find_command_path(char *command, char **envp);
+char		*find_command_path(char *command);
 int			is_executable_file(char *path);
 
 /* Utility functions */

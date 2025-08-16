@@ -54,30 +54,6 @@ int	init_execution_context(t_exec_context *ctx, char **envp)
 }
 
 /**
- * cleanup_execution_context - Clean up execution context
- * ctx: Execution context to clean up
- */
-void	cleanup_execution_context(t_exec_context *ctx)
-{
-	if (!ctx)
-		return;
-
-	cleanup_pipes(ctx);
-
-	if (ctx->stdin_backup != -1)
-	{
-		close(ctx->stdin_backup);
-		ctx->stdin_backup = -1;
-	}
-
-	if (ctx->stdout_backup != -1)
-	{
-		close(ctx->stdout_backup);
-		ctx->stdout_backup = -1;
-	}
-}
-
-/**
  * print_execution_error - Print execution error message
  * command: Command that failed
  * error: Error message
