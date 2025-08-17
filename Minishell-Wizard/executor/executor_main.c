@@ -51,6 +51,7 @@ int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
 	wait_for_processes(ctx);
 	cleanup_pipes(ctx);
 	restore_std_fds(ctx);
+	
 	return (ctx->last_exit_status);
 }
 
@@ -65,7 +66,7 @@ int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);
-	if (cmd->is_builtin && count_commands(cmd) == 1)
+	if (cmd->is_builtin && count_commands(cmd) == 1 && ctx->pipe_count == 0)
 	{
 		if (setup_redirections(cmd) != 0)
 			return (1);
@@ -81,7 +82,6 @@ int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
  * ctx: Execution context
  * cmd_index: Index of command in pipeline
  * Return: 0 on success, 1 on error
- * FIXED NOTE : Removed undefined behavior with command_path variable
  */
 int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
@@ -120,7 +120,9 @@ int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 	}
 	else
 	{
-		ctx->pids[cmd_index] = pid;
+		if (ctx->pids && cmd_index < ctx->pipe_count + 1)
+			ctx->pids[cmd_index] = pid;
 	}
+	
 	return (0);
 }
