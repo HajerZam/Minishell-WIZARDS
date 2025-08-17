@@ -62,18 +62,18 @@ int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
  * cmd_index: Index of command in pipeline
  * Return: 0 on success, 1 on error
  */
-int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
+int execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-		return (1);
-	if (cmd->is_builtin && count_commands(cmd) == 1 && ctx->pipe_count == 0)
-	{
-		if (setup_redirections(cmd) != 0)
-			return (1);
-		ctx->last_exit_status = execute_builtin(cmd, ctx->env);
-		return (0);
-	}
-	return (execute_external(cmd, ctx, cmd_index));
+    if (!cmd || !cmd->argv || !cmd->argv[0])
+        return 1;
+    if (cmd->is_builtin && count_commands(cmd) == 1 && ctx->pipe_count == 0)
+    {
+        if (setup_redirections(cmd) != 0)
+            return 1;
+        ctx->last_exit_status = execute_builtin(cmd, ctx->env);
+        return 0; /* Success - continue shell */
+    }
+    return execute_external(cmd, ctx, cmd_index);
 }
 
 /**

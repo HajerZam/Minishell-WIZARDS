@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:03 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 17:36:32 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/17 22:33:39 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ int execute_builtin(t_cmd *cmd, t_env *env)
         return (builtin_echo(cmd->argv));
     else if (ft_strcmp(command, "env") == 0)
         return (builtin_env(env));
-    else if (ft_strcmp(command, "exit") == 0)
-        return (builtin_exit(cmd->argv));
     else if (ft_strcmp(command, "export") == 0)
         return (builtin_export(cmd->argv, env));
     else if (ft_strcmp(command, "pwd") == 0)

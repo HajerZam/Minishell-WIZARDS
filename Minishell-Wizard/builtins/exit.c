@@ -11,29 +11,28 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	builtin_exit(char **argv)
+/* DO NOT CALL exit() HERE - let main handle it */
+/* This is handled in main.c process_command_line */
+/*int builtin_exit(char **argv)
 {
-    int	exit_code;
+    int exit_code = 0;
 
-    if (!argv || !argv[0])
-    {
-        printf("exit\n");
-        exit(0);
-    }
-    if (ft_strcmp(argv[0], "exit") != 0)
-    {
-        fprintf(stderr, "bash: exit: %s: numeric argument required\n", argv[0]);
-        return (1);
-    }
     if (argv[1])
     {
-        exit_code = ft_atoi(argv[1]);
-        if (exit_code < 0 || exit_code > 255)
-            exit_code = 255;
+        char *endptr;
+        long val = strtol(argv[1], &endptr, 10);
+        
+        if (*endptr != '\0' || val < 0 || val > 255)
+        {
+            fprintf(stderr, "bash: exit: %s: numeric argument required\n", argv[1]);
+            exit_code = 2;
+        }
+        else
+        {
+            exit_code = (int)val;
+        }
     }
-    else
-        exit_code = 0;
     printf("exit\n");
-    exit(exit_code);
+    return exit_code;
 }
+*/
