@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/17 22:27:33 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/19 12:51:55 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ volatile sig_atomic_t g_signal_received = 0;
 
 static void print_welcome(void)
 {
-    printf("🧙‍♂️ Welcome to Minishell Wizard!\n");
+    printf("Welcome to WizardShell!\n");
     printf("Type 'exit' to quit the magical shell.\n");
 }
 
@@ -27,7 +27,7 @@ void cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status)
     if (env)
         free_env(env);
     rl_clear_history();
-    printf("✨ Goodbye from Minishell Wizard!\n");
+    printf("Goodbye from WizardShell!\n");
     exit(exit_status);
 }
 
@@ -39,14 +39,14 @@ static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
     char *expanded_input;
 
     if (!input || !*input)
-        return 1;
+        return (1);
 
     expanded_input = expand_variables(input, env, ctx->last_exit_status);
     if (!expanded_input)
     {
         ft_putstr_fd("minishell: expansion error\n", 2);
         ctx->last_exit_status = 1;
-        return 1; // Continue running
+        return (1); // Continue running
     }
 
     tokens = tokenize_input(expanded_input);
@@ -54,7 +54,7 @@ static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
     if (!tokens)
     {
         ctx->last_exit_status = 1;
-        return 1; // Continue running
+        return (1); // Continue running
     }
 
     cmd_list = parse_command_line(tokens);
@@ -62,37 +62,36 @@ static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
     if (!cmd_list)
     {
         ctx->last_exit_status = 2;
-        return 1; // Continue running
+        return (1); // Continue running
     }
-
     ctx->env = env;
 
     /* CRITICAL FIX: Only handle exit command specially, let other builtins run normally */
-    if (cmd_list && !cmd_list->next && cmd_list->argv && cmd_list->argv[0])
+    if (cmd_list && !cmd_list->next && cmd_list->argv && cmd_list->argv[0] && 
+        ft_strcmp(cmd_list->argv[0], "exit") == 0)
     {
-        if (ft_strcmp(cmd_list->argv[0], "exit") == 0)
+        printf("exit\n");
+        int exit_status = 0;
+        if (cmd_list->argv[1])
         {
-            printf("exit\n");
-            int exit_status = 0;
-            if (cmd_list->argv[1])
+            char *endptr;
+            long val = strtol(cmd_list->argv[1], &endptr, 10);
+            if (*endptr != '\0')
             {
-                char *endptr;
-                long val = strtol(cmd_list->argv[1], &endptr, 10);
-                if (*endptr != '\0')
-                {
-                    fprintf(stderr, "bash: exit: %s: numeric argument required\n", cmd_list->argv[1]);
-                    exit_status = 2;
-                }
-                else
-                    exit_status = (int)val;
+                fprintf(stderr, "bash: exit: %s: numeric argument required\n", cmd_list->argv[1]);
+                exit_status = 2;
             }
-            free_cmd_list(cmd_list);
-            cleanup_and_exit(ctx, env, exit_status);
+            else
+                exit_status = (int)val;
         }
+        free_cmd_list(cmd_list);
+        cleanup_and_exit(ctx, env, exit_status);
     }
+    
+    /* Execute all other commands normally */
     ctx->last_exit_status = execute_pipeline(cmd_list, ctx);
     free_cmd_list(cmd_list);
-    return 1; /* ALWAYS return 1 to continue shell loop */
+    return (1); /* ALWAYS return 1 to continue shell loop */
 }
 
 static void handle_readline_interruption(t_exec_context *ctx)
@@ -107,9 +106,9 @@ static void handle_readline_interruption(t_exec_context *ctx)
 static int setup_execution_context(t_exec_context *ctx, t_env *env, char **envp)
 {
     if (init_execution_context(ctx, envp) != 0)
-        return 1;
+        return (1);
     ctx->env = env;
-    return 0;
+    return (0);
 }
 
 static int main_loop(t_env *env, t_exec_context *ctx)
@@ -119,11 +118,11 @@ static int main_loop(t_env *env, t_exec_context *ctx)
     while (1)
     {
         g_signal_received = 0;
-        input = readline("minishell🪄 $ ");
+        input = readline("WizardShell$ ");
         if (!input)
         {
             printf("exit\n");
-            break;
+            break ;
         }
         handle_readline_interruption(ctx);
         if (*input && g_signal_received == 0)
@@ -133,7 +132,7 @@ static int main_loop(t_env *env, t_exec_context *ctx)
         }
         free(input);
     }
-    return ctx->last_exit_status;
+    return (ctx->last_exit_status);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -147,12 +146,12 @@ int main(int argc, char **argv, char **envp)
     env = init_env(envp);
     if (!env)
     {
-        ft_putstr_fd("minishell: failed to initialize environment\n", 2);
+        ft_putstr_fd("WizardShell: failed to initialize environment\n", 2);
         return (1);
     }
     if (setup_execution_context(&ctx, env, envp) != 0)
     {
-        ft_putstr_fd("minishell: failed to initialize execution context\n", 2);
+        ft_putstr_fd("WizardShell: failed to initialize execution context\n", 2);
         free_env(env);
         return (1);
     }
