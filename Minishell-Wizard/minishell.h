@@ -174,7 +174,9 @@ int			handle_output_redirection(t_cmd *cmd, const char *filename, int append);
 int			handle_heredoc_redirection(t_cmd *cmd, const char *delimiter);
 int			has_input_redirection(t_cmd *cmd);
 int			has_output_redirection(t_cmd *cmd);
+int			heredoc_check(t_cmd *cmd, const char *delimiter, int pipe_fd[2]);
 void		get_redirection_info(t_cmd *cmd, char *buffer, size_t size);
+void		heredoc_cleanup(t_cmd *cmd, int pipe_fd[2]);
 
 /* parser_memory.c */
 t_cmd		*create_cmd(void);

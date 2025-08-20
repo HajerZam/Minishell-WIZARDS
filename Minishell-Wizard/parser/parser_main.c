@@ -49,21 +49,18 @@ static int	check_syntax_errors(t_token *tokens)
 	current = tokens;
 	if (!current)
 		return (1); // Empty input is valid
-		
 	// Check if starts with pipe
 	if (current->type == PIPE)
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
 		return (0);
 	}
-	
 	// Check for double pipes and invalid redirections
 	if (!check_double_pipe(current))
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token\n");
 		return (0);
 	}
-	
 	return (1); // Syntax is valid
 }
 
