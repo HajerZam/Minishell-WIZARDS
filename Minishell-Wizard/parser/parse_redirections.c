@@ -17,14 +17,9 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 	char	*line;
 	int		pipe_fd[2];
 
-	if (!cmd || !delimiter)
+	if (heredoc_check(cmd, delimiter, pipe_fd) == 0)
 	{
-		fprintf(stderr, "Invalid heredoc parameters\n");
-		return (0);
-	}
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
+		fprintf(stderr, "Failed to set up heredoc\n");
 		return (0);
 	}
 	printf("heredoc> ");
@@ -42,11 +37,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		printf("heredoc> ");
 		line = readline("");
 	}
-	close(pipe_fd[1]);
-	if (cmd->input_fd != 0)
-		close(cmd->input_fd);
-	cmd->input_fd = pipe_fd[0];
-	cmd->is_heredoc = 1;
+	heredoc_cleanup(cmd, pipe_fd);
 	return (1);
 }
 
