@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/19 12:51:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/20 16:50:46 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@ static void print_welcome(void)
     printf("Type 'exit' to quit the magical shell.\n");
 }
 
+void cleanup_resources(t_exec_context *ctx, t_env *env)
+{
+    if (ctx)
+        cleanup_execution_context(ctx);
+    if (env)
+        free_env(env);
+    rl_clear_history();
+}
+
 void cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status)
 {
     if (ctx)
@@ -31,7 +40,6 @@ void cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status)
     exit(exit_status);
 }
 
-/* FIXED: Only exit on actual exit command, not on other builtins */
 static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
 {
     t_token *tokens;
@@ -66,7 +74,7 @@ static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
     }
     ctx->env = env;
 
-    /* CRITICAL FIX: Only handle exit command specially, let other builtins run normally */
+    /* CRITICAL FIX: Handle exit command by returning special code */
     if (cmd_list && !cmd_list->next && cmd_list->argv && cmd_list->argv[0] && 
         ft_strcmp(cmd_list->argv[0], "exit") == 0)
     {
@@ -85,13 +93,14 @@ static int process_command_line(char *input, t_env *env, t_exec_context *ctx)
                 exit_status = (int)val;
         }
         free_cmd_list(cmd_list);
-        cleanup_and_exit(ctx, env, exit_status);
+        ctx->last_exit_status = exit_status;
+        return (0); /* Return 0 to signal exit */
     }
     
     /* Execute all other commands normally */
     ctx->last_exit_status = execute_pipeline(cmd_list, ctx);
     free_cmd_list(cmd_list);
-    return (1); /* ALWAYS return 1 to continue shell loop */
+    return (1); /* Return 1 to continue shell loop */
 }
 
 static void handle_readline_interruption(t_exec_context *ctx)
@@ -114,6 +123,7 @@ static int setup_execution_context(t_exec_context *ctx, t_env *env, char **envp)
 static int main_loop(t_env *env, t_exec_context *ctx)
 {
     char *input;
+    int continue_loop;
 
     while (1)
     {
@@ -128,7 +138,12 @@ static int main_loop(t_env *env, t_exec_context *ctx)
         if (*input && g_signal_received == 0)
         {
             add_history(input);
-            process_command_line(input, env, ctx); /* This should not exit unless "exit" command */
+            continue_loop = process_command_line(input, env, ctx);
+            if (continue_loop == 0) /* Exit was called */
+            {
+                free(input);
+                break;
+            }
         }
         free(input);
     }
@@ -158,6 +173,10 @@ int main(int argc, char **argv, char **envp)
     init_signals();
     print_welcome();
     exit_status = main_loop(env, &ctx);
-    cleanup_and_exit(&ctx, env, exit_status);
-    return (0); /* This will never be reached, cleanup_and_exit exits */
+    
+    /* Clean up all resources before exiting */
+    cleanup_resources(&ctx, env);
+    printf("Goodbye from WizardShell!\n");
+    
+    return (exit_status);
 }
