@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/24 15:40:05 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/24 16:18:03 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 	struct s_cmd	*tokens;
 	int				heredoc_fd;
-	int				is_heredoc; // flag for heredoc
+	int				is_heredoc;
 	int				is_builtin;
 	char			**envp;
 	int				exit_status;
@@ -79,10 +79,10 @@ typedef struct s_cmd
 
 typedef struct s_parser
 {
-    t_token			*tokens;
-    t_token			*current;
-    t_cmd			*cmd_list;
-    int				error;
+	t_token			*tokens;
+	t_token			*current;
+	t_cmd			*cmd_list;
+	int				error;
 }		t_parser;
 
 typedef struct s_env
@@ -104,7 +104,7 @@ typedef struct s_var_data
 }		t_var_data;
 
 /* Execution context structure */
-typedef struct	s_exec_context
+typedef struct s_exec_context
 {
 	char	**envp;
 	t_env	*env;
@@ -117,7 +117,7 @@ typedef struct	s_exec_context
 }		t_exec_context;
 
 /* Global variable to store last exit status */
-extern volatile sig_atomic_t g_signal_received;
+extern volatile sig_atomic_t	g_signal_received;
 
 /* lexer/tokenization */
 
@@ -149,7 +149,8 @@ t_token		*peek_token(t_parser *parser);
 t_token		*consume_token(t_parser *parser);
 int			expect_token(t_parser *parser, t_token_type type);
 int			is_redirection(t_token_type type);
-int			handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index, int arg_count);
+int			handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index,
+				int arg_count);
 int			count_words_until_pipe(t_parser *parser);
 void		print_cmd_tree(t_cmd *cmd, int depth);
 void		print_execution_tree(t_cmd *cmd_list);
@@ -170,7 +171,8 @@ int			validate_pipeline(t_cmd *cmd_list);
 /* parser_redirect.c */
 int			parse_redirections(t_parser *parser, t_cmd *cmd);
 int			handle_input_redirection(t_cmd *cmd, const char *filename);
-int			handle_output_redirection(t_cmd *cmd, const char *filename, int append);
+int			handle_output_redirection(t_cmd *cmd, const char *filename,
+				int append);
 int			handle_heredoc_redirection(t_cmd *cmd, const char *delimiter);
 int			has_input_redirection(t_cmd *cmd);
 int			has_output_redirection(t_cmd *cmd);
@@ -189,11 +191,13 @@ void		cleanup_parser_error(t_parser *parser, t_cmd *partial_cmd);
 void		safe_cmd_append(t_cmd **head, t_cmd *new_cmd);
 
 /* Export utility functions */
-int		parse_assignment(const char *arg, char **key, char **value);
-t_env	*find_env_var(t_env *env, const char *key);
-int		add_env_var_exported(t_env **env, const char *key, const char *value);
-int		export_with_assignment(const char *key, const char *value, t_env **env);
-int		export_existing_var(const char *key, t_env **env);
+int			parse_assignment(const char *arg, char **key, char **value);
+t_env		*find_env_var(t_env *env, const char *key);
+int			add_env_var_exported(t_env **env, const char *key,
+				const char *value);
+int			export_with_assignment(const char *key, const char *value,
+				t_env **env);
+int			export_existing_var(const char *key, t_env **env);
 
 /* builtins */
 
@@ -204,7 +208,8 @@ int			builtin_exit(char **argv);
 int			builtin_env(t_env *env);
 int			builtin_export(char **argv, t_env *env);
 int			builtin_unset(char **argv, t_env *env);
-int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin, int *saved_stdout);
+int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin,
+				int *saved_stdout);
 void		restore_builtin_fds(int saved_stdin, int saved_stdout);
 int			handle_builtin(t_cmd *cmd, t_env *env);
 int			execute_builtin(t_cmd *cmd, t_env *env);
@@ -236,7 +241,8 @@ char		*process_variable(const char *input, t_var_data *data);
 char		*add_remaining_text(const char *input, size_t i,
 				size_t start, char *result);
 char		*getenv_from_list(t_env *env, const char *key);
-int			update_env_value(t_env **env, const char *key, const char *value);
+int			update_env_value(t_env **env, const char *key,
+				const char *value);
 int			unset_env_var(t_env **env, const char *key);
 int			add_env_var(t_env **env, const char *key, const char *value);
 char		*expand_variables(const char *input,
@@ -251,7 +257,8 @@ int			is_in_single_quotes(const char *str, size_t pos);
 
 /* Main execution functions */
 int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
-int			execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			execute_single_command(t_cmd *cmd, t_exec_context *ctx,
+				int cmd_index);
 int			execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 int			execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx);
 int			execute_external_single(t_cmd *cmd, t_exec_context *ctx);
@@ -264,9 +271,11 @@ int			setup_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_pipeline_commands(t_cmd *cmd_list, t_exec_context *ctx);
 void		handle_child_process(t_cmd *cmd, t_exec_context *ctx);
 void		handle_parent_process(pid_t pid, t_exec_context *ctx);
-void		handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+void		handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx,
+				int cmd_index);
 int			setup_input_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
-int			setup_output_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			setup_output_pipe(t_cmd *cmd, t_exec_context *ctx,
+				int cmd_index);
 void		close_all_pipe_fds(t_exec_context *ctx);
 
 int			setup_pipes(t_exec_context *ctx, int cmd_count);
@@ -293,6 +302,19 @@ int			count_commands(t_cmd *cmd_list);
 void		cleanup_execution_context(t_exec_context *ctx);
 int			init_execution_context(t_exec_context *ctx, char **envp);
 void		print_execution_error(char *command, char *error);
-void		cleanup_execution_context(t_exec_context *ctx);
+
+/* Main utility functions */
+void		cleanup_resources(t_exec_context *ctx, t_env *env);
+void		cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status);
+int			process_command_line(char *input, t_env *env, t_exec_context *ctx);
+int			setup_execution_context(t_exec_context *ctx, t_env *env,
+				char **envp);
+int			handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx);
+int			process_tokens(char *expanded_input, t_env *env,
+				t_exec_context *ctx);
+void		handle_readline_interruption(t_exec_context *ctx);
+int			init_shell(t_exec_context *ctx, t_env **env, char **envp);
+int			process_input_line(char *input, t_env *env,
+				t_exec_context *ctx);
 
 #endif
