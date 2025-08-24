@@ -11,11 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-/**
- * count_commands - Count the number of commands in a pipeline
- * cmd_list: Head of command list
- * Return: Number of commands
- */
+
 int	count_commands(t_cmd *cmd_list)
 {
 	t_cmd	*current;
@@ -31,17 +27,10 @@ int	count_commands(t_cmd *cmd_list)
 	return (count);
 }
 
-/**
- * init_execution_context - Initialize execution context
- * ctx: Execution context to initialize
- * envp: Environment variables
- * Return: 0 on success, 1 on error
- */
 int	init_execution_context(t_exec_context *ctx, char **envp)
 {
 	if (!ctx)
 		return (1);
-
 	ctx->envp = envp;
 	ctx->last_exit_status = 0;
 	ctx->pipe_count = 0;
@@ -49,15 +38,9 @@ int	init_execution_context(t_exec_context *ctx, char **envp)
 	ctx->pids = NULL;
 	ctx->stdin_backup = -1;
 	ctx->stdout_backup = -1;
-
 	return (0);
 }
 
-/**
- * print_execution_error - Print execution error message
- * command: Command that failed
- * error: Error message
- */
 void	print_execution_error(char *command, char *error)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -65,4 +48,21 @@ void	print_execution_error(char *command, char *error)
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(error, 2);
 	ft_putstr_fd("\n", 2);
+}
+
+void	set_exit_status(t_exec_context *ctx, int status)
+{
+	if (ctx)
+		ctx->last_exit_status = status;
+}
+
+int	is_directory(char *path)
+{
+	struct stat	st;
+
+	if (!path)
+		return (0);
+	if (stat(path, &st) == 0)
+		return (S_ISDIR(st.st_mode));
+	return (0);
 }

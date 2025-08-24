@@ -7,6 +7,21 @@ CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -g
 RM          := rm -rf
 
+# Valgrind rules
+VALGRIND = valgrind
+VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
+SUPPRESSION_FILE = readline.supp
+
+# Rule to run with valgrind
+valgrind: $(NAME)
+	$(VALGRIND) $(VALGRIND_FLAGS) --suppressions=$(SUPPRESSION_FILE) ./$(NAME)
+
+valgrind-full: $(NAME)
+	$(VALGRIND) $(VALGRIND_FLAGS) ./$(NAME)
+
+valgrind-gen: $(NAME)
+	$(VALGRIND) $(VALGRIND_FLAGS) --gen-suppressions=all ./$(NAME)
+
 SRC_DIRS    := . lexer signals parser env executor builtins builtins/cd_builtins builtins/export_builtins
 OBJ_DIR     := obj
 LIBFT_DIR   := libft
@@ -52,4 +67,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re valgrind valgrind-full valgrind-gen

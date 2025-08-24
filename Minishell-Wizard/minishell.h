@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 21:42:22 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/24 15:40:05 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,10 +253,25 @@ int			is_in_single_quotes(const char *str, size_t pos);
 int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 int			execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx);
+int			execute_external_single(t_cmd *cmd, t_exec_context *ctx);
 
 /* Pipeline management */
+int			is_directory(char *path);
+int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+void		cleanup_pipes(t_exec_context *ctx);
+int			setup_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
+int			execute_pipeline_commands(t_cmd *cmd_list, t_exec_context *ctx);
+void		handle_child_process(t_cmd *cmd, t_exec_context *ctx);
+void		handle_parent_process(pid_t pid, t_exec_context *ctx);
+void		handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			setup_input_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			setup_output_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+void		close_all_pipe_fds(t_exec_context *ctx);
+
 int			setup_pipes(t_exec_context *ctx, int cmd_count);
 void		cleanup_pipes(t_exec_context *ctx);
+int			is_directory(char *path);
 int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 
 /* Redirection handling */

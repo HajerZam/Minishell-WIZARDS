@@ -12,19 +12,8 @@
 
 #include "../minishell.h"
 
-/**
- * setup_pipes - Create pipes for pipeline communication
- * ctx: Execution context
- * cmd_count: Number of commands in pipeline
- * Return: 0 on success, 1 on error
- */
-
- int	setup_pipes(t_exec_context *ctx, int cmd_count)
+static int	allocate_pipe_resources(t_exec_context *ctx, int cmd_count)
 {
-	int	i;
-
-	if (cmd_count <= 1)
-		return (0);
 	ctx->pipes = malloc(sizeof(int *) * (cmd_count - 1));
 	ctx->pids = malloc(sizeof(pid_t) * cmd_count);
 	if (!ctx->pipes || !ctx->pids)
@@ -32,6 +21,13 @@
 		perror("malloc");
 		return (1);
 	}
+	return (0);
+}
+
+static int	create_individual_pipes(t_exec_context *ctx, int cmd_count)
+{
+	int	i;
+
 	i = 0;
 	while (i < cmd_count - 1)
 	{
@@ -51,71 +47,39 @@
 	return (0);
 }
 
-/**
- * cleanup_pipes - Close and free pipe resources
- * ctx: Execution context
- */
-void	cleanup_pipes(t_exec_context *ctx)
+int	setup_pipes(t_exec_context *ctx, int cmd_count)
 {
-	int	i;
-
-	if (!ctx->pipes)
-		return;
-
-	i = 0;
-	while (i < ctx->pipe_count)
-	{
-		if (ctx->pipes[i])
-		{
-			close(ctx->pipes[i][0]);
-			close(ctx->pipes[i][1]);
-			free(ctx->pipes[i]);
-		}
-		i++;
-	}
-	free(ctx->pipes);
-	ctx->pipes = NULL;
-
-	if (ctx->pids)
-	{
-		free(ctx->pids);
-		ctx->pids = NULL;
-	}
+	if (cmd_count <= 1)
+		return (0);
+	if (allocate_pipe_resources(ctx, cmd_count) != 0)
+		return (1);
+	if (create_individual_pipes(ctx, cmd_count) != 0)
+		return (1);
+	return (0);
 }
 
-/**
- * setup_pipe_fds - Set up file descriptors for piping
- * cmd: Current command
- * ctx: Execution context
- * cmd_index: Index of current command
- * Return: 0 on success, 1 on error
- */
-int	setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
+int	setup_input_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
-    int    i;
-
 	if (cmd_index > 0 && cmd->input_fd == 0)
 	{
 		if (dup2(ctx->pipes[cmd_index - 1][0], STDIN_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("dup2 stdin");
 			return (1);
 		}
 	}
+	return (0);
+}
+
+int	setup_output_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
+{
 	if (cmd_index < ctx->pipe_count && cmd->output_fd == 1)
 	{
 		if (dup2(ctx->pipes[cmd_index][1], STDOUT_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("dup2 stdout");
 			return (1);
 		}
-	}
-	i = 0;
-	while (i < ctx->pipe_count)
-	{
-		close(ctx->pipes[i][0]);
-		close(ctx->pipes[i][1]);
-		i++;
 	}
 	return (0);
 }

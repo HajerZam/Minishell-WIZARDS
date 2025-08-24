@@ -12,11 +12,6 @@
 
 #include "../minishell.h"
 
-/**
- * setup_redirections - Set up input/output redirections for a command
- * cmd: Command with redirection information
- * Return: 0 on success, 1 on error
- */
 int	setup_redirections(t_cmd *cmd)
 {
 	if (!cmd)
@@ -39,15 +34,9 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(cmd->output_fd);
 	}
-
 	return (0);
 }
 
-/**
- * backup_std_fds - Backup standard file descriptors
- * ctx: Execution context
- * Return: 0 on success, 1 on error
- */
 int	backup_std_fds(t_exec_context *ctx)
 {
 	ctx->stdin_backup = dup(STDIN_FILENO);
@@ -57,39 +46,47 @@ int	backup_std_fds(t_exec_context *ctx)
 		perror("dup");
 		return (1);
 	}
-
 	return (0);
 }
 
-/**
- * restore_std_fds - Restore standard file descriptors
- * ctx: Execution context
- * Return: 0 on success, 1 on error
- */
-int	restore_std_fds(t_exec_context *ctx)
+static int	restore_stdin(t_exec_context *ctx)
 {
-	int	result;
-
-    result = 0;
 	if (ctx->stdin_backup != -1)
 	{
 		if (dup2(ctx->stdin_backup, STDIN_FILENO) == -1)
 		{
 			perror("dup2");
-			result = 1;
+			return (1);
 		}
 		close(ctx->stdin_backup);
 		ctx->stdin_backup = -1;
 	}
+	return (0);
+}
+
+static int	restore_stdout(t_exec_context *ctx)
+{
 	if (ctx->stdout_backup != -1)
 	{
 		if (dup2(ctx->stdout_backup, STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
-			result = 1;
+			return (1);
 		}
 		close(ctx->stdout_backup);
 		ctx->stdout_backup = -1;
 	}
+	return (0);
+}
+
+int	restore_std_fds(t_exec_context *ctx)
+{
+	int	result;
+
+	result = 0;
+	if (restore_stdin(ctx) != 0)
+		result = 1;
+	if (restore_stdout(ctx) != 0)
+		result = 1;
 	return (result);
 }
