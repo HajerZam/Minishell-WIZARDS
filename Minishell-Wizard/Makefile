@@ -36,7 +36,7 @@ SRC_TO_OBJ_MAP = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.c=.o)))
 
 all: $(OBJ_DIR) $(LIBFT) $(NAME)
 
-$(NAME): $(SRC_TO_OBJ_MAP)
+$(NAME): $(SRC_TO_OBJ_MAP) $(LIBFT)
 	@echo "Linking $(NAME)..."
 	@$(CC) $(CFLAGS) $(SRC_TO_OBJ_MAP) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 
@@ -44,7 +44,7 @@ $(OBJ_DIR):
 	@mkdir -p $@
 
 define MAKE_OBJ_RULE
-$(OBJ_DIR)/$(notdir $(1:.c=.o)): $(1)
+$(OBJ_DIR)/$(notdir $(1:.c=.o)): $(1) | $(OBJ_DIR)
 	@echo "Compiling $(1)..."
 	@$(CC) $(CFLAGS) $(HEADERS) -c $$< -o $$@
 endef
