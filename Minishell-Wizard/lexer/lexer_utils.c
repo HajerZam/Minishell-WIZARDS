@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 14:27:08 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 16:54:31 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:46:47 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,26 @@ static void	process_parse_loop(t_parse_vars *v)
 	}
 }
 
+static t_token	*init_and_finalize_token(const char *input, t_parse_vars *v)
+{
+	v->input = input;
+	v->token = create_token();
+	v->buffer = malloc(strlen(input) + 1);
+	if (!v->buffer)
+		return (NULL);
+	v->i = 0;
+	v->j = 0;
+	v->state = STATE_GENERAL;
+	process_parse_loop(v);
+	v->buffer[v->j] = '\0';
+	v->token->type = WORD;
+	if (v->state == STATE_IN_SINGLE_QUOTE || v->state == STATE_IN_DOUBLE_QUOTE)
+		v->token->value = ft_strdup(v->buffer);
+	else
+		v->token->value = strip_quotes(v->buffer);
+	return (v->token);
+}
+
 /**
  * parses a word token from input, handling quoted strings
  * manages state transitions between general, single-quote,
@@ -89,20 +109,11 @@ static void	process_parse_loop(t_parse_vars *v)
 t_token	*parse_word(const char **ptr)
 {
 	t_parse_vars	v;
+	t_token			*result;
 
-	v.input = *ptr;
-	v.token = create_token();
-	v.buffer = malloc(strlen(v.input) + 1);
-	if (!v.buffer)
-		return (NULL);
-	v.i = 0;
-	v.j = 0;
-	v.state = STATE_GENERAL;
-	process_parse_loop(&v);
-	v.buffer[v.j] = '\0';
-	v.token->type = WORD;
-	v.token->value = strip_quotes(v.buffer);
-	free(v.buffer);
+	result = init_and_finalize_token(*ptr, &v);
+	if (v.buffer)
+		free(v.buffer);
 	*ptr += v.i;
-	return (v.token);
+	return (result);
 }

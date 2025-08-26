@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/24 16:18:03 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:19:20 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,11 +122,13 @@ extern volatile sig_atomic_t	g_signal_received;
 /* lexer/tokenization */
 
 t_token		*tokenize_input(const char *input);
+int			has_unclosed_quotes(const char *input);
 void		print_tokens(t_token *head);
 void		free_tokens(t_token *head);
 t_token		*create_token(void);
 void		add_token(t_token **head, t_token *new_token);
 const char	*token_type_to_str(t_token_type type);
+char		*get_complete_input(void);
 
 /* internal utility functions */
 void		skip_spaces(const char **ptr);

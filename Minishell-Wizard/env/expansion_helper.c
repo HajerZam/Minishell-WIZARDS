@@ -24,6 +24,9 @@ char	*process_valid_variable(const char *input, t_var_data *data,
 		return (NULL);
 	new_result = ft_strjoin(data->result, var_value);
 	free(var_value);
+	if (!new_result)
+		return (NULL);
+	free(data->result);  // Free the old result before updating
 	*(data->i) += var_len + 1;
 	return (new_result);
 }
@@ -43,6 +46,9 @@ char	*process_variable(const char *input, t_var_data *data)
 	else
 	{
 		result = ft_strjoin(data->result, "$");
+		if (!result)
+			return (NULL);
+		free(data->result);
 		(*(data->i))++;
 		return (result);
 	}
