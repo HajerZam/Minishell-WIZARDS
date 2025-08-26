@@ -12,26 +12,28 @@
 
 #include "../../minishell.h"
 
-/* Separates a (VAR=value) assignment in key and value and allocates
-   Memory for both separetely (KEY AND VALUE MUST BE FREED)*/
-int	parse_assignment(const char *arg, char **key, char **value)
+char	*extract_var_name(const char *str)
 {
-	char	*equal_pos;
+	char	*eq_position;
+	int		key_len;
 
-	equal_pos = ft_strchr(arg, '=');
-	if (!equal_pos)
-		return (0);
-	*key = ft_substr(arg, 0, equal_pos - arg);
-	if (!*key)
-		return (0);
-	*value = ft_strdup(equal_pos + 1);
-	if (!*value)
-	{
-		free(*key);
-		return (0);
-	}
-	return (1);
+	eq_position = ft_strchr(str, '=');
+	if (!eq_position)
+		return (ft_strdup(str));
+	key_len = eq_position - str;
+	return (ft_substr(str, 0, key_len));
 }
+
+char	*extract_var_value(const char *str)
+{
+	char	*eq_position;
+
+	eq_position = ft_strchr(str, '=');
+	if (!eq_position)
+		return (NULL);
+	return (ft_strdup(eq_position + 1));
+}
+
 
 /* Searches for a specific variable in the env list */
 t_env	*find_env_var(t_env *env, const char *key)

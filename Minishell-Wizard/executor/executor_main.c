@@ -46,7 +46,7 @@ int	handle_builtin_no_pipe(t_cmd *cmd, t_exec_context *ctx)
 		close(original_stdout);
 		return (1);
 	}
-	status = execute_builtin(cmd, ctx->env);
+	status = execute_builtin(cmd, &ctx->env);
 	dup2(original_stdin, STDIN_FILENO);
 	dup2(original_stdout, STDOUT_FILENO);
 	close(original_stdin);

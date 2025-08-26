@@ -63,7 +63,7 @@ void	handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 	if (setup_redirections(cmd) != 0)
 		exit(1);
 	if (cmd->is_builtin)
-		exit(execute_builtin(cmd, ctx->env));
+		exit(execute_builtin(cmd, &ctx->env));
 	command_path = find_command_path(cmd->argv[0]);
 	if (!command_path)
 	{

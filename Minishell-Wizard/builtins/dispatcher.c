@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int execute_builtin(t_cmd *cmd, t_env *env)
+int execute_builtin(t_cmd *cmd, t_env **env)
 {
     char    *command;
 
@@ -23,11 +23,11 @@ int execute_builtin(t_cmd *cmd, t_env *env)
     }
     command = cmd->argv[0];
     if (ft_strcmp(command, "cd") == 0)
-        return (builtin_cd(cmd->argv, env));
+        return (builtin_cd(cmd->argv, *env));
     else if (ft_strcmp(command, "echo") == 0)
         return (builtin_echo(cmd->argv));
     else if (ft_strcmp(command, "env") == 0)
-        return (builtin_env(env));
+        return (builtin_env(*env));
     else if (ft_strcmp(command, "export") == 0)
         return (builtin_export(cmd->argv, env));
     else if (ft_strcmp(command, "pwd") == 0)
@@ -48,7 +48,7 @@ int is_builtin(const char *cmd)
     return (0);
 }
 
-int handle_builtin(t_cmd *cmd, t_env *env)
+int handle_builtin(t_cmd *cmd, t_env **env)
 {
     int exit_status;
     int saved_stdin;

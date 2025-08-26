@@ -198,6 +198,11 @@ int			add_env_var_exported(t_env **env, const char *key,
 int			export_with_assignment(const char *key, const char *value,
 				t_env **env);
 int			export_existing_var(const char *key, t_env **env);
+char		*extract_var_value(const char *str);
+char		*extract_var_name(const char *str);
+int			handle_export_assignment(t_env **env, const char *arg);
+int			handle_export_simple(t_env **env, const char *arg);
+
 
 /* builtins */
 
@@ -206,13 +211,13 @@ int			builtin_echo(char **argv);
 int			builtin_pwd(void);
 int			builtin_exit(char **argv);
 int			builtin_env(t_env *env);
-int			builtin_export(char **argv, t_env *env);
-int			builtin_unset(char **argv, t_env *env);
+int			builtin_export(char **argv, t_env **env);
+int			builtin_unset(char **argv, t_env **env);
 int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin,
 				int *saved_stdout);
 void		restore_builtin_fds(int saved_stdin, int saved_stdout);
-int			handle_builtin(t_cmd *cmd, t_env *env);
-int			execute_builtin(t_cmd *cmd, t_env *env);
+int			handle_builtin(t_cmd *cmd, t_env **env);
+int			execute_builtin(t_cmd *cmd, t_env **env);
 int			is_builtin(const char *cmd);
 
 /* CD builtin functions */
