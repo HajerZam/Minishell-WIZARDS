@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:10:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 18:19:02 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:21:58 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,3 +69,27 @@ char	*strip_quotes(const char *input)
 	return (out);
 }
 
+int	has_unclosed_quotes(const char *input)
+{
+	int		i;
+	int		state;
+
+	i = 0;
+	state = 0;
+	while (input[i])
+	{
+		if (state == 0)
+		{
+			if (input[i] == '\'')
+				state = 1;
+			else if (input[i] == '"')
+				state = 2;
+		}
+		else if (state == 1 && input[i] == '\'')
+			state = 0;
+		else if (state == 2 && input[i] == '"')
+			state = 0;
+		i++;
+	}
+	return (state != 0);
+}

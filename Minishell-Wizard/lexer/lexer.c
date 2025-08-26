@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:27:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 16:55:14 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:43:44 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ t_token	*tokenize_input(const char *input)
 	ptr = input;
 	if (!input || *input == '\0')
 		return (NULL);
+	if (has_unclosed_quotes(input))
+	{
+		ft_putstr_fd("minishell: syntax error: unclosed quotes\n", 2);
+		return (NULL);
+	}
 	while (*ptr)
 	{
 		skip_spaces(&ptr);

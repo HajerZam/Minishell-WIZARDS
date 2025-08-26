@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:32:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 18:20:13 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:44:11 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ t_token	*parse_operator(const char **ptr)
 	return (token);
 }
 
-void		free_tokens(t_token *head)
+void	free_tokens(t_token *head)
 {
 	t_token	*current;
 	t_token	*next;

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/24 16:17:48 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 14:20:00 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 	while (1)
 	{
 		g_signal_received = 0;
-		input = readline("WizardShell$ ");
+		input = get_complete_input();
 		if (!input)
 		{
 			printf("exit\n");

@@ -43,3 +43,47 @@ int	init_shell(t_exec_context *ctx, t_env **env, char **envp)
 	}
 	return (0);
 }
+
+static char	*handle_multiline_input(char *complete_input)
+{
+	char	*line;
+	char	*temp;
+
+	line = readline("> ");
+	if (!line)
+	{
+		free(complete_input);
+		return (NULL);
+	}
+	temp = complete_input;
+	complete_input = malloc(strlen(temp) + strlen(line) + 2);
+	if (!complete_input)
+	{
+		free(temp);
+		free(line);
+		return (NULL);
+	}
+	sprintf(complete_input, "%s\n%s", temp, line);
+	free(temp);
+	free(line);
+	return (complete_input);
+}
+
+char	*get_complete_input(void)
+{
+	char	*line;
+	char	*complete_input;
+
+	line = readline("WizardShell$ ");
+	if (!line)
+		return (NULL);
+	complete_input = ft_strdup(line);
+	free(line);
+	while (has_unclosed_quotes(complete_input))
+	{
+		complete_input = handle_multiline_input(complete_input);
+		if (!complete_input)
+			return (NULL);
+	}
+	return (complete_input);
+}
