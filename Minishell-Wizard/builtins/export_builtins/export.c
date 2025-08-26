@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:59 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/15 21:40:12 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:13:35 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,31 +51,31 @@ int export_existing_var(const char *key, t_env **env)
 
 
 /* Main export function returns 1 on error */
-int	builtin_export(char **args, t_env **env)
+int builtin_export(char **args, t_env **env)
 {
-	int	i;
-	int	exit_status;
+    int i;
+    int exit_status;
 
-	if (!args[1])
-	{
-		print_export_list(*env);
-		return (0);
-	}
-	exit_status = 0;
-	i = 1;
-	while (args[i])
-	{
-		if (ft_strchr(args[i], '=') != NULL)
-		{
-			if (handle_export_assignment(env, args[i]))
-				exit_status = 1;
-		}
-		else
-		{
-			if (handle_export_simple(env, args[i]))
-				exit_status = 1;
-		}
-		i++;
-	}
-	return (exit_status);
+    if (!args[1])
+    {
+        print_export_list(*env);
+        return (0);
+    }
+    exit_status = 0;
+    i = 1;
+    while (args[i])
+    {
+        if (ft_strchr(args[i], '=') != NULL)
+        {
+            if (handle_export_assignment(env, args[i]))  // Fixed function name
+                exit_status = 1;
+        }
+        else
+        {
+            if (handle_export_simple(env, args[i]))      // Fixed function name
+                exit_status = 1;
+        }
+        i++;
+    }
+    return (exit_status);
 }

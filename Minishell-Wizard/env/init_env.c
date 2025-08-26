@@ -44,6 +44,9 @@ static int	create_env_node(t_env **env, char *env_str, t_env **new_node)
 	}
 	(*new_node)->key = extract_key(env_str);
 	(*new_node)->value = extract_value(env_str);
+	(*new_node)->is_exported = 1;
+	(*new_node)->next = NULL;
+	
 	if (!(*new_node)->key || !(*new_node)->value)
 	{
 		free((*new_node)->key);

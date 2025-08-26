@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:03 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/17 22:33:39 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:08:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int execute_builtin(t_cmd *cmd, t_env **env)
     else if (ft_strcmp(command, "pwd") == 0)
         return (builtin_pwd());
     else if (ft_strcmp(command, "unset") == 0)
-        return (builtin_unset(cmd->argv, env));
+        return (builtin_unset(cmd->argv, *env));
     print_execution_error(command, "command not found");
     return (127);
 }

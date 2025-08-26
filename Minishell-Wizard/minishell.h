@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 14:19:20 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/26 16:07:06 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,7 @@ int			builtin_pwd(void);
 int			builtin_exit(char **argv);
 int			builtin_env(t_env *env);
 int			builtin_export(char **argv, t_env **env);
-int			builtin_unset(char **argv, t_env **env);
+int			builtin_unset(char **argv, t_env *env);
 int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin,
 				int *saved_stdout);
 void		restore_builtin_fds(int saved_stdin, int saved_stdout);
