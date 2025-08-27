@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 14:29:31 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/17 16:07:57 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 10:05:57 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@ int	check_double_pipe(t_token *current)
 		if (current->type == PIPE)
 		{
 			if (!current->next)
-				return (0); // Pipe at end is invalid
+				return (0);
 			if (current->next->type == PIPE)
-				return (0); // Double pipe is invalid
+				return (0);
 		}
 		if (is_redirection(current->type))
 		{
 			if (!current->next || current->next->type != WORD)
-				return (0); // Redirection without file is invalid
+				return (0);
 		}
 		current = current->next;
 	}
-	return (1); // All checks passed - syntax is valid
+	return (1);
 }
 
 void	init_parser(t_parser *parser, t_token *tokens)
@@ -41,35 +41,30 @@ void	init_parser(t_parser *parser, t_token *tokens)
 	parser->error = 0;
 }
 
-// FIXED: Better syntax validation
 static int	check_syntax_errors(t_token *tokens)
 {
 	t_token	*current;
 
 	current = tokens;
 	if (!current)
-		return (1); // Empty input is valid
-	// Check if starts with pipe
+		return (1);
 	if (current->type == PIPE)
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
 		return (0);
 	}
-	// Check for double pipes and invalid redirections
 	if (!check_double_pipe(current))
 	{
 		fprintf(stderr, "bash: syntax error near unexpected token\n");
 		return (0);
 	}
-	return (1); // Syntax is valid
+	return (1);
 }
 
 int	validate_syntax(t_token *tokens)
 {
 	if (!tokens)
-	{
-		return (1); // Empty input is valid, don't print error
-	}
+		return (1);
 	return (check_syntax_errors(tokens));
 }
 

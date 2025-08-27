@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:18:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:18:25 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:58:12 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ char	*getenv_from_list(t_env *env, const char *key)
 	while (current)
 	{
 		if (ft_strcmp(current->key, key) == 0)
+		{
 			return (current->value);
+		}
 		current = current->next;
 	}
 	return (NULL);
@@ -59,32 +61,6 @@ int	update_env_value(t_env **env, const char *key, const char *value)
 			current->value = new_value;
 			return (1);
 		}
-		current = current->next;
-	}
-	return (0);
-}
-
-int	unset_env_var(t_env **env, const char *key)
-{
-	t_env	*current;
-	t_env	*prev;
-
-	current = *env;
-	prev = NULL;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-		{
-			if (prev)
-				prev->next = current->next;
-			else
-				*env = current->next;
-			free(current->key);
-			free(current->value);
-			free(current);
-			return (1);
-		}
-		prev = current;
 		current = current->next;
 	}
 	return (0);

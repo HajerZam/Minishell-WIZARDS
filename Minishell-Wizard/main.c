@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 14:20:00 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:50:49 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,20 @@ static void	print_welcome(void)
 	printf("Type 'exit' to quit the magical shell.\n");
 }
 
-int	process_command_line(char *input, t_env *env, t_exec_context *ctx)
+int	process_command_line(char *input, t_exec_context *ctx)
 {
 	char	*expanded_input;
 
 	if (!input || !*input)
 		return (1);
-	expanded_input = expand_variables(input, env, ctx->last_exit_status);
+	expanded_input = expand_variables(input, ctx->env, ctx->last_exit_status);
 	if (!expanded_input)
 	{
 		ft_putstr_fd("minishell: expansion error\n", 2);
 		ctx->last_exit_status = 1;
 		return (1);
 	}
-	return (process_tokens(expanded_input, env, ctx));
+	return (process_tokens(expanded_input, ctx));
 }
 
 int	setup_execution_context(t_exec_context *ctx, t_env *env,
@@ -49,6 +49,7 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 {
 	char	*input;
 
+	ctx->env = env;
 	while (1)
 	{
 		g_signal_received = 0;
@@ -59,7 +60,7 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 			break ;
 		}
 		handle_readline_interruption(ctx);
-		if (process_input_line(input, env, ctx) == 0)
+		if (process_input_line(input, ctx) == 0)
 		{
 			free(input);
 			break ;

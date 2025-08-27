@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:18:15 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:18:15 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:58:32 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int	create_env_node(t_env **env, char *env_str, t_env **new_node)
 	(*new_node)->value = extract_value(env_str);
 	(*new_node)->is_exported = 1;
 	(*new_node)->next = NULL;
-	
 	if (!(*new_node)->key || !(*new_node)->value)
 	{
 		free((*new_node)->key);

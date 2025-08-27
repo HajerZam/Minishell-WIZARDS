@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_assignment.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 09:58:19 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/27 09:58:26 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 /* Validate variable name - 
@@ -35,8 +47,6 @@ int	handle_export_assignment(t_env **env, const char *arg)
 		free(value);
 		return (1);
 	}
-	
-	// FIXED: Passa direttamente env senza creare puntatore locale
 	export_with_assignment(key, value, env);
 	free(key);
 	free(value);
@@ -50,8 +60,6 @@ int	handle_export_simple(t_env **env, const char *arg)
 		printf("minishell: export: `%s': not a valid identifier\n", arg);
 		return (1);
 	}
-	
-	// FIXED: Passa direttamente env senza creare puntatore locale
 	export_existing_var(arg, env);
 	return (0);
 }

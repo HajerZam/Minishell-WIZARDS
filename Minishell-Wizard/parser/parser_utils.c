@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 15:00:07 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/07 15:38:11 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 10:11:38 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,20 @@ int	handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index,
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
-	unsigned int	i;
-
 	if (!s1 || !s2)
-		return (s1 - s2);
-	i = 0;
-	while (s1[i] != '\0' && s2[i] != '\0')
 	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
+		if (s1 == s2)
+			return (0);
+		if (s1)
+			return (1);
+		return (-1);
 	}
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
 int	is_redirection(t_token_type type)

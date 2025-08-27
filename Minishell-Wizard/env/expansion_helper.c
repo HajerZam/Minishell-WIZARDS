@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:24:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/05 14:24:52 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:43:33 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*process_valid_variable(const char *input, t_var_data *data,
 	free(var_value);
 	if (!new_result)
 		return (NULL);
-	free(data->result);  // Free the old result before updating
+	free(data->result);
 	*(data->i) += var_len + 1;
 	return (new_result);
 }

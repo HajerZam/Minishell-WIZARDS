@@ -6,13 +6,12 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 16:31:07 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/01 16:31:07 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:43:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/* Helper function to check if we're inside single quotes */
 int	is_in_single_quotes(const char *str, size_t pos)
 {
 	size_t	i;

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 16:07:06 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 10:16:22 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,6 @@ char		*extract_var_name(const char *str);
 int			handle_export_assignment(t_env **env, const char *arg);
 int			handle_export_simple(t_env **env, const char *arg);
 
-
 /* builtins */
 
 int			builtin_cd(char **argv, t_env *env);
@@ -214,7 +213,7 @@ int			builtin_pwd(void);
 int			builtin_exit(char **argv);
 int			builtin_env(t_env *env);
 int			builtin_export(char **argv, t_env **env);
-int			builtin_unset(char **argv, t_env *env);
+int			builtin_unset(char **argv, t_env **env);
 int			setup_builtin_fds(t_cmd *cmd, int *saved_stdin,
 				int *saved_stdout);
 void		restore_builtin_fds(int saved_stdin, int saved_stdout);
@@ -240,6 +239,7 @@ void		print_cd_error(const char *path, const char *error_message);
 
 int			ft_strcmp(const char *s1, const char *s2);
 t_env		*init_env(char **envp);
+t_env		*create_env_copy_direct(char **envp);
 void		free_env(t_env *env);
 char		*add_text_before_var(const char *input, t_var_data *data);
 char		*process_valid_variable(const char *input, t_var_data *data,
@@ -250,7 +250,6 @@ char		*add_remaining_text(const char *input, size_t i,
 char		*getenv_from_list(t_env *env, const char *key);
 int			update_env_value(t_env **env, const char *key,
 				const char *value);
-int			unset_env_var(t_env **env, const char *key);
 int			add_env_var(t_env **env, const char *key, const char *value);
 char		*expand_variables(const char *input,
 				t_env *env, int last_exit_status);
@@ -313,15 +312,13 @@ void		print_execution_error(char *command, char *error);
 /* Main utility functions */
 void		cleanup_resources(t_exec_context *ctx, t_env *env);
 void		cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status);
-int			process_command_line(char *input, t_env *env, t_exec_context *ctx);
+int			process_command_line(char *input, t_exec_context *ctx);
 int			setup_execution_context(t_exec_context *ctx, t_env *env,
 				char **envp);
 int			handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx);
-int			process_tokens(char *expanded_input, t_env *env,
-				t_exec_context *ctx);
+int			process_tokens(char *expanded_input, t_exec_context *ctx);
 void		handle_readline_interruption(t_exec_context *ctx);
 int			init_shell(t_exec_context *ctx, t_env **env, char **envp);
-int			process_input_line(char *input, t_env *env,
-				t_exec_context *ctx);
+int			process_input_line(char *input, t_exec_context *ctx);
 
 #endif

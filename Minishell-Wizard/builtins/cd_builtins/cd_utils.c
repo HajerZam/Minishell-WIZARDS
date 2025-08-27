@@ -6,13 +6,13 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 21:35:51 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 21:35:54 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 09:54:29 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void print_cd_error(const char *path, const char *error_message)
+void	print_cd_error(const char *path, const char *error_message)
 {
 	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 	if (path)

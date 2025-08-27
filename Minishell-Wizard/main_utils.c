@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:59:24 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/24 15:59:24 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 08:51:26 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx)
 	return (0);
 }
 
-int	process_tokens(char *expanded_input, t_env *env, t_exec_context *ctx)
+int	process_tokens(char *expanded_input, t_exec_context *ctx)
 {
 	t_token	*tokens;
 	t_cmd	*cmd_list;
@@ -76,7 +76,6 @@ int	process_tokens(char *expanded_input, t_env *env, t_exec_context *ctx)
 		ctx->last_exit_status = 2;
 		return (1);
 	}
-	ctx->env = env;
 	if (cmd_list && !cmd_list->next && cmd_list->argv && cmd_list->argv[0]
 		&& ft_strcmp(cmd_list->argv[0], "exit") == 0)
 		return (handle_exit_command(cmd_list, ctx));

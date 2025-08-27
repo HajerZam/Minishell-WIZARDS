@@ -6,20 +6,20 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:06:39 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/24 16:06:39 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/27 10:16:42 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	process_input_line(char *input, t_env *env, t_exec_context *ctx)
+int	process_input_line(char *input, t_exec_context *ctx)
 {
 	int	continue_loop;
 
 	if (*input && g_signal_received == 0)
 	{
 		add_history(input);
-		continue_loop = process_command_line(input, env, ctx);
+		continue_loop = process_command_line(input, ctx);
 		if (continue_loop == 0)
 			return (0);
 	}
@@ -28,7 +28,7 @@ int	process_input_line(char *input, t_env *env, t_exec_context *ctx)
 
 int	init_shell(t_exec_context *ctx, t_env **env, char **envp)
 {
-	*env = init_env(envp);
+	*env = create_env_copy_direct(envp);
 	if (!*env)
 	{
 		ft_putstr_fd("WizardShell: failed to initialize environment\n", 2);
