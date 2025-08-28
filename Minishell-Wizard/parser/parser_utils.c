@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 15:00:07 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 10:11:38 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:07:48 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,29 @@
 int	handle_word_token(t_cmd *cmd, t_parser *parser, int *arg_index,
 		int arg_count)
 {
-	if (*arg_index >= arg_count)
-	{
-		fprintf(stderr, "Too many arguments for command\n");
-		parser->error = 1;
-		return (0);
-	}
-	cmd->argv[*arg_index] = ft_strdup(parser->current->value);
-	if (!cmd->argv[*arg_index])
-	{
-		parser->error = 1;
-		return (0);
-	}
-	(*arg_index)++;
-	consume_token(parser);
-	return (1);
+    if (*arg_index >= arg_count)
+    {
+        fprintf(stderr, "Too many arguments for command\n");
+        parser->error = 1;
+        return (0);
+    }
+    cmd->argv[*arg_index] = ft_strdup(parser->current->value);
+    if (!cmd->argv[*arg_index])
+    {
+        int i = 0;
+        while (i < *arg_index)
+        {
+            free(cmd->argv[i]);
+            i++;
+        }
+        free(cmd->argv);
+        cmd->argv = NULL;
+        parser->error = 1;
+        return (0);
+    }
+    (*arg_index)++;
+    consume_token(parser);
+    return (1);
 }
 
 int	ft_strcmp(const char *s1, const char *s2)

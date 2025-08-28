@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:10:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 14:21:58 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:08:44 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,14 @@
  */
 t_token	*create_token(void)
 {
-	t_token	*token;
+    t_token *token;
 
-	token = malloc(sizeof(t_token));
-	if (!token)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	token->value = NULL;
-	token->next = NULL;
-	return (token);
+    token = malloc(sizeof(t_token));
+    if (!token)
+        return (NULL);
+    token->value = NULL;
+    token->next = NULL;
+    return (token);
 }
 
 int	is_operator(char c)

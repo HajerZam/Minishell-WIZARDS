@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:37:57 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/23 13:37:57 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:30:38 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,20 @@ int	execute_pipeline_commands(t_cmd *cmd_list, t_exec_context *ctx)
 int	execute_external_single(t_cmd *cmd, t_exec_context *ctx)
 {
 	pid_t	pid;
+	char	*command_path;
+
+	// Pre-validate command exists to avoid unnecessary fork
+	if (!cmd->is_builtin)
+	{
+		command_path = find_command_path(cmd->argv[0]);
+		if (!command_path)
+		{
+			print_execution_error(cmd->argv[0], "command not found");
+			ctx->last_exit_status = 127;
+			return (127);
+		}
+		free(command_path);
+	}
 
 	pid = fork();
 	if (pid == -1)
@@ -73,6 +87,25 @@ int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 {
 	pid_t	pid;
+	char	*command_path;
+
+	// For pipelines, we can't easily pre-validate without complicating the logic
+	// But we can still add basic validation
+	if (!cmd->is_builtin)
+	{
+		// Only do expensive validation for non-pipeline single commands
+		if (ctx->pipe_count == 0)
+		{
+			command_path = find_command_path(cmd->argv[0]);
+			if (!command_path)
+			{
+				print_execution_error(cmd->argv[0], "command not found");
+				ctx->last_exit_status = 127;
+				return (127);
+			}
+			free(command_path);
+		}
+	}
 
 	pid = fork();
 	if (pid == -1)

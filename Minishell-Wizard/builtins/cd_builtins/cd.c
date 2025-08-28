@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:30 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 15:32:18 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:36:19 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,12 @@ char	*get_current_pwd(void)
 	char	*pwd;
 	char	*result;
 
-    pwd = getcwd(NULL, 0);
-    if (!pwd)
-        return (NULL);
-    result = ft_strdup(pwd);
-    free(pwd);
-    return (result);
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+		return (NULL);
+	result = ft_strdup(pwd);
+	free(pwd);
+	return (result);
 }
 
 int	builtin_cd(char **argv, t_env *env)

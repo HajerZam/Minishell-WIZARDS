@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:35 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 14:37:29 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 21:15:42 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,27 @@ void	free_argv(char **argv)
 
 void	free_cmd(t_cmd *cmd)
 {
-	int	i;
+    int i;
 
-	if (!cmd)
-		return;
-	if (cmd->argv)
-	{
-		i = 0;
-		while (cmd->argv[i])
-		{
-			free(cmd->argv[i]);
-			i++;
-		}
-		free(cmd->argv);
-	}
-	if (cmd->input_fd != 0 && cmd->input_fd != -1)
-		close(cmd->input_fd);
-	if (cmd->output_fd != 1 && cmd->output_fd != -1)
-		close(cmd->output_fd);
-	if (cmd->heredoc_fd != -1)
-		close(cmd->heredoc_fd);
-	free(cmd);
+    if (!cmd)
+        return ;
+    if (cmd->argv)
+    {
+        i = 0;
+        while (cmd->argv[i])
+        {
+            free(cmd->argv[i]);
+            i++;
+        }
+        free(cmd->argv);
+    }
+    if (cmd->input_fd > 2 && cmd->input_fd != -1)
+        close(cmd->input_fd);
+    if (cmd->output_fd > 2 && cmd->output_fd != -1)
+        close(cmd->output_fd);
+    if (cmd->heredoc_fd != -1)
+        close(cmd->heredoc_fd);
+    free(cmd);
 }
 
 void	free_cmd_list(t_cmd *cmd_list)
