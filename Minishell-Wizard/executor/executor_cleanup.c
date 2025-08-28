@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:35:22 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/11 15:35:22 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:02:24 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	cleanup_pipes(t_exec_context *ctx)
 			close(ctx->pipes[i][0]);
 			close(ctx->pipes[i][1]);
 			free(ctx->pipes[i]);
+			ctx->pipes[i] = NULL;
 		}
 		i++;
 	}

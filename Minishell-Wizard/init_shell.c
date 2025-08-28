@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:06:39 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 10:16:42 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 14:13:33 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int	init_shell(t_exec_context *ctx, t_env **env, char **envp)
 static char	*handle_multiline_input(char *complete_input)
 {
 	char	*line;
-	char	*temp;
+	char	*new_input;
+	size_t	total_len;
 
 	line = readline("> ");
 	if (!line)
@@ -55,18 +56,20 @@ static char	*handle_multiline_input(char *complete_input)
 		free(complete_input);
 		return (NULL);
 	}
-	temp = complete_input;
-	complete_input = malloc(strlen(temp) + strlen(line) + 2);
-	if (!complete_input)
+	total_len = strlen(complete_input) + strlen(line) + 2;
+	new_input = malloc(total_len);
+	if (!new_input)
 	{
-		free(temp);
+		free(complete_input);
 		free(line);
 		return (NULL);
 	}
-	sprintf(complete_input, "%s\n%s", temp, line);
-	free(temp);
+	ft_strlcpy(new_input, complete_input, total_len);
+	ft_strlcat(new_input, "\n", total_len);
+	ft_strlcat(new_input, line, total_len);
+	free(complete_input);
 	free(line);
-	return (complete_input);
+	return (new_input);
 }
 
 char	*get_complete_input(void)

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:32:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 14:44:11 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:01:35 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ void	free_tokens(t_token *head)
 	while (current)
 	{
 		next = current->next;
-		free(current->value);
+		if (current->value)
+			free(current->value);
 		free(current);
 		current = next;
 	}

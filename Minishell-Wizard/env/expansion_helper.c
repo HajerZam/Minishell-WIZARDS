@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:24:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 08:43:33 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 13:59:16 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,13 @@ char	*add_remaining_text(const char *input, size_t i,
 			return (NULL);
 		}
 		final_result = ft_strjoin(result, temp);
-		free(result);
 		free(temp);
+		if (!final_result)
+		{
+			free(result);
+			return (NULL);
+		}
+		free(result);
 		return (final_result);
 	}
 	return (result);

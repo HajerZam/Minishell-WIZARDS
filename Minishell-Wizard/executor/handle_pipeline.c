@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:42:33 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/23 13:42:33 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:09:50 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	handle_child_process(t_cmd *cmd, t_exec_context *ctx)
 		exit(126);
 	}
 	free(command_path);
-	exit(1);
 }
 
 void	handle_parent_process(pid_t pid, t_exec_context *ctx)
@@ -77,5 +76,4 @@ void	handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 		exit(126);
 	}
 	free(command_path);
-	exit(1);
 }

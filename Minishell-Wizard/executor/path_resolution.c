@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:47:11 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 19:47:11 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:05:03 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	char	*temp;
 	int		i;
 
+	if (!paths || !command)
+	{
+		free_argv(paths);
+		return (NULL);
+	}
 	i = 0;
 	while (paths[i])
 	{
@@ -42,7 +47,12 @@ static char	*search_in_path_dirs(char **paths, char *command)
 		}
 		full_path = ft_strjoin(temp, command);
 		free(temp);
-		if (full_path && is_executable_file(full_path))
+		if (!full_path)
+		{
+			free_argv(paths);
+			return (NULL);
+		}
+		if (is_executable_file(full_path))
 		{
 			free_argv(paths);
 			return (full_path);
@@ -52,6 +62,7 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	}
 	free_argv(paths);
 	return (NULL);
+
 }
 
 char	*find_command_path(char *command)

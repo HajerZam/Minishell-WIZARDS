@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:59:24 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 15:18:31 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:12:08 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,22 @@
 void	cleanup_resources(t_exec_context *ctx, t_env *env)
 {
 	if (ctx)
-		cleanup_execution_context(ctx);
-	if (env)
-		free_env(env);
-	rl_clear_history();
+    {
+        cleanup_execution_context(ctx);
+        if (ctx->stdin_backup != -1)
+        {
+            dup2(ctx->stdin_backup, STDIN_FILENO);
+            close(ctx->stdin_backup);
+        }
+        if (ctx->stdout_backup != -1)
+        {
+            dup2(ctx->stdout_backup, STDOUT_FILENO);
+            close(ctx->stdout_backup);
+        }
+    }
+    if (env)
+        free_env(env);
+    clear_history();
 }
 
 void	cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status)
@@ -63,14 +75,15 @@ int	process_tokens(char *expanded_input, t_exec_context *ctx)
 	t_cmd	*cmd_list;
 
 	tokens = tokenize_input(expanded_input);
-	free(expanded_input);
 	if (!tokens)
 	{
+		free(expanded_input);
 		ctx->last_exit_status = 1;
 		return (1);
 	}
 	cmd_list = parse_command_line(tokens);
 	free_tokens(tokens);
+	free(expanded_input);
 	if (!cmd_list)
 	{
 		ctx->last_exit_status = 2;

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:18:21 by halzamma          #+#    #+#             */
-/*   Updated: 2025/07/29 12:18:21 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 14:01:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,52 +33,64 @@ char	*add_text_before_var(const char *input, t_var_data *data)
 		free(temp);
 		if (!new_result)
 			return (NULL);
-		free(data->result);
 		return (new_result);
 	}
-	return (data->result);
-}
-
-static char	*process_expansion_loop(const char *input, t_var_data *data)
-{
-	char	*temp;
-	size_t	i;
-	size_t	start;
-
-	i = 0;
-	start = 0;
-	data->i = &i;
-	data->start = &start;
-	while (input[i])
-	{
-		if (should_expand_variable(input, i))
-		{
-			temp = process_variable(input, data);
-			if (!temp)
-				return (NULL);
-			data->result = temp;
-			start = i;
-		}
-		else
-			i++;
-	}
-	return (add_remaining_text(input, i, start, data->result));
+	return (ft_strdup(data->result));
 }
 
 char	*expand_variables(const char *input, t_env *env, int last_exit_status)
 {
-	t_var_data	data;
 	char		*result;
+	char		*temp;
+	size_t		i;
+	size_t		start;
+	t_var_data	data;
 
 	if (!input)
 		return (NULL);
-	data.result = ft_strdup("");
-	if (!data.result)
+	result = ft_strdup("");
+	if (!result)
 		return (NULL);
+	data.result = result;
 	data.env = env;
 	data.last_exit_status = last_exit_status;
-	result = process_expansion_loop(input, &data);
-	if (!result)
-		free(data.result);
-	return (result);
+	data.i = &i;
+	data.start = &start;
+	i = 0;
+	start = 0;
+	while (input[i])
+	{
+		if (input[i] == '$' && should_expand_variable(input, i))
+		{
+			temp = add_text_before_var(input, &data);
+			if (!temp)
+			{
+				free(result);
+				return (NULL);
+			}
+			if (temp != data.result)
+			{
+				free(result);
+				result = temp;
+				data.result = result;
+			}
+			temp = process_variable(input, &data);
+			if (!temp)
+			{
+				free(result);
+				return (NULL);
+			}
+			free(result);
+			result = temp;
+			data.result = result;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	temp = add_remaining_text(input, i, start, result);
+	if (!temp)
+		return (NULL);
+	return (temp);
 }

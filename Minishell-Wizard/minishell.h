@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 15:13:35 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:01:57 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,6 @@ int			setup_output_pipe(t_cmd *cmd, t_exec_context *ctx,
 void		close_all_pipe_fds(t_exec_context *ctx);
 
 int			setup_pipes(t_exec_context *ctx, int cmd_count);
-void		cleanup_pipes(t_exec_context *ctx);
 int			is_directory(char *path);
 int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 

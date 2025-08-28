@@ -6,28 +6,41 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:43:51 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 19:43:51 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/28 10:40:24 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	allocate_pipe_resources(t_exec_context *ctx, int cmd_count)
+int	setup_pipes(t_exec_context *ctx, int cmd_count)
 {
+	int	i;
+
+	if (cmd_count <= 1)
+		return (0);
 	ctx->pipes = malloc(sizeof(int *) * (cmd_count - 1));
 	ctx->pids = malloc(sizeof(pid_t) * cmd_count);
 	if (!ctx->pipes || !ctx->pids)
 	{
 		perror("malloc");
+		if (ctx->pipes)
+		{
+			free(ctx->pipes);
+			ctx->pipes = NULL;
+		}
+		if (ctx->pids)
+		{
+			free(ctx->pids);
+			ctx->pids = NULL;
+		}
 		return (1);
 	}
-	return (0);
-}
-
-static int	create_individual_pipes(t_exec_context *ctx, int cmd_count)
-{
-	int	i;
-
+	i = 0;
+	while (i < cmd_count - 1)
+	{
+		ctx->pipes[i] = NULL;
+		i++;
+	}
 	i = 0;
 	while (i < cmd_count - 1)
 	{
@@ -35,26 +48,17 @@ static int	create_individual_pipes(t_exec_context *ctx, int cmd_count)
 		if (!ctx->pipes[i])
 		{
 			perror("malloc");
+			cleanup_pipes(ctx);
 			return (1);
 		}
 		if (pipe(ctx->pipes[i]) == -1)
 		{
 			perror("pipe");
+			cleanup_pipes(ctx);
 			return (1);
 		}
 		i++;
 	}
-	return (0);
-}
-
-int	setup_pipes(t_exec_context *ctx, int cmd_count)
-{
-	if (cmd_count <= 1)
-		return (0);
-	if (allocate_pipe_resources(ctx, cmd_count) != 0)
-		return (1);
-	if (create_individual_pipes(ctx, cmd_count) != 0)
-		return (1);
 	return (0);
 }
 
