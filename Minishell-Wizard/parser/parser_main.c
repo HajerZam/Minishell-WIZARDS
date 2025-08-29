@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 14:29:31 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/27 15:19:56 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:12:16 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ static int	check_syntax_errors(t_token *tokens)
 		return (1);
 	if (current->type == PIPE)
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+		ft_putstr_fd("wizardshell: syntax error unexpected token `|'\n", 2);
 		return (0);
 	}
 	if (!check_double_pipe(current))
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token\n");
+		ft_putstr_fd("wizardshell: syntax error unexpected token\n", 2);
 		return (0);
 	}
 	return (1);
@@ -81,7 +81,7 @@ t_cmd	*parse_command_line(t_token *tokens)
 	result = parse_pipeline(&parser);
 	if (parser.current && !parser.error)
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token\n");
+		ft_putstr_fd("wizardshell: syntax error near unexpected token\n", 2);
 		free_cmd_list(result);
 		return (NULL);
 	}

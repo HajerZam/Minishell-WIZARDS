@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 09:58:19 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 09:58:26 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:51:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	handle_export_assignment(t_env **env, const char *arg)
 	value = extract_var_value(arg);
 	if (!is_valid_identifier(key))
 	{
-		printf("minishell: export: `%s': not a valid identifier\n", key);
+		printf("wizardshell: export: `%s': not a valid identifier\n", key);
 		free(key);
 		free(value);
 		return (1);
@@ -57,7 +57,7 @@ int	handle_export_simple(t_env **env, const char *arg)
 {
 	if (!is_valid_identifier(arg))
 	{
-		printf("minishell: export: `%s': not a valid identifier\n", arg);
+		printf("wizardshell: export: `%s': not a valid identifier\n", arg);
 		return (1);
 	}
 	export_existing_var(arg, env);

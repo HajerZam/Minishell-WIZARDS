@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 15:03:57 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:21:22 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,20 @@ static void	print_welcome(void)
 
 int	process_command_line(char *input, t_exec_context *ctx)
 {
-    char *expanded_input;
-    int result;
+	char	*expanded_input;
+	int		result;
 
-    if (!input || !*input)
-        return (1);
-    expanded_input = expand_variables(input, ctx->env, ctx->last_exit_status);
-    if (!expanded_input)
-    {
-        ft_putstr_fd("minishell: expansion error\n", 2);
-        ctx->last_exit_status = 1;
-        return (1);
-    }
-    result = process_tokens(expanded_input, ctx);
-    return (result);
+	if (!input || !*input)
+		return (1);
+	expanded_input = expand_variables(input, ctx->env, ctx->last_exit_status);
+	if (!expanded_input)
+	{
+		ft_putstr_fd("wizardshell: expansion error\n", 2);
+		ctx->last_exit_status = 1;
+		return (1);
+	}
+	result = process_tokens(expanded_input, ctx);
+	return (result);
 }
 
 int	setup_execution_context(t_exec_context *ctx, t_env *env,
@@ -49,26 +49,26 @@ int	setup_execution_context(t_exec_context *ctx, t_env *env,
 
 static int	main_loop(t_env *env, t_exec_context *ctx)
 {
-    char *input;
-    int process_result;
+	char	*input;
+	int		process_result;
 
-    ctx->env = env;
-    while (1)
-    {
-        g_signal_received = 0;
-        input = get_complete_input();
-        if (!input)
-        {
-            printf("exit\n");
-            break ;
-        }
-        handle_readline_interruption(ctx);
-        process_result = process_input_line(input, ctx);
-        free(input);
-        if (process_result == 0)
-            break ;
-    }
-    return (ctx->last_exit_status);
+	ctx->env = env;
+	while (1)
+	{
+		g_signal_received = 0;
+		input = get_complete_input();
+		if (!input)
+		{
+			printf("exit\n");
+			break ;
+		}
+		handle_readline_interruption(ctx);
+		process_result = process_input_line(input, ctx);
+		free(input);
+		if (process_result == 0)
+			break ;
+	}
+	return (ctx->last_exit_status);
 }
 
 int	main(int argc, char **argv, char **envp)

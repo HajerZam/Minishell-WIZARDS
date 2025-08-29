@@ -1,37 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/27 10:03:58 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 13:09:33 by halzamma         ###   ########.fr       */
+/*   Created: 2025/08/29 12:33:39 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/29 12:33:39 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	heredoc_check(t_cmd *cmd, const char *delimiter, int pipe_fd[2])
+/**
+* add a new token to the end of the token linked list
+* parem head: pointer to the head of the token list
+* parem new_token: token to the head of the token list
+*/
+void	add_token(t_token **head, t_token *new_token)
 {
-	if (!cmd || !delimiter)
-	{
-		ft_putstr_fd("wizardshell: heredoc: invalid command or delimiter\n", 2);
-		return (0);
-	}
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (0);
-	}
-	return (1);
-}
+	t_token	*temp;
 
-void	heredoc_cleanup(t_cmd *cmd, int pipe_fd[2])
-{
-	close(pipe_fd[1]);
-	if (cmd->input_fd != 0)
-		close(cmd->input_fd);
-	cmd->input_fd = pipe_fd[0];
-	cmd->is_heredoc = 1;
+	if (!*head)
+		*head = new_token;
+	else
+	{
+		temp = *head;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new_token;
+	}
 }

@@ -1,47 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_handling.c                                   :+:      :+:    :+:   */
+/*   validate_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 14:29:31 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/29 13:11:16 by halzamma         ###   ########.fr       */
+/*   Created: 2025/08/29 12:48:56 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/29 12:48:56 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*consume_token(t_parser *parser)
+int	validate_parsed_command(t_cmd *cmd, t_parser *parser)
 {
-	t_token	*token;
-
-	if (!parser->current)
+	if ((!cmd->argv || !cmd->argv[0]) && (cmd->input_fd != 0
+			|| cmd->output_fd != 1 || cmd->is_heredoc))
 	{
-		ft_putstr_fd("No tokens to consume\n", 2);
+		ft_putstr_fd("wizardshell: syntax error!\n", 2);
 		parser->error = 1;
-		return (NULL);
+		return (0);
 	}
-	token = parser->current;
-	parser->current = parser->current->next;
-	return (token);
-}
-
-t_token	*peek_token(t_parser *parser)
-{
-	if (!parser->current)
+	if (!cmd->argv || !cmd->argv[0])
 	{
-		ft_putstr_fd("No tokens to peek\n", 2);
+		ft_putstr_fd("wizardshell: command not found\n", 2);
 		parser->error = 1;
-		return (NULL);
+		return (0);
 	}
-	return (parser->current);
-}
-
-int	expect_token(t_parser *parser, t_token_type type)
-{
-	if (!parser->current || parser->current->type != type)
+	if (ft_strlen(cmd->argv[0]) == 0)
 	{
+		ft_putstr_fd("wizardshell: command not found\n", 2);
 		parser->error = 1;
 		return (0);
 	}

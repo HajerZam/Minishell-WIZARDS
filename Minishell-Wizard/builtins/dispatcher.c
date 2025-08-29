@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:03 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 09:02:48 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:08:50 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	execute_builtin(t_cmd *cmd, t_env **env)
 
 	if (!cmd || !cmd->argv || !cmd->argv[0] || !env)
 	{
-		fprintf(stderr, "Invalid command or environment\n");
+		ft_putstr_fd("wizardshell: invalid command\n", 2);
 		return (1);
 	}
 	command = cmd->argv[0];
@@ -60,7 +60,7 @@ int	handle_builtin(t_cmd *cmd, t_env **env)
 		return (127);
 	if (!setup_builtin_fds(cmd, &saved_stdin, &saved_stdout))
 	{
-		perror("minishell: setup_builtin_fds failed");
+		perror("wizardshell: setup_builtin_fds failed");
 		return (1);
 	}
 	exit_status = execute_builtin(cmd, env);

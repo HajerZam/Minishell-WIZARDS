@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 19:23:20 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/07 15:38:40 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:12:57 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	check_pipeline(t_parser *parser, t_cmd *current_cmd, t_cmd *first_cmd)
 		consume_token(parser);
 		if (!parser->current || parser->current->type == PIPE)
 		{
-			fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+			ft_putstr_fd("wizardshell: syntax error unexpected token `|'\n", 2);
 			parser->error = 1;
 			free_cmd_list(first_cmd);
 			return (0);
@@ -36,7 +36,7 @@ int	check_pipeline(t_parser *parser, t_cmd *current_cmd, t_cmd *first_cmd)
 		current_cmd->next = parse_command(parser);
 		if (!current_cmd->next || parser->error)
 		{
-			fprintf(stderr, "bash: syntax error in pipeline\n");
+			ft_putstr_fd("wizardshell: syntax error unexpected token `|'\n", 2);
 			free_cmd_list(first_cmd);
 			return (0);
 		}
@@ -52,13 +52,13 @@ t_cmd	*parse_pipeline(t_parser *parser)
 
 	if (!parser->current)
 	{
-		fprintf(stderr, "No tokens to parse\n");
+		ft_putstr_fd("wizardshell: syntax error: empty command\n", 2);
 		parser->error = 1;
 		return (NULL);
 	}
 	if (parser->current->type == PIPE)
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
+		ft_putstr_fd("wizardshell: syntax error unexpected token `|'\n", 2);
 		parser->error = 1;
 		return (NULL);
 	}

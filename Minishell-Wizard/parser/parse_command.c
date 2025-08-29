@@ -6,49 +6,25 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:45 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 21:06:39 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:49:17 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void cleanup_argv_on_error(char **argv, int allocated_count)
+static void	cleanup_argv_on_error(char **argv, int allocated_count)
 {
-    int i = 0;
-    
-    if (!argv)
-        return;
-    
-    while (i < allocated_count && argv[i])
-    {
-        free(argv[i]);
-        i++;
-    }
-    free(argv);
-}
+	int	i;
 
-int	validate_parsed_command(t_cmd *cmd, t_parser *parser)
-{
-	if ((!cmd->argv || !cmd->argv[0]) && (cmd->input_fd != 0
-			|| cmd->output_fd != 1 || cmd->is_heredoc))
+	i = 0;
+	if (!argv)
+		return ;
+	while (i < allocated_count && argv[i])
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token\n");
-		parser->error = 1;
-		return (0);
+		free(argv[i]);
+		i++;
 	}
-	if (!cmd->argv || !cmd->argv[0])
-	{
-		fprintf(stderr, "bash: command not found\n");
-		parser->error = 1;
-		return (0);
-	}
-	if (ft_strlen(cmd->argv[0]) == 0)
-	{
-		fprintf(stderr, "bash: command not found\n");
-		parser->error = 1;
-		return (0);
-	}
-	return (1);
+	free(argv);
 }
 
 int	pce_error_check(t_parser *parser, t_cmd *cmd, int arg_count, int arg_index)
@@ -67,7 +43,7 @@ int	pce_error_check(t_parser *parser, t_cmd *cmd, int arg_count, int arg_index)
 		}
 		else
 		{
-			fprintf(stderr, "bash: syntax error near unexpected token\n");
+			ft_putstr_fd("wizardshell: syntax error!\n", 2);
 			parser->error = 1;
 			return (0);
 		}
@@ -77,30 +53,30 @@ int	pce_error_check(t_parser *parser, t_cmd *cmd, int arg_count, int arg_index)
 
 int	parse_command_elements(t_parser *parser, t_cmd *cmd)
 {
-    int arg_count;
-    int arg_index;
+	int	arg_count;
+	int	arg_index;
 
-    arg_count = count_words_until_pipe(parser);
-    if (arg_count > 0)
-    {
-        cmd->argv = allocate_argv(arg_count);
-        if (!cmd->argv)
-        {
-            parser->error = 1;
-            return (0);
-        }
-    }
-    arg_index = 0;
-    if (pce_error_check(parser, cmd, arg_count, arg_index) == 0)
-    {
-        if (cmd->argv)
-        {
-            cleanup_argv_on_error(cmd->argv, arg_count);
-            cmd->argv = NULL;
-        }
-        return (0);
-    }
-    return (1);
+	arg_count = count_words_until_pipe(parser);
+	if (arg_count > 0)
+	{
+		cmd->argv = allocate_argv(arg_count);
+		if (!cmd->argv)
+		{
+			parser->error = 1;
+			return (0);
+		}
+	}
+	arg_index = 0;
+	if (pce_error_check(parser, cmd, arg_count, arg_index) == 0)
+	{
+		if (cmd->argv)
+		{
+			cleanup_argv_on_error(cmd->argv, arg_count);
+			cmd->argv = NULL;
+		}
+		return (0);
+	}
+	return (1);
 }
 
 t_cmd	*create_cmd(void)

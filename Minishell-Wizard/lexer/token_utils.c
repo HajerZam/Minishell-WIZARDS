@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:32:41 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 21:09:30 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:30:15 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,27 +58,27 @@ static void	handle_greater_operator(const char **ptr, t_token *token)
  */
 t_token	*parse_operator(const char **ptr)
 {
-    t_token *token;
+	t_token	*token;
 
-    token = create_token();
-    if (!token)
-        return (NULL);
-    if (**ptr == '|')
-    {
-        token->type = PIPE;
-        token->value = ft_strdup("|");
-        (*ptr)++;
-    }
-    else if (**ptr == '<')
-        handle_less_operator(ptr, token);
-    else if (**ptr == '>')
-        handle_greater_operator(ptr, token);
-    if (!token->value)
-    {
-        free(token);
-        return (NULL);
-    }
-    return (token);
+	token = create_token();
+	if (!token)
+		return (NULL);
+	if (**ptr == '|')
+	{
+		token->type = PIPE;
+		token->value = ft_strdup("|");
+		(*ptr)++;
+	}
+	else if (**ptr == '<')
+		handle_less_operator(ptr, token);
+	else if (**ptr == '>')
+		handle_greater_operator(ptr, token);
+	if (!token->value)
+	{
+		free(token);
+		return (NULL);
+	}
+	return (token);
 }
 
 void	free_tokens(t_token *head)

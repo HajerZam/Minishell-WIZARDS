@@ -1,37 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*   text_before_var.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/27 10:03:58 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 13:09:33 by halzamma         ###   ########.fr       */
+/*   Created: 2025/08/29 11:56:45 by halzamma          #+#    #+#             */
+/*   Updated: 2025/08/29 11:56:45 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	heredoc_check(t_cmd *cmd, const char *delimiter, int pipe_fd[2])
+char	*add_text_before_var(const char *input, t_var_data *data)
 {
-	if (!cmd || !delimiter)
-	{
-		ft_putstr_fd("wizardshell: heredoc: invalid command or delimiter\n", 2);
-		return (0);
-	}
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (0);
-	}
-	return (1);
-}
+	char	*temp;
+	char	*new_result;
 
-void	heredoc_cleanup(t_cmd *cmd, int pipe_fd[2])
-{
-	close(pipe_fd[1]);
-	if (cmd->input_fd != 0)
-		close(cmd->input_fd);
-	cmd->input_fd = pipe_fd[0];
-	cmd->is_heredoc = 1;
+	if (*(data->i) > *(data->start))
+	{
+		temp = ft_substr(input, *(data->start), *(data->i) - *(data->start));
+		if (!temp)
+			return (NULL);
+		new_result = ft_strjoin(data->result, temp);
+		free(temp);
+		if (!new_result)
+			return (NULL);
+		return (new_result);
+	}
+	return (ft_strdup(data->result));
 }

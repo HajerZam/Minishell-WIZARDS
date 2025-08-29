@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 14:10:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 21:08:44 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:29:24 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 /**
  * allocates and initializes a new token structure
  * return: Pointer to new token, exits on malloc failure
- */
+*/
 t_token	*create_token(void)
 {
-    t_token *token;
+	t_token	*token;
 
-    token = malloc(sizeof(t_token));
-    if (!token)
-        return (NULL);
-    token->value = NULL;
-    token->next = NULL;
-    return (token);
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->value = NULL;
+	token->next = NULL;
+	return (token);
 }
 
 int	is_operator(char c)
@@ -38,7 +38,7 @@ int	is_operator(char c)
  * handles both single and double quotes properly
  * param input: Input string that may contain quotes
  * returns: New string with quotes removed, or NULL on malloc failure
- */
+*/
 char	*strip_quotes(const char *input)
 {
 	char	*out;

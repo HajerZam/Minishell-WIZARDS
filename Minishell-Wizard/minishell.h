@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 10:01:57 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:25:17 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,6 +262,9 @@ int			should_expand_variable(const char *input, size_t i);
 int			is_in_single_quotes(const char *str, size_t pos);
 
 /* Main execution functions */
+int			allocate_pipe_arrays(t_exec_context *ctx, int cmd_count);
+void		initialize_pipes_array(t_exec_context *ctx, int cmd_count);
+int			create_pipe_fds(t_exec_context *ctx, int cmd_count);
 int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_single_command(t_cmd *cmd, t_exec_context *ctx,
 				int cmd_index);

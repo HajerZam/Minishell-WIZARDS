@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:47:11 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 10:05:03 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:18:01 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,41 @@ static char	*handle_absolute_path(char *command)
 	return (NULL);
 }
 
-static char	*search_in_path_dirs(char **paths, char *command)
+static char	*create_full_path(char *dir, char *command)
+{
+	char	*temp;
+	char	*full_path;
+
+	temp = ft_strjoin(dir, "/");
+	if (!temp)
+		return (NULL);
+	full_path = ft_strjoin(temp, command);
+	free(temp);
+	return (full_path);
+}
+
+static char	*check_path_directory(char *dir, char *command, char **paths)
 {
 	char	*full_path;
-	char	*temp;
+
+	full_path = create_full_path(dir, command);
+	if (!full_path)
+	{
+		free_argv(paths);
+		return (NULL);
+	}
+	if (is_executable_file(full_path))
+	{
+		free_argv(paths);
+		return (full_path);
+	}
+	free(full_path);
+	return (NULL);
+}
+
+static char	*search_in_path_dirs(char **paths, char *command)
+{
+	char	*result;
 	int		i;
 
 	if (!paths || !command)
@@ -39,30 +70,13 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	i = 0;
 	while (paths[i])
 	{
-		temp = ft_strjoin(paths[i], "/");
-		if (!temp)
-		{
-			free_argv(paths);
-			return (NULL);
-		}
-		full_path = ft_strjoin(temp, command);
-		free(temp);
-		if (!full_path)
-		{
-			free_argv(paths);
-			return (NULL);
-		}
-		if (is_executable_file(full_path))
-		{
-			free_argv(paths);
-			return (full_path);
-		}
-		free(full_path);
+		result = check_path_directory(paths[i], command, paths);
+		if (result)
+			return (result);
 		i++;
 	}
 	free_argv(paths);
 	return (NULL);
-
 }
 
 char	*find_command_path(char *command)
@@ -84,18 +98,4 @@ char	*find_command_path(char *command)
 	if (!paths)
 		return (NULL);
 	return (search_in_path_dirs(paths, command));
-}
-
-int	is_executable_file(char *path)
-{
-	struct stat	st;
-
-	if (!path)
-		return (0);
-	if (stat(path, &st) == 0)
-	{
-		if (S_ISREG(st.st_mode) && (st.st_mode & S_IXUSR))
-			return (1);
-	}
-	return (0);
 }

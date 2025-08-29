@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/15 17:16:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 13:10:37 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 
 	if (heredoc_check(cmd, delimiter, pipe_fd) == 0)
 	{
-		fprintf(stderr, "Failed to set up heredoc\n");
+		ft_putstr_fd("heredoc: error initializing heredoc\n", 2);
 		return (0);
 	}
 	printf("heredoc> ");
@@ -47,7 +47,7 @@ int	handle_input_redirection(t_cmd *cmd, const char *filename)
 
 	if (!cmd || !filename)
 	{
-		fprintf(stderr, "Invalid command or filename for input redirection\n");
+		ft_putstr_fd("Invalid command or filename for input redirection\n", 2);
 		return (0);
 	}
 	fd = open(filename, O_RDONLY);
@@ -69,7 +69,7 @@ int	handle_output_redirection(t_cmd *cmd, const char *filename, int append)
 
 	if (!cmd || !filename)
 	{
-		fprintf(stderr, "Invalid command or filename for output redirection\n");
+		ft_putstr_fd("Invalid command or filename for output redirection\n", 2);
 		return (0);
 	}
 	flags = O_WRONLY | O_CREAT;
@@ -101,7 +101,7 @@ int	case_redirection(t_cmd *cmd, t_token_type redir_type, char *filename)
 		return (handle_heredoc_redirection(cmd, filename));
 	else
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token\n");
+		ft_putstr_fd("Unknown redirection type\n", 2);
 		return (0);
 	}
 }
@@ -113,7 +113,7 @@ int	parse_redirections(t_parser *parser, t_cmd *cmd)
 
 	if (!is_redirection(parser->current->type))
 	{
-		fprintf(stderr, "Expected a redirection token\n");
+		ft_putstr_fd("Expected redirection token\n", 2);
 		parser->error = 1;
 		return (0);
 	}
@@ -121,7 +121,7 @@ int	parse_redirections(t_parser *parser, t_cmd *cmd)
 	consume_token(parser);
 	if (!parser->current || parser->current->type != WORD)
 	{
-		fprintf(stderr, "bash: syntax error near unexpected token `newline'\n");
+		ft_putstr_fd("wizardshell: syntax error near unexpected token\n", 2);
 		parser->error = 1;
 		return (0);
 	}

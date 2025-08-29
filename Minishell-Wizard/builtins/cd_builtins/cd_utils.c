@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 21:35:51 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 21:36:08 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:51:32 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_cd_error(const char *path, const char *error_message)
 {
-	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+	ft_putstr_fd("wizardshell: cd: ", STDERR_FILENO);
 	if (path)
 	{
 		ft_putstr_fd((char *)path, STDERR_FILENO);
@@ -52,7 +52,7 @@ int	validate_cd_args(char **argv)
 		ac++;
 	if (ac > 2)
 	{
-		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
+		ft_putstr_fd("wizardshell: cd: too many arguments\n", STDERR_FILENO);
 		return (0);
 	}
 	return (1);

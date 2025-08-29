@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:02:17 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 20:02:17 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/29 12:52:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	init_execution_context(t_exec_context *ctx, char **envp)
 
 void	print_execution_error(char *command, char *error)
 {
-	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd("wizardshell: ", 2);
 	ft_putstr_fd(command, 2);
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(error, 2);
