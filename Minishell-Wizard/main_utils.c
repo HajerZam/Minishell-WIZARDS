@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:59:24 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 13:22:29 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:41:42 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 {
 	if (ctx)
 	{
+		if (ctx->env && ctx->env != env)
+			free_env(ctx->env);
+		if (ctx->exported_env)
+			free_env(ctx->exported_env);
+		
 		cleanup_execution_context(ctx);
 		if (ctx->stdin_backup != -1)
 		{
@@ -28,7 +33,7 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 			close(ctx->stdout_backup);
 		}
 	}
-	if (env)
+	if (env && (!ctx || env != ctx->env))
 		free_env(env);
 	clear_history();
 }

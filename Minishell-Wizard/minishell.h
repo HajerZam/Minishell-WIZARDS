@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:25:17 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:50:11 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ typedef struct s_exec_context
 {
 	char	**envp;
 	t_env	*env;
+	t_env	*exported_env;
 	int		last_exit_status;
 	int		pipe_count;
 	int		**pipes;
@@ -206,7 +207,6 @@ int			handle_export_assignment(t_env **env, const char *arg);
 int			handle_export_simple(t_env **env, const char *arg);
 
 /* builtins */
-
 int			builtin_cd(char **argv, t_env *env);
 int			builtin_echo(char **argv);
 int			builtin_pwd(void);
@@ -262,6 +262,7 @@ int			should_expand_variable(const char *input, size_t i);
 int			is_in_single_quotes(const char *str, size_t pos);
 
 /* Main execution functions */
+void		init_exec_context_struct(t_exec_context *ctx);
 int			allocate_pipe_arrays(t_exec_context *ctx, int cmd_count);
 void		initialize_pipes_array(t_exec_context *ctx, int cmd_count);
 int			create_pipe_fds(t_exec_context *ctx, int cmd_count);

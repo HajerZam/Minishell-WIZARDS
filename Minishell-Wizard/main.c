@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 13:21:22 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:51:05 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+	init_exec_context_struct(&ctx);
 	if (init_shell(&ctx, &env, envp) != 0)
 		return (1);
 	init_signals();

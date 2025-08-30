@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:24:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 13:59:16 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 14:30:02 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,24 +33,40 @@ char	*process_valid_variable(const char *input, t_var_data *data,
 
 char	*process_variable(const char *input, t_var_data *data)
 {
-	char	*result;
+	char	*result_with_text;
+	char	*final_result;
 	size_t	var_len;
+	char	*var_value;
 
-	result = add_text_before_var(input, data);
-	if (!result)
+	result_with_text = add_text_before_var(input, data);
+	if (!result_with_text)
 		return (NULL);
-	data->result = result;
 	var_len = get_var_name_len(input + *(data->i) + 1);
 	if (var_len > 0)
-		return (process_valid_variable(input, data, var_len));
+	{
+		var_value = get_variable_value(input + *(data->i) + 1,
+				var_len, data->env, data->last_exit_status);
+		if (!var_value)
+		{
+			free(result_with_text);
+			return (NULL);
+		}
+		final_result = ft_strjoin(result_with_text, var_value);
+		free(var_value);
+		free(result_with_text);
+		if (!final_result)
+			return (NULL);
+		*(data->i) += var_len + 1;
+		return (final_result);
+	}
 	else
 	{
-		result = ft_strjoin(data->result, "$");
-		if (!result)
+		final_result = ft_strjoin(result_with_text, "$");
+		free(result_with_text);
+		if (!final_result)
 			return (NULL);
-		free(data->result);
 		(*(data->i))++;
-		return (result);
+		return (final_result);
 	}
 }
 

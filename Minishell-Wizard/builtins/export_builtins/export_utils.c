@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 12:06:59 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/27 10:01:17 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 14:39:53 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,21 @@ int	add_env_var_exported(t_env **env, const char *key, const char *value)
 int	export_with_assignment(const char *key, const char *value, t_env **env)
 {
 	t_env	*existing;
+	char	*new_value;
 
 	existing = find_env_var(*env, key);
 	if (existing)
 	{
-		free(existing->value);
 		if (value)
-			existing->value = ft_strdup(value);
+		{
+			new_value = ft_strdup(value);
+			if (!new_value)
+				return (0);
+		}
 		else
-			existing->value = NULL;
+			new_value = NULL;
+		free(existing->value);
+		existing->value = new_value;
 		existing->is_exported = 1;
 		return (1);
 	}

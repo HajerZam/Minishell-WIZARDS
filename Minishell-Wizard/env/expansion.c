@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:18:21 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 11:57:07 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 14:30:41 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,12 @@ static int	handle_variable_expansion(const char *input, t_var_data *data)
 {
 	char	*temp;
 
-	temp = add_text_before_var(input, data);
-	if (!temp)
-		return (0);
-	if (temp != data->result)
-	{
-		free(data->result);
-		data->result = temp;
-	}
 	temp = process_variable(input, data);
 	if (!temp)
 		return (0);
 	free(data->result);
 	data->result = temp;
+	*(data->start) = *(data->i);
 	return (1);
 }
 

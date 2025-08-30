@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:18:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 21:38:13 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:44:47 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	free_env(t_env *env)
 {
 	t_env	*current;
 	t_env	*next;
+	int		count = 0;
 
 	current = env;
 	while (current)
@@ -25,6 +26,7 @@ void	free_env(t_env *env)
 		free(current->value);
 		free(current);
 		current = next;
+		count++;
 	}
 }
 
