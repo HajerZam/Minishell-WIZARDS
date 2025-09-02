@@ -20,7 +20,6 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 			free_env(ctx->env);
 		if (ctx->exported_env)
 			free_env(ctx->exported_env);
-		
 		cleanup_execution_context(ctx);
 		if (ctx->stdin_backup != -1)
 		{

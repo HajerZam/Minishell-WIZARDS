@@ -16,8 +16,9 @@ void	free_env(t_env *env)
 {
 	t_env	*current;
 	t_env	*next;
-	int		count = 0;
+	int		count;
 
+	count = 0;
 	current = env;
 	while (current)
 	{
