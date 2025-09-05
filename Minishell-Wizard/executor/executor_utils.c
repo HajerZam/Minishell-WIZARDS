@@ -39,7 +39,7 @@ int	execute_pipeline_commands(t_cmd *cmd_list, t_exec_context *ctx)
 	result = 0;
 	while (current && result == 0)
 	{
-		result = execute_single_command(current, ctx, cmd_index);
+		result = execute_single_command(current, ctx, cmd_index, cmd_list);
 		current = current->next;
 		cmd_index++;
 	}
@@ -76,15 +76,16 @@ int	execute_external_single(t_cmd *cmd, t_exec_context *ctx)
 		return (1);
 	}
 	if (pid == 0)
-		handle_child_process(cmd, ctx);
+		handle_child_process(cmd, ctx, cmd);
 	else
 		handle_parent_process(pid, ctx);
 	return (ctx->last_exit_status);
 }
 
-int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
+int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index, \
+	t_cmd *cmd_list)
 {
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);
-	return (execute_external(cmd, ctx, cmd_index));
+	return (execute_external(cmd, ctx, cmd_index, cmd_list));
 }
