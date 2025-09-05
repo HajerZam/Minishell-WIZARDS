@@ -80,3 +80,29 @@ void	close_all_pipe_fds(t_exec_context *ctx)
 		i++;
 	}
 }
+
+void	cleanup_child_process(t_exec_context *ctx, t_cmd *cmd_list)
+{
+	/* Close all pipe file descriptors */
+	if (ctx->pipes)
+	{
+		int i;
+
+		i = -1;
+		while (++i < ctx->pipe_count)
+		{
+			if (ctx->pipes[i])
+			{
+				close(ctx->pipes[i][0]);
+				close(ctx->pipes[i][1]);
+				free(ctx->pipes[i]);
+			}
+		}
+		free(ctx->pipes);
+	}
+	free_ctx_list(ctx, cmd_list);
+	if (ctx->stdin_backup != -1)
+		close(ctx->stdin_backup);
+	if (ctx->stdout_backup != -1)
+		close(ctx->stdout_backup);
+}
