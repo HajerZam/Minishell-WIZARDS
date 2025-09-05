@@ -22,8 +22,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		ft_putstr_fd("heredoc: error initializing heredoc\n", 2);
 		return (0);
 	}
-	printf("heredoc> ");
-	line = readline("");
+	line = readline("heredoc> ");
 	while (line)
 	{
 		if (ft_strcmp(line, delimiter) == 0)
