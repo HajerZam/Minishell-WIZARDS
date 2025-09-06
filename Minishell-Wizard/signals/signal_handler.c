@@ -10,27 +10,99 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 extern volatile sig_atomic_t	g_signal_received;
 
-void	handle_sigint(int sig)
+/* Signal handler for interactive mode (main loop) */
+void	handle_sigint_interactive(int sig)
 {
 	(void)sig;
 	g_signal_received = SIGINT;
-	if (isatty(STDIN_FILENO) && rl_line_buffer != NULL)
-	{
-		write(STDOUT_FILENO, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else
-		write(STDOUT_FILENO, "\n", 1);
+	
+	/* Write newline to move to next line */
+	write(STDOUT_FILENO, "\n", 1);
+	
+	/* Clear the current input line and redisplay prompt */
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
+/* Signal handler for execution mode (when running commands) */
+void	handle_sigint_execution(int sig)
+{
+	(void)sig;
+	g_signal_received = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+}
+
+/* Signal handler that does nothing (for ignoring signals) */
+void	handle_sigquit_ignore(int sig)
+{
+	(void)sig;
+	/* Do nothing - effectively ignores the signal */
+}
+
+/* Initialize signals for interactive mode (main shell loop) */
+void	init_signals_interactive(void)
+{
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	/* Setup SIGINT handler for interactive mode */
+	sa_int.sa_handler = handle_sigint_interactive;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa_int, NULL);
+
+	/* Ignore SIGQUIT in interactive mode */
+	sa_quit.sa_handler = SIG_IGN;
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+}
+
+/* Initialize signals for command execution mode */
+void	init_signals_execution(void)
+{
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	/* Setup SIGINT handler for execution mode */
+	sa_int.sa_handler = handle_sigint_execution;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = 0;
+	sigaction(SIGINT, &sa_int, NULL);
+
+	/* Ignore SIGQUIT during execution */
+	sa_quit.sa_handler = SIG_IGN;
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+}
+
+/* Initialize signals for child processes */
+void	init_signals_child(void)
+{
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	/* Reset SIGINT to default behavior for child processes */
+	sa_int.sa_handler = SIG_DFL;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = 0;
+	sigaction(SIGINT, &sa_int, NULL);
+
+	/* Reset SIGQUIT to default behavior for child processes */
+	sa_quit.sa_handler = SIG_DFL;
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+}
+
+/* Legacy function for backward compatibility */
 void	init_signals(void)
 {
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	init_signals_interactive();
 }

@@ -27,14 +27,17 @@ int	process_command_line(char *input, t_exec_context *ctx)
 
 	if (!input || !*input)
 		return (1);
+	init_signals_execution();
 	expanded_input = expand_variables(input, ctx->env, ctx->last_exit_status);
 	if (!expanded_input)
 	{
 		ft_putstr_fd("wizardshell: expansion error\n", 2);
 		ctx->last_exit_status = 1;
+		init_signals_interactive();
 		return (1);
 	}
 	result = process_tokens(expanded_input, ctx);
+	init_signals_interactive();
 	return (result);
 }
 
@@ -47,6 +50,23 @@ int	setup_execution_context(t_exec_context *ctx, t_env *env,
 	return (0);
 }
 
+static int	handle_eof_or_signal(t_exec_context *ctx)
+{
+	/* Handle EOF (Ctrl-D) */
+	(void)ctx;  /* Suppress unused parameter warning */
+	
+	if (!isatty(STDIN_FILENO))
+	{
+		/* If input is not from terminal, EOF means end of input */
+		printf("exit\n");
+		return (0);
+	}
+	
+	/* Handle Ctrl-D in interactive mode */
+	printf("exit\n");
+	return (0);
+}
+
 static int	main_loop(t_env *env, t_exec_context *ctx)
 {
 	char	*input;
@@ -56,13 +76,19 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 	while (1)
 	{
 		g_signal_received = 0;
+		ctx->in_main_loop = 1;
+		init_signals_interactive();
 		input = get_complete_input();
+		ctx->in_main_loop = 0;
 		if (!input)
+			return (handle_eof_or_signal(ctx));
+		if (g_signal_received == SIGINT)
 		{
-			printf("exit\n");
-			break ;
+			ctx->last_exit_status = 130;
+			g_signal_received = 0;
+			free(input);
+			continue;
 		}
-		handle_readline_interruption(ctx);
 		process_result = process_input_line(input, ctx);
 		free(input);
 		if (process_result == 0)
@@ -82,7 +108,7 @@ int	main(int argc, char **argv, char **envp)
 	init_exec_context_struct(&ctx);
 	if (init_shell(&ctx, &env, envp) != 0)
 		return (1);
-	init_signals();
+	init_signals_interactive();
 	print_welcome();
 	exit_status = main_loop(env, &ctx);
 	cleanup_resources(&ctx, env);
