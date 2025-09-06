@@ -115,6 +115,7 @@ typedef struct s_exec_context
 	pid_t	*pids;
 	int		stdin_backup;
 	int		stdout_backup;
+	int		in_main_loop;
 }		t_exec_context;
 
 /* Global variable to store last exit status */
@@ -141,6 +142,12 @@ void		handle_double_quote(t_parse_vars *v);
 
 /* signal handling */
 void		init_signals(void);
+void		init_signals_interactive(void);
+void		init_signals_execution(void);
+void		init_signals_child(void);
+void		handle_sigint_interactive(int sig);
+void		handle_sigint_execution(int sig);
+int			wait_for_processes_with_signals(t_exec_context *ctx);
 
 /* parser_main.c */
 t_cmd		*parse_command_line(t_token *tokens);
@@ -260,6 +267,9 @@ char		*get_variable_value(const char *var_name,
 size_t		get_var_name_len(const char *str);
 int			should_expand_variable(const char *input, size_t i);
 int			is_in_single_quotes(const char *str, size_t pos);
+char		**env_list_to_array(t_env *env);
+char		*find_command_path_env(char *command, t_env *env);
+void		free_env_array(char **envp, int count);
 
 /* Main execution functions */
 void		init_exec_context_struct(t_exec_context *ctx);
@@ -306,6 +316,7 @@ void		handle_signals_in_parent(void);
 
 /* Path resolution */
 char		*find_command_path(char *command);
+char		*find_command_path_env(char *command, t_env *env);
 int			is_executable_file(char *path);
 
 /* Utility functions */

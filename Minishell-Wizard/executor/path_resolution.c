@@ -79,6 +79,27 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	return (NULL);
 }
 
+char	*find_command_path_env(char *command, t_env *env)
+{
+	char	**paths;
+	char	*path_env;
+
+	if (!command)
+		return (NULL);
+	if (ft_strchr(command, '/'))
+		return (handle_absolute_path(command));
+	path_env = getenv_from_list(env, "PATH");
+	if (!path_env)
+	{
+		print_execution_error(command, "No such file or directory");
+		return (NULL);
+	}
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (NULL);
+	return (search_in_path_dirs(paths, command));
+}
+
 char	*find_command_path(char *command)
 {
 	char	**paths;

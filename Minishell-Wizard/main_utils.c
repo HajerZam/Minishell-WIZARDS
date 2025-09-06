@@ -34,7 +34,7 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 	}
 	if (env && (!ctx || env != ctx->env))
 		free_env(env);
-	clear_history();
+	rl_clear_history();
 }
 
 void	cleanup_and_exit(t_exec_context *ctx, t_env *env, int exit_status)
