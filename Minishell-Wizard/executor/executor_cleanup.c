@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:35:22 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 10:02:24 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:26:21 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,35 @@ void	cleanup_execution_context(t_exec_context *ctx)
 {
 	if (!ctx)
 		return ;
+		
+	/* Clean up pipes first */
 	if (ctx->pipes)
 		cleanup_pipes(ctx);
+		
+	/* Clean up pids array */
 	if (ctx->pids)
 	{
 		free(ctx->pids);
 		ctx->pids = NULL;
 	}
+	
+	/* Restore file descriptors if they were backed up */
 	if (ctx->stdin_backup != -1)
 	{
+		dup2(ctx->stdin_backup, STDIN_FILENO);
 		close(ctx->stdin_backup);
 		ctx->stdin_backup = -1;
 	}
 	if (ctx->stdout_backup != -1)
 	{
+		dup2(ctx->stdout_backup, STDOUT_FILENO);
 		close(ctx->stdout_backup);
 		ctx->stdout_backup = -1;
 	}
+	
+	/* Reset counters */
 	ctx->pipe_count = 0;
-	ctx->envp = NULL;
-	ctx->env = NULL;
+	/* Don't touch ctx->env or ctx->envp - they're managed elsewhere */
 }
 
 void	cleanup_pipes(t_exec_context *ctx)
@@ -58,11 +67,6 @@ void	cleanup_pipes(t_exec_context *ctx)
 	}
 	free(ctx->pipes);
 	ctx->pipes = NULL;
-	if (ctx->pids)
-	{
-		free(ctx->pids);
-		ctx->pids = NULL;
-	}
 }
 
 void	close_all_pipe_fds(t_exec_context *ctx)

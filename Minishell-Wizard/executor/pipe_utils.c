@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 12:21:35 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:21:35 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:26:53 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	allocate_pipe_arrays(t_exec_context *ctx, int cmd_count)
 {
+	int i;
+	
 	ctx->pipes = malloc(sizeof(int *) * (cmd_count - 1));
 	ctx->pids = malloc(sizeof(pid_t) * cmd_count);
 	if (!ctx->pipes || !ctx->pids)
@@ -31,6 +33,15 @@ int	allocate_pipe_arrays(t_exec_context *ctx, int cmd_count)
 		}
 		return (1);
 	}
+	
+	/* CRITICAL: Initialize pids array to prevent garbage values */
+	i = 0;
+	while (i < cmd_count)
+	{
+		ctx->pids[i] = -1;
+		i++;
+	}
+	
 	return (0);
 }
 

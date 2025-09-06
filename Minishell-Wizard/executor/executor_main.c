@@ -6,24 +6,47 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:41:13 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 19:41:13 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:49:44 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
+int execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
 {
 	int	cmd_count;
 
 	if (!cmd_list || !ctx)
 		return (1);
+		
+	/* Check for signal before execution */
+	if (g_signal_received == SIGINT)
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (130);
+	}
+	
 	cmd_count = count_commands(cmd_list);
 	ctx->pipe_count = cmd_count - 1;
+	
 	if (cmd_count == 1)
 		return (execute_single_command_no_pipe(cmd_list, ctx));
+		
 	if (setup_pipeline(cmd_list, ctx) != 0)
 		return (1);
+		
+	/* Check signal after pipeline setup */
+	if (g_signal_received == SIGINT)
+	{
+		cleanup_pipes(ctx);
+		restore_std_fds(ctx);
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		init_signals_interactive();
+		return (130);
+	}
+	
 	execute_pipeline_commands(cmd_list, ctx);
 	close_all_pipe_fds(ctx);
 	wait_for_processes(ctx);
@@ -67,8 +90,18 @@ int	execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx)
 
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);
+		
+	/* Check for signal before execution */
+	if (g_signal_received == SIGINT)
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (130);
+	}
+	
 	if (cmd->is_builtin)
 		return (handle_builtin_no_pipe(cmd, ctx));
+		
 	init_signals_execution();
 	result = execute_external_single(cmd, ctx);
 	init_signals_interactive();

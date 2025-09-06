@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/30 15:51:05 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:55:09 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,28 @@ int	process_command_line(char *input, t_exec_context *ctx)
 
 	if (!input || !*input)
 		return (1);
+		
+	/* Check for signal before processing */
+	if (g_signal_received == SIGINT)
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (1);
+	}
 	init_signals_execution();
 	expanded_input = expand_variables(input, ctx->env, ctx->last_exit_status);
 	if (!expanded_input)
 	{
 		ft_putstr_fd("wizardshell: expansion error\n", 2);
 		ctx->last_exit_status = 1;
+		init_signals_interactive();
+		return (1);
+	}
+	if (g_signal_received == SIGINT)
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		free(expanded_input);
 		init_signals_interactive();
 		return (1);
 	}
@@ -75,22 +91,58 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 	ctx->env = env;
 	while (1)
 	{
+		/* Reset signal flag before each iteration */
 		g_signal_received = 0;
 		ctx->in_main_loop = 1;
 		init_signals_interactive();
+		
 		input = get_complete_input();
 		ctx->in_main_loop = 0;
+		
+		/* Handle EOF (Ctrl+D) or readline failure */
 		if (!input)
+		{
+			/* Check if it was interrupted by signal */
+			if (g_signal_received == SIGINT)
+			{
+				ctx->last_exit_status = 130;
+				g_signal_received = 0;
+				continue; /* Start new iteration with fresh prompt */
+			}
 			return (handle_eof_or_signal(ctx));
+		}
+			
+		/* CRITICAL: Check for signal IMMEDIATELY after getting input */
 		if (g_signal_received == SIGINT)
 		{
 			ctx->last_exit_status = 130;
 			g_signal_received = 0;
 			free(input);
+			continue; /* Start new iteration - don't process command */
+		}
+		
+		/* Skip empty input or whitespace-only input */
+		if (!*input || strspn(input, " \t\n") == strlen(input))
+		{
+			free(input);
 			continue;
 		}
+		
 		process_result = process_input_line(input, ctx);
 		free(input);
+		
+		/* Reset any fd backups after each command */
+		if (ctx->stdin_backup != -1)
+		{
+			close(ctx->stdin_backup);
+			ctx->stdin_backup = -1;
+		}
+		if (ctx->stdout_backup != -1)
+		{
+			close(ctx->stdout_backup);
+			ctx->stdout_backup = -1;
+		}
+		
 		if (process_result == 0)
 			break ;
 	}

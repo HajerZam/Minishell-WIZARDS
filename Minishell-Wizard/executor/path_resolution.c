@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:47:11 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:18:01 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:08:55 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,25 +79,28 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	return (NULL);
 }
 
-char	*find_command_path_env(char *command, t_env *env)
+char *find_command_path_env(char *command, t_env *env)
 {
-	char	**paths;
-	char	*path_env;
-
-	if (!command)
-		return (NULL);
-	if (ft_strchr(command, '/'))
-		return (handle_absolute_path(command));
-	path_env = getenv_from_list(env, "PATH");
-	if (!path_env)
-	{
-		print_execution_error(command, "No such file or directory");
-		return (NULL);
-	}
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		return (NULL);
-	return (search_in_path_dirs(paths, command));
+    char **paths;
+    char *path_env;
+    
+    if (!command)
+        return (NULL);
+    if (ft_strchr(command, '/'))
+        return (handle_absolute_path(command));
+    path_env = getenv_from_list(env, "PATH");
+    if (!path_env || *path_env == '\0')
+    {
+        print_execution_error(command, "command not found");
+        return (NULL);
+    }
+    paths = ft_split(path_env, ':');
+    if (!paths)
+    {
+        print_execution_error(command, "command not found");
+        return (NULL);
+    }
+    return (search_in_path_dirs(paths, command));
 }
 
 char	*find_command_path(char *command)

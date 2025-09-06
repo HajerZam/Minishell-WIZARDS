@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:59:24 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/30 15:41:42 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:48:45 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,16 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 {
 	if (ctx)
 	{
+		/* Clean up execution context first */
+		cleanup_execution_context(ctx);
+		
+		/* Clean up environment if it's different from main env */
 		if (ctx->env && ctx->env != env)
 			free_env(ctx->env);
 		if (ctx->exported_env)
 			free_env(ctx->exported_env);
-		cleanup_execution_context(ctx);
+			
+		/* Restore file descriptors */
 		if (ctx->stdin_backup != -1)
 		{
 			dup2(ctx->stdin_backup, STDIN_FILENO);
@@ -32,8 +37,11 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 			close(ctx->stdout_backup);
 		}
 	}
-	if (env && (!ctx || env != ctx->env))
+	
+	/* Clean up main environment - THIS WAS MISSING */
+	if (env)
 		free_env(env);
+		
 	rl_clear_history();
 }
 
@@ -76,6 +84,16 @@ int	process_tokens(char *expanded_input, t_exec_context *ctx)
 {
 	t_token	*tokens;
 	t_cmd	*cmd_list;
+	int		result;
+
+	/* Early signal check */
+	if (g_signal_received == SIGINT)
+	{
+		free(expanded_input);
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (1);
+	}
 
 	tokens = tokenize_input(expanded_input);
 	if (!tokens)
@@ -84,19 +102,45 @@ int	process_tokens(char *expanded_input, t_exec_context *ctx)
 		ctx->last_exit_status = 1;
 		return (1);
 	}
+	
+	/* Check signal after tokenization */
+	if (g_signal_received == SIGINT)
+	{
+		free_tokens(tokens);
+		free(expanded_input);
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (1);
+	}
+	
 	cmd_list = parse_command_line(tokens);
 	free_tokens(tokens);
 	free(expanded_input);
+	
 	if (!cmd_list)
 	{
 		ctx->last_exit_status = 2;
 		return (1);
 	}
+	
+	/* Final signal check before execution */
+	if (g_signal_received == SIGINT)
+	{
+		free_cmd_list(cmd_list);
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (1);
+	}
+	
+	/* Handle exit command */
 	if (cmd_list && !cmd_list->next && cmd_list->argv && cmd_list->argv[0]
 		&& ft_strcmp(cmd_list->argv[0], "exit") == 0)
 		return (handle_exit_command(cmd_list, ctx));
-	ctx->last_exit_status = execute_pipeline(cmd_list, ctx);
+	
+	result = execute_pipeline(cmd_list, ctx);
+	ctx->last_exit_status = result;
 	free_cmd_list(cmd_list);
+	cleanup_execution_context(ctx);
 	return (1);
 }
 

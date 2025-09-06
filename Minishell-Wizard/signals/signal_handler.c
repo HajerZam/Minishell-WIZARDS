@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:31 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 13:13:30 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:56:14 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,13 @@ void	handle_sigint_interactive(int sig)
 	/* Write newline to move to next line */
 	write(STDOUT_FILENO, "\n", 1);
 	
-	/* Clear the current input line and redisplay prompt */
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	/* Only manipulate readline if we're actually in readline */
+	if (RL_ISSTATE(RL_STATE_READCMD))
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
 /* Signal handler for execution mode (when running commands) */

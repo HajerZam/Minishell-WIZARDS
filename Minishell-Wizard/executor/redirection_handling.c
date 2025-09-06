@@ -6,35 +6,37 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:45:45 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/08 19:45:45 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/06 22:02:16 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	setup_redirections(t_cmd *cmd)
+int setup_redirections(t_cmd *cmd)
 {
-	if (!cmd)
-		return (1);
-	if (cmd->input_fd != 0)
-	{
-		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
-		{
-			perror("dup2");
-			return (1);
-		}
-		close(cmd->input_fd);
-	}
-	if (cmd->output_fd != 1)
-	{
-		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			return (1);
-		}
-		close(cmd->output_fd);
-	}
-	return (0);
+    if (!cmd)
+        return (1);
+    if (cmd->input_fd != 0)
+    {
+        if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            return (1);
+        }
+        if (cmd->input_fd > 2)
+            close(cmd->input_fd);
+    }
+    if (cmd->output_fd != 1)
+    {
+        if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            return (1);
+        }
+        if (cmd->output_fd > 2)
+            close(cmd->output_fd);
+    }
+    return (0);
 }
 
 int	backup_std_fds(t_exec_context *ctx)
