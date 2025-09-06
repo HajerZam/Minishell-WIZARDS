@@ -44,7 +44,7 @@ static int	handle_non_builtin_command(t_cmd *cmd, t_exec_context *ctx)
 	return (0);
 }
 
-int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
+int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index, t_cmd *cmd_list)
 {
 	pid_t	pid;
 
@@ -60,7 +60,7 @@ int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 		return (1);
 	}
 	if (pid == 0)
-		handle_pipeline_child(cmd, ctx, cmd_index);
+		handle_pipeline_child(cmd, ctx, cmd_index, cmd_list);
 	else
 	{
 		if (ctx->pids && cmd_index < ctx->pipe_count + 1)
