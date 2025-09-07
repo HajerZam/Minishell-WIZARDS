@@ -17,7 +17,7 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 	if (ctx)
 	{
 		cleanup_execution_context(ctx);
-		if (ctx->env && ctx->env != env)
+		if (env)
 			free_env(ctx->env);
 		if (ctx->exported_env)
 			free_env(ctx->exported_env);
