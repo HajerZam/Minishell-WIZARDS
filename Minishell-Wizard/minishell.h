@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:26:46 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 19:50:55 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,10 +285,10 @@ int			execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx);
 int			execute_external_single(t_cmd *cmd, t_exec_context *ctx);
 char		*handle_absolute_path(char *command);
 char		*search_in_path_dirs(char **paths, char *command);
-void		check_cmd(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list, \
-	char *command_path);
-void		check_envp(t_exec_context *ctx, t_cmd *cmd_list, char *command_path, \
-	char **current_envp);
+void		check_cmd(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list,
+				char *command_path);
+void		check_envp(t_exec_context *ctx, t_cmd *cmd_list, char *command_path,
+				char **current_envp);
 
 /* Pipeline management */
 int			is_directory(char *path);
