@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/30 15:50:11 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:35:11 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,8 @@ int			create_pipe_fds(t_exec_context *ctx, int cmd_count);
 int			execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_single_command(t_cmd *cmd, t_exec_context *ctx,
 				int cmd_index, t_cmd *cmd_list);
-int			execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index, t_cmd *cmd_list);
+int			execute_external(t_cmd *cmd,
+				t_exec_context *ctx, int cmd_index, t_cmd *cmd_list);
 int			execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx);
 int			execute_external_single(t_cmd *cmd, t_exec_context *ctx);
 
@@ -289,10 +290,11 @@ int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 void		cleanup_pipes(t_exec_context *ctx);
 int			setup_pipeline(t_cmd *cmd_list, t_exec_context *ctx);
 int			execute_pipeline_commands(t_cmd *cmd_list, t_exec_context *ctx);
-void		handle_child_process(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list);
+void		handle_child_process(t_cmd *cmd,
+				t_exec_context *ctx, t_cmd *cmd_list);
 void		handle_parent_process(pid_t pid, t_exec_context *ctx);
-void		handle_pipeline_child(t_cmd *cmd, t_exec_context *ctx, 
-						int cmd_index, t_cmd *cmd_list);
+void		handle_pipeline_child(t_cmd *cmd,
+				t_exec_context *ctx, int cmd_index, t_cmd *cmd_list);
 void		free_ctx_list(t_exec_context *ctx, t_cmd *cmd_list);
 void		cleanup_child_process(t_exec_context *ctx, t_cmd *cmd_list);
 int			setup_input_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);

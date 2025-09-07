@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:42:33 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/28 15:59:31 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:52:05 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	free_ctx_list(t_exec_context *ctx, t_cmd *cmd_list)
 		free_cmd_list(cmd_list);
 }
 
-/* Updated handle_child_process */
 void	handle_child_process(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list)
 {
 	char	*command_path;
@@ -62,13 +61,11 @@ void	handle_parent_process(pid_t pid, t_exec_context *ctx)
 	int		status;
 	pid_t	result;
 
-	/* Wait for the child process */
 	while (1)
 	{
 		result = waitpid(pid, &status, 0);
 		if (result == pid)
 		{
-			/* Child process finished */
 			if (WIFEXITED(status))
 				ctx->last_exit_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
@@ -91,21 +88,17 @@ void	handle_parent_process(pid_t pid, t_exec_context *ctx)
 		else if (result == -1)
 		{
 			if (errno == EINTR)
-			{
-				/* Interrupted by signal, continue waiting */
-				continue;
-			}
+				continue ;
 			else
 			{
 				perror("waitpid");
 				ctx->last_exit_status = 1;
-				break;
+				break ;
 			}
 		}
 	}
 }
 
-/* Updated handle_pipeline_child */
 static void	execute_child_command(t_cmd *cmd, t_exec_context *ctx, 
 							t_cmd *cmd_list)
 {
@@ -119,8 +112,6 @@ static void	execute_child_command(t_cmd *cmd, t_exec_context *ctx,
 		cleanup_child_process(ctx, cmd_list);
 		exit(exit_status);
 	}
-	
-	/* Use our environment list for path resolution */
 	command_path = find_command_path_env(cmd->argv[0], ctx->env);
 	if (!command_path)
 	{
@@ -128,8 +119,6 @@ static void	execute_child_command(t_cmd *cmd, t_exec_context *ctx,
 		cleanup_child_process(ctx, cmd_list);
 		exit(127);
 	}
-	
-	/* Convert our environment list to array for execve */
 	current_envp = env_list_to_array(ctx->env);
 	if (!current_envp)
 	{
@@ -137,12 +126,10 @@ static void	execute_child_command(t_cmd *cmd, t_exec_context *ctx,
 		cleanup_child_process(ctx, cmd_list);
 		exit(1);
 	}
-	
-	/* Use converted environment instead of original */
 	if (execve(command_path, cmd->argv, current_envp) == -1)
 	{
 		free(command_path);
-		free_env_array(current_envp, -1); /* -1 means count until NULL */
+		free_env_array(current_envp, -1);
 		cleanup_child_process(ctx, cmd_list);
 		exit(126);
 	}

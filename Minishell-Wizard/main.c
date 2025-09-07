@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 09:24:38 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:38:28 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ int	process_command_line(char *input, t_exec_context *ctx)
 
 	if (!input || !*input)
 		return (1);
-		
-	/* Check for signal before processing */
 	if (g_signal_received == SIGINT)
 	{
 		ctx->last_exit_status = 130;
@@ -68,22 +66,15 @@ int	setup_execution_context(t_exec_context *ctx, t_env *env,
 
 static int	handle_eof_or_signal(t_exec_context *ctx)
 {
-	/* Handle EOF (Ctrl-D) */
-	(void)ctx;  /* Suppress unused parameter warning */
-	
+	(void)ctx;
 	if (!isatty(STDIN_FILENO))
 	{
-		/* If input is not from terminal, EOF means end of input */
 		printf("exit\n");
 		return (0);
 	}
-	
-	/* Handle Ctrl-D in interactive mode */
 	printf("exit\n");
 	return (0);
 }
-
-/* Replace your main_loop function with this final fixed version */
 
 static int	main_loop(t_env *env, t_exec_context *ctx)
 {
@@ -93,35 +84,21 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 	ctx->env = env;
 	while (1)
 	{
-		/* Reset signal flag before each iteration */
 		g_signal_received = 0;
 		ctx->in_main_loop = 1;
 		init_signals_interactive();
-		
 		input = get_complete_input();
 		ctx->in_main_loop = 0;
-		
-		/* Handle EOF (Ctrl+D) */
 		if (!input)
-		{
 			return (handle_eof_or_signal(ctx));
-		}
-		
-		/* Skip empty input or whitespace-only input */
 		if (!*input || strspn(input, " \t\n") == strlen(input))
 		{
 			free(input);
-			continue;
+			continue ;
 		}
-		
-		/* CRITICAL FIX: Clear signal flag right before processing */
 		g_signal_received = 0;
-		
-		/* Process the command */
 		process_result = process_input_line(input, ctx);
 		free(input);
-		
-		/* Reset any fd backups after each command */
 		if (ctx->stdin_backup != -1)
 		{
 			close(ctx->stdin_backup);
@@ -132,9 +109,8 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 			close(ctx->stdout_backup);
 			ctx->stdout_backup = -1;
 		}
-		
 		if (process_result == 0)
-			break;
+			break ;
 	}
 	return (ctx->last_exit_status);
 }

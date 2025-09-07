@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:46:27 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/06 22:50:30 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:54:28 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	get_exit_status(int status)
 		int sig = WTERMSIG(status);
 		if (sig == SIGINT)
 		{
-			write(STDOUT_FILENO, "\n", 1); /* Add newline after ^C */
+			write(STDOUT_FILENO, "\n", 1);
 			return (130);
 		}
 		else if (sig == SIGQUIT)
@@ -38,39 +38,36 @@ static int	get_exit_status(int status)
 
 static int	wait_single_process(t_exec_context *ctx, int i, int cmd_count)
 {
-	int	status;
-	int	last_status;
-	pid_t result;
+	int		status;
+	int		last_status;
+	pid_t	result;
 
-	if (ctx->pids[i] <= 0)  /* Check for invalid pid */
+	if (ctx->pids[i] <= 0)
 		return (0);
-		
 	while (1)
 	{
 		result = waitpid(ctx->pids[i], &status, 0);
 		if (result == ctx->pids[i])
 		{
 			last_status = get_exit_status(status);
-			if (i == cmd_count - 1)  /* Last process determines exit status */
+			if (i == cmd_count - 1)
 				ctx->last_exit_status = last_status;
-			break;
+			break ;
 		}
 		else if (result == -1)
 		{
 			if (errno == EINTR)
 			{
-				/* Signal received during wait - check what it was */
 				if (g_signal_received == SIGINT)
 				{
-					/* Parent received SIGINT - set appropriate exit status */
 					ctx->last_exit_status = 130;
 					g_signal_received = 0;
 				}
-				continue;  /* Continue waiting */
+				continue ;
 			}
 			if (errno != ECHILD)
 				perror("waitpid");
-			break;
+			break ;
 		}
 	}
 	return (0);
@@ -95,12 +92,10 @@ int	wait_for_processes(t_exec_context *ctx)
 
 void	handle_signals_in_child(void)
 {
-	/* Reset to default signal handling for child processes */
 	init_signals_child();
 }
 
 void	handle_signals_in_parent(void)
 {
-	/* Use execution mode signal handling during command execution */
 	init_signals_execution();
 }
