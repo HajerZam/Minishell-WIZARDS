@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 09:35:11 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 18:26:46 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,26 @@ int			count_commands(t_cmd *cmd_list);
 void		cleanup_execution_context(t_exec_context *ctx);
 int			init_execution_context(t_exec_context *ctx, char **envp);
 void		print_execution_error(char *command, char *error);
+
+/* main_helpers.c */
+int			handle_eof_or_signal(t_exec_context *ctx);
+void		cleanup_backups(t_exec_context *ctx);
+
+/* main_utils_helpers.c */
+t_token		*tokenize_and_check_signal(char *expanded_input,
+				t_exec_context *ctx);
+t_cmd		*parse_and_check_signal(t_token *tokens,
+				char *expanded_input, t_exec_context *ctx);
+int			handle_final_signal_check(t_cmd *cmd_list, t_exec_context *ctx);
+int			execute_command_or_exit(t_cmd *cmd_list, t_exec_context *ctx);
+
+/* exit_command.c */
+int			handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx);
+
+/* init_shell_helpers.c */
+char		*create_new_multiline_input(char *complete_input, char *line);
+char		*handle_multiline_input(char *complete_input);
+char		*get_initial_input(void);
 
 /* Main utility functions */
 void		cleanup_resources(t_exec_context *ctx, t_env *env);

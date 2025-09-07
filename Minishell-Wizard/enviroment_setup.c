@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enviroment_setup.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 08:42:10 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/27 08:42:10 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 18:06:28 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,13 @@ t_env	*create_env_copy_direct(char **envp)
 		i++;
 	}
 	return (env_copy);
+}
+
+int	setup_execution_context(t_exec_context *ctx, t_env *env,
+	char **envp)
+{
+	if (init_execution_context(ctx, envp) != 0)
+		return (1);
+	ctx->env = env;
+	return (0);
 }
