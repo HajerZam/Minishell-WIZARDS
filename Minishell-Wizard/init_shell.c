@@ -6,11 +6,13 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:06:39 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/06 22:59:40 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:25:03 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/* Replace your process_input_line function with this clean version */
 
 int	process_input_line(char *input, t_exec_context *ctx)
 {
@@ -98,36 +100,33 @@ static char	*handle_multiline_input(char *complete_input)
 	return (new_input);
 }
 
+/* Replace your get_complete_input function with this final version */
+
 char	*get_complete_input(void)
 {
 	char	*line;
 	char	*complete_input;
 
+	/* Clear any stale signal before readline */
+	g_signal_received = 0;
+	
 	line = readline("WizardShell$ ");
 	
-	/* Handle EOF or signal interruption */
+	/* Handle EOF (Ctrl+D) or signal interruption */
 	if (!line)
 	{
-		/* If interrupted by signal, readline returns NULL */
 		return (NULL);
 	}
 	
-	/* CRITICAL: Check signal immediately after readline */
-	if (g_signal_received == SIGINT)
-	{
-		free(line);  /* Free the line before returning */
-		return (NULL);
-	}
-	
-	/* Check for empty line */
+	/* Handle empty line */
 	if (!*line)
 	{
 		free(line);
-		return (ft_strdup(""));  /* Return empty string, not NULL */
+		return (ft_strdup(""));
 	}
 	
 	complete_input = ft_strdup(line);
-	free(line);  /* Always free the readline result */
+	free(line);
 	
 	if (!complete_input)
 		return (NULL);
@@ -135,7 +134,6 @@ char	*get_complete_input(void)
 	/* Handle multi-line input for unclosed quotes */
 	while (has_unclosed_quotes(complete_input))
 	{
-		/* Check for signal before continuing multi-line */
 		if (g_signal_received == SIGINT)
 		{
 			free(complete_input);
@@ -145,13 +143,6 @@ char	*get_complete_input(void)
 		complete_input = handle_multiline_input(complete_input);
 		if (!complete_input)
 			return (NULL);
-			
-		/* Check again after getting more input */
-		if (g_signal_received == SIGINT)
-		{
-			free(complete_input);
-			return (NULL);
-		}
 	}
 	
 	return (complete_input);

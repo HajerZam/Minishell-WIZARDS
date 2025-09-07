@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/06 22:55:09 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:24:38 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ static int	handle_eof_or_signal(t_exec_context *ctx)
 	return (0);
 }
 
+/* Replace your main_loop function with this final fixed version */
+
 static int	main_loop(t_env *env, t_exec_context *ctx)
 {
 	char	*input;
@@ -99,26 +101,10 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 		input = get_complete_input();
 		ctx->in_main_loop = 0;
 		
-		/* Handle EOF (Ctrl+D) or readline failure */
+		/* Handle EOF (Ctrl+D) */
 		if (!input)
 		{
-			/* Check if it was interrupted by signal */
-			if (g_signal_received == SIGINT)
-			{
-				ctx->last_exit_status = 130;
-				g_signal_received = 0;
-				continue; /* Start new iteration with fresh prompt */
-			}
 			return (handle_eof_or_signal(ctx));
-		}
-			
-		/* CRITICAL: Check for signal IMMEDIATELY after getting input */
-		if (g_signal_received == SIGINT)
-		{
-			ctx->last_exit_status = 130;
-			g_signal_received = 0;
-			free(input);
-			continue; /* Start new iteration - don't process command */
 		}
 		
 		/* Skip empty input or whitespace-only input */
@@ -128,6 +114,10 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 			continue;
 		}
 		
+		/* CRITICAL FIX: Clear signal flag right before processing */
+		g_signal_received = 0;
+		
+		/* Process the command */
 		process_result = process_input_line(input, ctx);
 		free(input);
 		
@@ -144,7 +134,7 @@ static int	main_loop(t_env *env, t_exec_context *ctx)
 		}
 		
 		if (process_result == 0)
-			break ;
+			break;
 	}
 	return (ctx->last_exit_status);
 }

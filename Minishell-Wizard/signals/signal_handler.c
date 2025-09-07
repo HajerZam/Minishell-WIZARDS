@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:31 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/06 22:56:14 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 09:16:41 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 extern volatile sig_atomic_t	g_signal_received;
 
-/* Signal handler for interactive mode (main loop) */
+/* Replace your handle_sigint_interactive function with this final version */
+
 void	handle_sigint_interactive(int sig)
 {
 	(void)sig;
+	
+	/* Set the signal flag */
 	g_signal_received = SIGINT;
 	
 	/* Write newline to move to next line */
