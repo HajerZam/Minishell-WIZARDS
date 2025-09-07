@@ -33,8 +33,7 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		write(pipe_fd[1], line, ft_strlen(line));
 		write(pipe_fd[1], "\n", 1);
 		free(line);
-		printf("heredoc> ");
-		line = readline("");
+		line = readline("heredoc> ");
 	}
 	heredoc_cleanup(cmd, pipe_fd);
 	return (1);
