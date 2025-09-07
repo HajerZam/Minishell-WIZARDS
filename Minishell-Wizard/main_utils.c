@@ -17,7 +17,7 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 	if (ctx)
 	{
 		cleanup_execution_context(ctx);
-		if (ctx->env && ctx->env != env)
+		if (env)
 			free_env(ctx->env);
 		if (ctx->exported_env)
 			free_env(ctx->exported_env);
@@ -32,8 +32,6 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 			close(ctx->stdout_backup);
 		}
 	}
-	if (env)
-		free_env(env);
 	rl_clear_history();
 }
 
@@ -54,8 +52,15 @@ int	handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx)
 	char	*endptr;
 	long	val;
 
-	printf("exit\n");
 	exit_status = 0;
+	if (cmd_list->argv[1] && cmd_list->argv[2])
+	{
+		ft_putstr_fd("wizardshell: exit: too many arguments\n", 2);
+		ctx->last_exit_status = 1;
+		free_cmd_list(cmd_list);
+		return (1);
+	}
+	printf("exit\n");
 	if (cmd_list->argv[1])
 	{
 		val = strtol(cmd_list->argv[1], &endptr, 10);

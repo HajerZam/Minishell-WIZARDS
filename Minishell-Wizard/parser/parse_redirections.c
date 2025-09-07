@@ -173,6 +173,10 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
 		}
 		ft_putendl_fd(line, pipe_fd[1]);
 		free(line);
+<<<<<<< HEAD
+=======
+		line = readline("heredoc> ");
+>>>>>>> 54e6c374f4feb0d87f9be62ff93bb610efbc2412
 	}
 	heredoc_cleanup(cmd, pipe_fd);
 	return (1);
