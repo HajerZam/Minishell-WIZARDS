@@ -42,7 +42,7 @@ int	handle_export_assignment(t_env **env, const char *arg)
 	value = extract_var_value(arg);
 	if (!is_valid_identifier(key))
 	{
-		printf("wizardshell: export: `%s': not a valid identifier\n", key);
+		printf("wizardshell: export: `=%s': not a valid identifier\n", value);
 		free(key);
 		free(value);
 		return (1);
