@@ -54,8 +54,15 @@ int	handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx)
 	char	*endptr;
 	long	val;
 
-	printf("exit\n");
 	exit_status = 0;
+	if (cmd_list->argv[1] && cmd_list->argv[2])
+	{
+		ft_putstr_fd("wizardshell: exit: too many arguments\n", 2);
+		ctx->last_exit_status = 1;
+		free_cmd_list(cmd_list);
+		return (1);
+	}
+	printf("exit\n");
 	if (cmd_list->argv[1])
 	{
 		val = strtol(cmd_list->argv[1], &endptr, 10);
