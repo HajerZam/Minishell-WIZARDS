@@ -25,8 +25,7 @@ int	setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index)
 void	init_exec_context_struct(t_exec_context *ctx)
 {
 	if (!ctx)
-		return;
-		
+		return ;
 	ctx->envp = NULL;
 	ctx->env = NULL;
 	ctx->exported_env = NULL;

@@ -44,7 +44,8 @@ static int	handle_non_builtin_command(t_cmd *cmd, t_exec_context *ctx)
 	return (0);
 }
 
-int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index, t_cmd *cmd_list)
+int	execute_external(t_cmd *cmd, t_exec_context *ctx, int cmd_index, \
+t_cmd *cmd_list)
 {
 	pid_t	pid;
 

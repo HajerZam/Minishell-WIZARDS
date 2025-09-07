@@ -78,7 +78,7 @@ void	close_all_pipe_fds(t_exec_context *ctx)
 
 void	cleanup_child_process(t_exec_context *ctx, t_cmd *cmd_list)
 {
-	int i;
+	int	i;
 
 	if (ctx->pipes)
 	{

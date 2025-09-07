@@ -283,6 +283,12 @@ int			execute_external(t_cmd *cmd,
 				t_exec_context *ctx, int cmd_index, t_cmd *cmd_list);
 int			execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx);
 int			execute_external_single(t_cmd *cmd, t_exec_context *ctx);
+char		*handle_absolute_path(char *command);
+char		*search_in_path_dirs(char **paths, char *command);
+void		check_cmd(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list, \
+	char *command_path);
+void		check_envp(t_exec_context *ctx, t_cmd *cmd_list, char *command_path, \
+	char **current_envp);
 
 /* Pipeline management */
 int			is_directory(char *path);
@@ -301,7 +307,6 @@ int			setup_input_pipe(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 int			setup_output_pipe(t_cmd *cmd, t_exec_context *ctx,
 				int cmd_index);
 void		close_all_pipe_fds(t_exec_context *ctx);
-
 int			setup_pipes(t_exec_context *ctx, int cmd_count);
 int			is_directory(char *path);
 int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
@@ -315,6 +320,7 @@ int			backup_std_fds(t_exec_context *ctx);
 int			wait_for_processes(t_exec_context *ctx);
 void		handle_signals_in_child(void);
 void		handle_signals_in_parent(void);
+int			wait_single_process(t_exec_context *ctx, int i, int cmd_count);
 
 /* Path resolution */
 char		*find_command_path(char *command);

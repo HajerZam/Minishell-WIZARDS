@@ -82,8 +82,8 @@ int	execute_external_single(t_cmd *cmd, t_exec_context *ctx)
 	return (ctx->last_exit_status);
 }
 
-int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index, \
-	t_cmd *cmd_list)
+int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index,
+		t_cmd *cmd_list)
 {
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);

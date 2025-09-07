@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-static char	*handle_absolute_path(char *command)
+char	*handle_absolute_path(char *command)
 {
 	if (is_directory(command))
 	{
@@ -57,7 +57,7 @@ static char	*check_path_directory(char *dir, char *command, char **paths)
 	return (NULL);
 }
 
-static char	*search_in_path_dirs(char **paths, char *command)
+char	*search_in_path_dirs(char **paths, char *command)
 {
 	char	*result;
 	int		i;
@@ -79,28 +79,7 @@ static char	*search_in_path_dirs(char **paths, char *command)
 	return (NULL);
 }
 
-char *find_command_path_env(char *command, t_env *env)
-{
-    char **paths;
-    char *path_env;
-    
-    if (!command)
-        return (NULL);
-    if (ft_strchr(command, '/'))
-        return (handle_absolute_path(command));
-    path_env = getenv_from_list(env, "PATH");
-    if (!path_env || *path_env == '\0')
-        return (NULL);
-    paths = ft_split(path_env, ':');
-    if (!paths)
-    {
-        print_execution_error(command, "command not found");
-        return (NULL);
-    }
-    return (search_in_path_dirs(paths, command));
-}
-
-char	*find_command_path(char *command)
+char	*find_command_path_env(char *command, t_env *env)
 {
 	char	**paths;
 	char	*path_env;
@@ -109,14 +88,14 @@ char	*find_command_path(char *command)
 		return (NULL);
 	if (ft_strchr(command, '/'))
 		return (handle_absolute_path(command));
-	path_env = getenv("PATH");
-	if (!path_env)
-	{
-		print_execution_error(command, "No such file or directory");
+	path_env = getenv_from_list(env, "PATH");
+	if (!path_env || *path_env == '\0')
 		return (NULL);
-	}
 	paths = ft_split(path_env, ':');
 	if (!paths)
+	{
+		print_execution_error(command, "command not found");
 		return (NULL);
+	}
 	return (search_in_path_dirs(paths, command));
 }

@@ -15,7 +15,7 @@
 int	allocate_pipe_arrays(t_exec_context *ctx, int cmd_count)
 {
 	int	i;
-	
+
 	ctx->pipes = malloc(sizeof(int *) * (cmd_count - 1));
 	ctx->pids = malloc(sizeof(pid_t) * cmd_count);
 	if (!ctx->pipes || !ctx->pids)
@@ -33,12 +33,9 @@ int	allocate_pipe_arrays(t_exec_context *ctx, int cmd_count)
 		}
 		return (1);
 	}
-	i = 0;
-	while (i < cmd_count)
-	{
+	i = -1;
+	while (++i < cmd_count)
 		ctx->pids[i] = -1;
-		i++;
-	}
 	return (0);
 }
 

@@ -12,30 +12,7 @@
 
 #include "../minishell.h"
 
-static int	get_exit_status(int status)
-{
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-	{
-		int sig = WTERMSIG(status);
-		if (sig == SIGINT)
-		{
-			write(STDOUT_FILENO, "\n", 1);
-			return (130);
-		}
-		else if (sig == SIGQUIT)
-		{
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-			return (131);
-		}
-		else
-			return (128 + sig);
-	}
-	else
-		return (1);
-}
-
+/*
 static int	wait_single_process(t_exec_context *ctx, int i, int cmd_count)
 {
 	int		status;
@@ -72,6 +49,7 @@ static int	wait_single_process(t_exec_context *ctx, int i, int cmd_count)
 	}
 	return (0);
 }
+*/
 
 int	wait_for_processes(t_exec_context *ctx)
 {

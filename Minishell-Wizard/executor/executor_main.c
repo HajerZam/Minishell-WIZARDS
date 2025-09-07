@@ -12,40 +12,55 @@
 
 #include "../minishell.h"
 
-int execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
+static int	check_global_signal(t_exec_context *ctx)
+{
+	if (g_signal_received == SIGINT)
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (1);
+	}
+	return (0);
+}
+
+static void	activate_ctx_functions(t_exec_context *ctx, t_cmd *cmd_list,
+		int in_signal)
+{
+	if (in_signal == 1)
+	{
+		execute_pipeline_commands(cmd_list, ctx);
+		close_all_pipe_fds(ctx);
+		wait_for_processes(ctx);
+	}
+	cleanup_pipes(ctx);
+	restore_std_fds(ctx);
+	if (in_signal == 1)
+		init_signals_interactive();
+}
+
+int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
 {
 	int	cmd_count;
 
 	if (!cmd_list || !ctx)
 		return (1);
-	if (g_signal_received == SIGINT)
-	{
-		ctx->last_exit_status = 130;
-		g_signal_received = 0;
+	if (check_global_signal(ctx))
 		return (130);
-	}
 	cmd_count = count_commands(cmd_list);
 	ctx->pipe_count = cmd_count - 1;
 	if (cmd_count == 1)
 		return (execute_single_command_no_pipe(cmd_list, ctx));
-		
 	if (setup_pipeline(cmd_list, ctx) != 0)
 		return (1);
 	if (g_signal_received == SIGINT)
 	{
-		cleanup_pipes(ctx);
-		restore_std_fds(ctx);
+		activate_ctx_functions(ctx, cmd_list, 0);
 		ctx->last_exit_status = 130;
 		g_signal_received = 0;
 		init_signals_interactive();
 		return (130);
 	}
-	execute_pipeline_commands(cmd_list, ctx);
-	close_all_pipe_fds(ctx);
-	wait_for_processes(ctx);
-	cleanup_pipes(ctx);
-	restore_std_fds(ctx);
-	init_signals_interactive();
+	activate_ctx_functions(ctx, cmd_list, 1);
 	return (ctx->last_exit_status);
 }
 
