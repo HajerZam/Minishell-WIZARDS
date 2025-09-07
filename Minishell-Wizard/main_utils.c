@@ -32,8 +32,6 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 			close(ctx->stdout_backup);
 		}
 	}
-	if (env)
-		free_env(env);
 	rl_clear_history();
 }
 
