@@ -1,4 +1,14 @@
-/* Add to env_utils.c - Convert t_env list to char** array */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_lst_to_array.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/07 18:35:32 by halzamma          #+#    #+#             */
+/*   Updated: 2025/09/07 18:39:43 by halzamma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
@@ -8,8 +18,6 @@ void	free_env_array(char **envp, int count)
 
 	if (!envp)
 		return ;
-	
-	/* If count is -1, count until NULL */
 	if (count == -1)
 	{
 		i = 0;
@@ -60,18 +68,11 @@ static char	*create_env_string(t_env *node)
 	return (result);
 }
 
-char	**env_list_to_array(t_env *env)
+static int	fill_env_array(char **envp, t_env *env, int count)
 {
-	char	**envp;
 	t_env	*current;
-	int		count;
 	int		i;
 
-	count = count_exported_env_vars(env);
-	envp = malloc(sizeof(char *) * (count + 1));
-	if (!envp)
-		return (NULL);
-	
 	current = env;
 	i = 0;
 	while (current && i < count)
@@ -82,12 +83,26 @@ char	**env_list_to_array(t_env *env)
 			if (!envp[i])
 			{
 				free_env_array(envp, i);
-				return (NULL);
+				return (0);
 			}
 			i++;
 		}
 		current = current->next;
 	}
 	envp[i] = NULL;
+	return (1);
+}
+
+char	**env_list_to_array(t_env *env)
+{
+	char	**envp;
+	int		count;
+
+	count = count_exported_env_vars(env);
+	envp = malloc(sizeof(char *) * (count + 1));
+	if (!envp)
+		return (NULL);
+	if (!fill_env_array(envp, env, count))
+		return (NULL);
 	return (envp);
 }
