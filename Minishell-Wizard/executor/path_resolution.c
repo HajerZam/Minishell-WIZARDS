@@ -90,10 +90,7 @@ char *find_command_path_env(char *command, t_env *env)
         return (handle_absolute_path(command));
     path_env = getenv_from_list(env, "PATH");
     if (!path_env || *path_env == '\0')
-    {
-        print_execution_error(command, "command not found");
         return (NULL);
-    }
     paths = ft_split(path_env, ':');
     if (!paths)
     {
