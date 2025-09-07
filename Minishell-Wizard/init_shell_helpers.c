@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:23:17 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:23:28 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 20:30:08 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ char	*handle_multiline_input(char *complete_input)
 char	*get_initial_input(void)
 {
 	char	*line;
-	char	*complete_input;
 
 	g_signal_received = 0;
 	line = readline("WizardShell$ ");
@@ -66,7 +65,5 @@ char	*get_initial_input(void)
 		free(line);
 		return (ft_strdup(""));
 	}
-	complete_input = ft_strdup(line);
-	free(line);
-	return (complete_input);
+	return (line);
 }

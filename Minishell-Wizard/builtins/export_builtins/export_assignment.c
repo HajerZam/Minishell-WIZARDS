@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_assignment.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 09:58:19 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:51:52 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 20:35:55 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ int	handle_export_assignment(t_env **env, const char *arg)
 	value = extract_var_value(arg);
 	if (!is_valid_identifier(key))
 	{
-		printf("wizardshell: export: `=%s': not a valid identifier\n", value);
+		printf("wizardshell: export: `%s=%s': not a valid identifier\n", key,
+			value);
 		free(key);
 		free(value);
 		return (1);

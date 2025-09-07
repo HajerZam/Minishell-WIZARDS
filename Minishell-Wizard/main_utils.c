@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 15:59:24 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:29:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/07 20:27:36 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	cleanup_resources(t_exec_context *ctx, t_env *env)
 	{
 		cleanup_execution_context(ctx);
 		if (env)
-			free_env(ctx->env);
+			free_env(env);
 		if (ctx->exported_env)
 			free_env(ctx->exported_env);
 		restore_backups(ctx);
