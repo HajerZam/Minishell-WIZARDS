@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:18:22 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/09 14:45:06 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **envp)
 	init_signals_interactive();
 	print_welcome();
 	exit_status = main_loop(env, &ctx);
-	cleanup_resources(&ctx, env);
+	cleanup_resources(&ctx, ctx.env);
 	printf("Goodbye from WizardShell!\n");
 	return (exit_status);
 }
