@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:06:59 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/27 09:57:31 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/10 14:29:21 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	builtin_export(char **args, t_env **env)
 	i = 1;
 	while (args[i])
 	{
-		if (ft_strchr(args[i], '=') != NULL)
+		if (ft_strchr(args[i], '=') != NULL || ft_strstr(args[i], "+=") != NULL)
 		{
 			if (handle_export_assignment(env, args[i]))
 				exit_status = 1;

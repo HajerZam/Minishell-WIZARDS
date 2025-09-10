@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 19:50:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/10 14:23:34 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,9 @@ void		restore_builtin_fds(int saved_stdin, int saved_stdout);
 int			handle_builtin(t_cmd *cmd, t_env **env);
 int			execute_builtin(t_cmd *cmd, t_env **env);
 int			is_builtin(const char *cmd);
+int			export_with_append(const char *key,
+				const char *append_value, t_env **env);
+int			is_append_assignment(const char *str);
 
 /* CD builtin functions */
 int			update_env_variables(t_env *env, const char *old_pwd);

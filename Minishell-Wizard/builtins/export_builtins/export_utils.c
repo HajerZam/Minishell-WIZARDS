@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 12:06:59 by fepennar          #+#    #+#             */
-/*   Updated: 2025/08/30 14:39:53 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:45:35 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,16 @@
 char	*extract_var_name(const char *str)
 {
 	char	*eq_position;
+	char	*append_position;
 	int		key_len;
 
+	append_position = ft_strstr(str, "+=");
 	eq_position = ft_strchr(str, '=');
+	if (append_position && (!eq_position || append_position < eq_position))
+	{
+		key_len = append_position - str;
+		return (ft_substr(str, 0, key_len));
+	}
 	if (!eq_position)
 		return (ft_strdup(str));
 	key_len = eq_position - str;
@@ -27,8 +34,12 @@ char	*extract_var_name(const char *str)
 char	*extract_var_value(const char *str)
 {
 	char	*eq_position;
+	char	*append_position;
 
+	append_position = ft_strstr(str, "+=");
 	eq_position = ft_strchr(str, '=');
+	if (append_position && (!eq_position || append_position < eq_position))
+		return (ft_strdup(append_position + 2));
 	if (!eq_position)
 		return (NULL);
 	return (ft_strdup(eq_position + 1));
