@@ -18,7 +18,6 @@ void	free_env(t_env *env)
 	t_env	*next;
 	int		count;
 
-	printf("DEBUG: free_env called\n");
 	count = 0;
 	current = env;
 	while (current)
