@@ -33,15 +33,10 @@ static int	is_valid_identifier(const char *name)
 	return (1);
 }
 
-int	handle_export_assignment(t_env **env, const char *arg)
+/* helper: valida e applica (append/assign), stampa errore se necessario */
+static int	export_eval_and_apply(t_env **env, char *key, char *value,
+	int is_append)
 {
-	char	*key;
-	char	*value;
-	int		is_append;
-
-	key = extract_var_name(arg);
-	value = extract_var_value(arg);
-	is_append = is_append_assignment(arg);
 	if (!is_valid_identifier(key))
 	{
 		if (is_append)
@@ -50,31 +45,36 @@ int	handle_export_assignment(t_env **env, const char *arg)
 		else
 			printf("wizardshell: export: `%s=%s': not a valid identifier\n",
 				key, value);
-		free(key);
-		free(value);
 		return (1);
 	}
 	if (is_append)
 	{
-		if (!export_with_append(key, value, env))
-		{
-			free(key);
-			free(value);
+		if (!export_with_append(key, value, env, " "))
 			return (1);
-		}
 	}
 	else
 	{
 		if (!export_with_assignment(key, value, env))
-		{
-			free(key);
-			free(value);
 			return (1);
-		}
 	}
+	return (0);
+}
+
+/* entrypoint: estrae/decide, poi delega; si occupa delle free */
+int	handle_export_assignment(t_env **env, const char *arg)
+{
+	char	*key;
+	char	*value;
+	int		is_append;
+	int		ret;
+
+	key = extract_var_name(arg);
+	value = extract_var_value(arg);
+	is_append = is_append_assignment(arg);
+	ret = export_eval_and_apply(env, key, value, is_append);
 	free(key);
 	free(value);
-	return (0);
+	return (ret);
 }
 
 int	handle_export_simple(t_env **env, const char *arg)

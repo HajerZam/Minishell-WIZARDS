@@ -23,10 +23,10 @@ int	is_append_assignment(const char *str)
 	return (append_position && (!eq_position || append_position < eq_position));
 }
 
-int	export_with_append(const char *key, const char *append_value, t_env **env)
+int	export_with_append(const char *key, const char *append_value, t_env **env,
+	char *new_value)
 {
 	t_env	*existing;
-	char	*new_value;
 
 	if (!append_value)
 		append_value = "";

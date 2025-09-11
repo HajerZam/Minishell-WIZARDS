@@ -228,7 +228,7 @@ int			handle_builtin(t_cmd *cmd, t_env **env);
 int			execute_builtin(t_cmd *cmd, t_env **env);
 int			is_builtin(const char *cmd);
 int			export_with_append(const char *key,
-				const char *append_value, t_env **env);
+				const char *append_value, t_env **env, char *new_value);
 int			is_append_assignment(const char *str);
 
 /* CD builtin functions */
