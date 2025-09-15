@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 16:52:09 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:30:45 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,7 +353,7 @@ int			handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx);
 
 /* init_shell_helpers.c */
 char		*create_new_multiline_input(char *complete_input, char *line);
-char		*handle_multiline_input(char *complete_input);
+char		get_unclosed_quote_type(char *input);
 char		*get_initial_input(t_exec_context *ctx);
 
 /* Main utility functions */

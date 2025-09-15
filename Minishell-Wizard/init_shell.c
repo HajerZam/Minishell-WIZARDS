@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:06:39 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 16:54:00 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:28:36 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,23 @@ int	init_shell(t_exec_context *ctx, t_env **env, char **envp)
 char	*get_complete_input(t_exec_context *ctx)
 {
 	char	*complete_input;
+	char	unclosed_quote;
 
 	complete_input = get_initial_input(ctx);
 	if (!complete_input)
 		return (NULL);
+	unclosed_quote = get_unclosed_quote_type(complete_input);
 	while (has_unclosed_quotes(complete_input))
 	{
-		if (g_signal_received == SIGINT)
-		{
-			free(complete_input);
-			return (NULL);
-		}
-		complete_input = handle_multiline_input(complete_input);
-		if (!complete_input)
-			return (NULL);
+		if (unclosed_quote == '"')
+			ft_putstr_fd("syntax error: unclosed double quote\n", 2);
+		else if (unclosed_quote == '\'')
+			ft_putstr_fd("syntax error: unclosed single quote\n", 2);
+		else
+			ft_putstr_fd("syntax error: unclosed quotes\n", 2);
+		ctx->last_exit_status = 2;
+		free(complete_input);
+		return (ft_strdup(""));
 	}
 	return (complete_input);
 }
