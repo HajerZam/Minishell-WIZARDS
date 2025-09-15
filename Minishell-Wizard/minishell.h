@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/10 14:23:34 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 16:52:09 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void		free_tokens(t_token *head);
 t_token		*create_token(void);
 void		add_token(t_token **head, t_token *new_token);
 const char	*token_type_to_str(t_token_type type);
-char		*get_complete_input(void);
+char		*get_complete_input(t_exec_context *ctx);
 
 /* internal utility functions */
 void		skip_spaces(const char **ptr);
@@ -354,7 +354,7 @@ int			handle_exit_command(t_cmd *cmd_list, t_exec_context *ctx);
 /* init_shell_helpers.c */
 char		*create_new_multiline_input(char *complete_input, char *line);
 char		*handle_multiline_input(char *complete_input);
-char		*get_initial_input(void);
+char		*get_initial_input(t_exec_context *ctx);
 
 /* Main utility functions */
 void		cleanup_resources(t_exec_context *ctx, t_env *env);

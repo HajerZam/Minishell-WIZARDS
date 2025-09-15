@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/09 14:45:06 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 16:54:29 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	process_input_in_loop(char *input, t_exec_context *ctx)
 
 static int	get_and_validate_input(t_exec_context *ctx, char **input)
 {
-	*input = get_complete_input();
+	*input = get_complete_input(ctx);
 	if (!*input)
 		return (handle_eof_or_signal(ctx));
 	if (!**input || strspn(*input, " \t\n") == strlen(*input))

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:23:17 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 20:30:08 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 16:55:50 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*handle_multiline_input(char *complete_input)
 	return (create_new_multiline_input(complete_input, line));
 }
 
-char	*get_initial_input(void)
+char	*get_initial_input(t_exec_context *ctx)
 {
 	char	*line;
 
@@ -65,5 +65,6 @@ char	*get_initial_input(void)
 		free(line);
 		return (ft_strdup(""));
 	}
+	handle_readline_interruption(ctx);
 	return (line);
 }
