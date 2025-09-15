@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 16:54:29 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:23:54 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,15 @@ static int	get_and_validate_input(t_exec_context *ctx, char **input)
 {
 	*input = get_complete_input(ctx);
 	if (!*input)
+	{
+		if (g_signal_received == SIGINT)
+		{
+			ctx->last_exit_status = 130;
+			g_signal_received = 0;
+			return (-1);
+		}
 		return (handle_eof_or_signal(ctx));
+	}
 	if (!**input || strspn(*input, " \t\n") == strlen(*input))
 	{
 		free(*input);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_shell_helpers.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:23:17 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 16:55:50 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:58:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char	*handle_multiline_input(char *complete_input)
 {
 	char	*line;
 
+	init_signals_multiline();
 	line = readline("> ");
 	if (!line)
 	{
