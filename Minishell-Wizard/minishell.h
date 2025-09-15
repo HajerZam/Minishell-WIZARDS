@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 21:30:45 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/15 21:36:52 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ void		init_signals_child(void);
 void		handle_sigint_interactive(int sig);
 void		handle_sigint_execution(int sig);
 int			wait_for_processes_with_signals(t_exec_context *ctx);
+void		init_signals_multiline(void);
 
 /* parser_main.c */
 t_cmd		*parse_command_line(t_token *tokens);
