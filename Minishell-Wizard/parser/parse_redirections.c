@@ -12,63 +12,6 @@
 
 #include "../minishell.h"
 
-int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter)
-{
-    char	*line;
-    int		pipe_fd[2];
-    pid_t	pid;
-    int		status;
-
-    if (heredoc_check(cmd, delimiter, pipe_fd) == 0)
-    {
-        ft_putstr_fd("heredoc: error initializing heredoc\n", 2);
-        return (0);
-    }
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        return (0);
-    }
-    if (pid == 0)
-    {
-        // Child: set default SIGINT, read lines
-        signal(SIGINT, SIG_DFL);
-        close(pipe_fd[0]);
-        while (1)
-        {
-            line = readline("heredoc> ");
-            if (!line || ft_strcmp(line, delimiter) == 0)
-            {
-                free(line);
-                break ;
-            }
-            ft_putendl_fd(line, pipe_fd[1]);
-            free(line);
-        }
-        close(pipe_fd[1]);
-        exit(0);
-    }
-    else
-    {
-        // Parent: ignore SIGINT, wait for child
-        void	(*saved_sig)(int) = signal(SIGINT, SIG_IGN);
-        close(pipe_fd[1]);
-        waitpid(pid, &status, 0);
-        signal(SIGINT, saved_sig);
-        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-        {
-            close(pipe_fd[0]);
-            ft_putstr_fd("\n", 1);
-            return (0);
-        }
-        heredoc_cleanup(cmd, pipe_fd);
-        return (1);
-    }
-}
-
 int	handle_input_redirection(t_cmd *cmd, const char *filename)
 {
 	int	fd;
@@ -142,8 +85,8 @@ int	parse_redirections(t_parser *parser, t_cmd *cmd)
 		consume_token(parser);
 		if (!parser->current || parser->current->type != WORD)
 		{
-			ft_putstr_fd(
-				"wizardshell: syntax error near unexpected token\n", 2);
+			ft_putstr_fd("wizardshell: syntax error near unexpected token\n",
+				2);
 			parser->error = 1;
 			return (0);
 		}
