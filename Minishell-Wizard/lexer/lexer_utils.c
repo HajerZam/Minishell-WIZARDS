@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 14:27:08 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/26 14:46:47 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:58:33 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static t_token	*init_and_finalize_token(const char *input, t_parse_vars *v)
 {
 	v->input = input;
 	v->token = create_token();
-	v->buffer = malloc(strlen(input) + 1);
+	v->buffer = malloc(ft_strlen(input) + 1);
 	if (!v->buffer)
 		return (NULL);
 	v->i = 0;

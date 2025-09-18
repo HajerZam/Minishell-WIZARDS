@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 13:57:49 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 21:36:52 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:27:08 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_cmd
 	struct s_cmd	*tokens;
 	int				heredoc_fd;
 	int				is_heredoc;
+	char			*heredoc_delimiter;
 	int				is_builtin;
 	char			**envp;
 	int				exit_status;
@@ -184,7 +185,6 @@ int			parse_redirections(t_parser *parser, t_cmd *cmd);
 int			handle_input_redirection(t_cmd *cmd, const char *filename);
 int			handle_output_redirection(t_cmd *cmd, const char *filename,
 				int append);
-int			handle_heredoc_redirection(t_cmd *cmd, const char *delimiter);
 int			has_input_redirection(t_cmd *cmd);
 int			has_output_redirection(t_cmd *cmd);
 int			heredoc_check(t_cmd *cmd, const char *delimiter, int pipe_fd[2]);
@@ -276,6 +276,7 @@ char		*find_command_path_env(char *command, t_env *env);
 void		free_env_array(char **envp, int count);
 
 /* Main execution functions */
+int			handle_builtin_no_pipe(t_cmd *cmd, t_exec_context *ctx);
 void		init_exec_context_struct(t_exec_context *ctx);
 int			allocate_pipe_arrays(t_exec_context *ctx, int cmd_count);
 void		initialize_pipes_array(t_exec_context *ctx, int cmd_count);
@@ -314,11 +315,29 @@ void		close_all_pipe_fds(t_exec_context *ctx);
 int			setup_pipes(t_exec_context *ctx, int cmd_count);
 int			is_directory(char *path);
 int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
+int			handle_heredoc_redirection(t_cmd *cmd,
+				const char *delimiter, t_exec_context *ctx);
+int			process_heredocs(t_cmd *cmd_list, t_exec_context *ctx);
+
+/* Executor helpers */
+int			check_global_signal(t_exec_context *ctx);
+void		activate_ctx_functions(t_exec_context *ctx,
+				t_cmd *cmd_list, int in_signal);
+int			handle_heredoc_processing(t_cmd *cmd_list, t_exec_context *ctx);
+int			handle_single_command(t_cmd *cmd_list, t_exec_context *ctx);
+int			handle_sigint_during_pipeline(t_exec_context *ctx, t_cmd *cmd_list);
 
 /* Redirection handling */
 int			setup_redirections(t_cmd *cmd);
 int			restore_std_fds(t_exec_context *ctx);
 int			backup_std_fds(t_exec_context *ctx);
+void		heredoc_sigint_handler(int sig);
+int			heredoc_child(const char *delimiter, int pipe_fd[2]);
+int			handle_heredoc_wait(pid_t pid, int pipe_fd[2]);
+int			heredoc_parent(t_cmd *cmd, int pipe_fd[2], pid_t pid,
+				t_exec_context *ctx);
+void		cleanup_remaining_heredocs(t_cmd *current);
+int			process_heredocs(t_cmd *cmd_list, t_exec_context *ctx);
 
 /* Process management */
 int			wait_for_processes(t_exec_context *ctx);

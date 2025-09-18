@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_command.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:45 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:49:17 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 18:59:32 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ t_cmd	*create_cmd(void)
 	cmd->tokens = NULL;
 	cmd->heredoc_fd = -1;
 	cmd->is_heredoc = 0;
+	cmd->heredoc_delimiter = NULL;
 	cmd->is_builtin = 0;
 	cmd->envp = NULL;
 	cmd->exit_status = 0;

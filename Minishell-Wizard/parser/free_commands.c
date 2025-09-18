@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_commands.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:35 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:40:26 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 18:55:06 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	free_cmd(t_cmd *cmd)
 		}
 		free(cmd->argv);
 	}
+	if (cmd->heredoc_delimiter)
+		free(cmd->heredoc_delimiter);
 	if (cmd->input_fd > 2 && cmd->input_fd != -1)
 		close(cmd->input_fd);
 	if (cmd->output_fd > 2 && cmd->output_fd != -1)

@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 14:29:52 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/15 21:38:19 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:58:57 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	get_and_validate_input(t_exec_context *ctx, char **input)
 			return (-1);
 		return (handle_eof_or_signal(ctx));
 	}
-	if (!**input || strspn(*input, " \t\n") == strlen(*input))
+	if (!**input || ft_strspn(*input, " \t\n") == ft_strlen(*input))
 	{
 		free(*input);
 		return (-1);

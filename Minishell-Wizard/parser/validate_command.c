@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 12:48:56 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:51:38 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:58:05 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	validate_parsed_command(t_cmd *cmd, t_parser *parser)
 	}
 	if ((!cmd->argv || !cmd->argv[0]))
 	{
-		if (has_input_redirection(cmd) || has_output_redirection(cmd))
+		if (has_input_redirection(cmd)
+			|| has_output_redirection(cmd) || cmd->heredoc_delimiter)
 			return (1);
 		ft_putstr_fd("wizardshell: command not found\n", 2);
 		parser->error = 1;

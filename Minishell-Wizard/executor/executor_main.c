@@ -3,63 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   executor_main.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:41:13 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 09:49:39 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 21:26:24 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	check_global_signal(t_exec_context *ctx)
+int	handle_sigint_during_pipeline(t_exec_context *ctx, t_cmd *cmd_list)
 {
-	if (g_signal_received == SIGINT)
-	{
-		ctx->last_exit_status = 130;
-		g_signal_received = 0;
-		return (1);
-	}
-	return (0);
-}
-
-static void	activate_ctx_functions(t_exec_context *ctx, t_cmd *cmd_list,
-		int in_signal)
-{
-	if (in_signal == 1)
-	{
-		execute_pipeline_commands(cmd_list, ctx);
-		close_all_pipe_fds(ctx);
-		wait_for_processes(ctx);
-	}
-	cleanup_pipes(ctx);
-	restore_std_fds(ctx);
-	if (in_signal == 1)
-		init_signals_interactive();
-}
-
-int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
-{
-	int	cmd_count;
-
-	if (!cmd_list || !ctx)
-		return (1);
-	if (check_global_signal(ctx))
-		return (130);
-	cmd_count = count_commands(cmd_list);
-	ctx->pipe_count = cmd_count - 1;
-	if (cmd_count == 1)
-		return (execute_single_command_no_pipe(cmd_list, ctx));
-	if (setup_pipeline(cmd_list, ctx) != 0)
-		return (1);
 	if (g_signal_received == SIGINT)
 	{
 		activate_ctx_functions(ctx, cmd_list, 0);
 		ctx->last_exit_status = 130;
 		g_signal_received = 0;
 		init_signals_interactive();
-		return (130);
+		return (1);
 	}
+	return (0);
+}
+
+int	execute_pipeline(t_cmd *cmd_list, t_exec_context *ctx)
+{
+	int	cmd_count;
+	int	heredoc_result;
+
+	if (!cmd_list || !ctx)
+		return (1);
+	if (check_global_signal(ctx))
+		return (130);
+	heredoc_result = handle_heredoc_processing(cmd_list, ctx);
+	if (heredoc_result)
+		return (heredoc_result);
+	cmd_count = count_commands(cmd_list);
+	ctx->pipe_count = cmd_count - 1;
+	if (cmd_count == 1)
+		return (handle_single_command(cmd_list, ctx));
+	if (setup_pipeline(cmd_list, ctx) != 0)
+		return (1);
+	if (handle_sigint_during_pipeline(ctx, cmd_list))
+		return (130);
 	activate_ctx_functions(ctx, cmd_list, 1);
 	return (ctx->last_exit_status);
 }
@@ -90,24 +75,4 @@ int	handle_builtin_no_pipe(t_cmd *cmd, t_exec_context *ctx)
 	close(original_stdout);
 	ctx->last_exit_status = status;
 	return (status);
-}
-
-int	execute_single_command_no_pipe(t_cmd *cmd, t_exec_context *ctx)
-{
-	int	result;
-
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-		return (1);
-	if (g_signal_received == SIGINT)
-	{
-		ctx->last_exit_status = 130;
-		g_signal_received = 0;
-		return (130);
-	}
-	if (cmd->is_builtin)
-		return (handle_builtin_no_pipe(cmd, ctx));
-	init_signals_execution();
-	result = execute_external_single(cmd, ctx);
-	init_signals_interactive();
-	return (result);
 }

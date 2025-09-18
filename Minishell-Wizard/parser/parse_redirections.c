@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:59:25 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 18:49:53 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 19:56:38 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,12 @@ int	case_redirection(t_cmd *cmd, t_token_type redir_type, char *filename)
 	else if (redir_type == REDIR_APPEND)
 		return (handle_output_redirection(cmd, filename, 1));
 	else if (redir_type == HEREDOC)
-		return (handle_heredoc_redirection(cmd, filename));
+	{
+		if (cmd->heredoc_delimiter)
+			free(cmd->heredoc_delimiter);
+		cmd->heredoc_delimiter = ft_strdup(filename);
+		return (cmd->heredoc_delimiter != NULL);
+	}
 	ft_putstr_fd("Unknown redirection type\n", 2);
 	return (0);
 }

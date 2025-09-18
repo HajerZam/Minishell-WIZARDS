@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:37:57 by halzamma          #+#    #+#             */
-/*   Updated: 2025/08/29 12:17:29 by halzamma         ###   ########.fr       */
+/*   Updated: 2025/09/18 19:59:09 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,22 @@ int	execute_external_single(t_cmd *cmd, t_exec_context *ctx)
 int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index,
 		t_cmd *cmd_list)
 {
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd)
+		return (1);
+	if ((!cmd->argv || !cmd->argv[0])
+		&& (cmd->heredoc_delimiter || has_input_redirection(cmd)
+			|| has_output_redirection(cmd)))
+	{
+		if (cmd->heredoc_delimiter)
+		{
+			if (!handle_heredoc_redirection(cmd, cmd->heredoc_delimiter, ctx))
+				return (1);
+			free(cmd->heredoc_delimiter);
+			cmd->heredoc_delimiter = NULL;
+		}
+		return (0);
+	}
+	if (!cmd->argv || !cmd->argv[0])
 		return (1);
 	return (execute_external(cmd, ctx, cmd_index, cmd_list));
 }
