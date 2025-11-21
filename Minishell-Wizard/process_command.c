@@ -51,4 +51,5 @@ int	process_command_line(char *input, t_exec_context *ctx)
 	result = process_tokens(expanded_input, ctx);
 	init_signals_interactive();
 	return (result);
+	free(input);
 }

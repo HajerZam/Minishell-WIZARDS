@@ -39,6 +39,8 @@ int	is_operator(char c)
  * param input: Input string that may contain quotes
  * returns: New string with quotes removed, or NULL on malloc failure
 */
+
+/*
 char	*strip_quotes(const char *input)
 {
 	char	*out;
@@ -65,6 +67,7 @@ char	*strip_quotes(const char *input)
 	out[j] = '\0';
 	return (out);
 }
+*/
 
 int	has_unclosed_quotes(const char *input)
 {

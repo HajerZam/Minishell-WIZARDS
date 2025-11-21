@@ -95,7 +95,7 @@ static t_token	*init_and_finalize_token(const char *input, t_parse_vars *v)
 	if (v->state == STATE_IN_SINGLE_QUOTE || v->state == STATE_IN_DOUBLE_QUOTE)
 		v->token->value = ft_strdup(v->buffer);
 	else
-		v->token->value = strip_quotes(v->buffer);
+		v->token->value = ft_strdup(v->buffer);
 	return (v->token);
 }
 

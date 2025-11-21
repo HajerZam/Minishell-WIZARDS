@@ -144,6 +144,8 @@ void		handle_double_quote(t_parse_vars *v);
 /* signal handling */
 void		init_signals(void);
 void		init_signals_interactive(void);
+void		cleanup_inherited_signals(void);
+void		init_signals_clean(void);
 void		init_signals_execution(void);
 void		init_signals_child(void);
 void		handle_sigint_interactive(int sig);
