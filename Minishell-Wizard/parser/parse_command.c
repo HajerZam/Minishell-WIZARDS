@@ -98,7 +98,6 @@ t_cmd	*create_cmd(void)
 	cmd->is_heredoc = 0;
 	cmd->heredoc_delimiter = NULL;
 	cmd->is_builtin = 0;
-	cmd->envp = NULL;
 	cmd->exit_status = 0;
 	return (cmd);
 }

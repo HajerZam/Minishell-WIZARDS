@@ -13,7 +13,7 @@
 #include "../minishell.h"
 
 static int	process_heredoc_line(const char *delimiter, int delim_len,
-	int pipe_fd[2])
+		int pipe_fd[2])
 {
 	char	*line;
 
@@ -34,13 +34,55 @@ static int	process_heredoc_line(const char *delimiter, int delim_len,
 	return (0);
 }
 
-int	heredoc_child(const char *delimiter, int pipe_fd[2])
+void	free_cmd_list_except_delimiter(t_cmd *cmd_list,
+		const char *keep_delimiter)
 {
-	int		delim_len;
+	t_cmd	*current;
+	t_cmd	*next;
+	int		i;
 
+	current = cmd_list;
+	while (current)
+	{
+		next = current->next;
+		if (current->argv)
+		{
+			i = -1;
+			while (current->argv[++i])
+				free(current->argv[i]);
+			free(current->argv);
+		}
+		if (current->heredoc_delimiter
+			&& current->heredoc_delimiter != keep_delimiter)
+			free(current->heredoc_delimiter);
+		if (current->input_fd > 2 && current->input_fd != -1)
+			close(current->input_fd);
+		if (current->output_fd > 2 && current->output_fd != -1)
+			close(current->output_fd);
+		if (current->heredoc_fd != -1)
+			close(current->heredoc_fd);
+		free(current);
+		current = next;
+	}
+}
+
+void	heredoc_child_cleanup_and_run(const char *delimiter, int pipe_fd[2],
+		t_cmd *cmd_list, t_exec_context *ctx)
+{
+	free_cmd_list_except_delimiter(cmd_list, delimiter);
+	if (ctx->env)
+		free_env(ctx->env);
 	signal(SIGINT, heredoc_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 	close(pipe_fd[0]);
+	rl_clear_history();
+	heredoc_child_process(delimiter, pipe_fd);
+}
+
+void	heredoc_child_process(const char *delimiter, int pipe_fd[2])
+{
+	int	delim_len;
+
 	delim_len = ft_strlen(delimiter);
 	while (1)
 	{
@@ -48,6 +90,25 @@ int	heredoc_child(const char *delimiter, int pipe_fd[2])
 			break ;
 	}
 	close(pipe_fd[1]);
+	exit(0);
+}
+
+int	heredoc_child(char *delimiter, int pipe_fd[2])
+{
+	int	delim_len;
+
+	signal(SIGINT, heredoc_sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+	close(pipe_fd[0]);
+	rl_clear_history();
+	delim_len = ft_strlen(delimiter);
+	while (1)
+	{
+		if (process_heredoc_line(delimiter, delim_len, pipe_fd))
+			break ;
+	}
+	close(pipe_fd[1]);
+	free(delimiter);
 	exit(0);
 }
 
@@ -77,8 +138,7 @@ int	handle_heredoc_wait(pid_t pid, int pipe_fd[2])
 	return (1);
 }
 
-int	heredoc_parent(t_cmd *cmd, int pipe_fd[2], pid_t pid,
-	t_exec_context *ctx)
+int	heredoc_parent(t_cmd *cmd, int pipe_fd[2], pid_t pid, t_exec_context *ctx)
 {
 	if (!handle_heredoc_wait(pid, pipe_fd))
 	{
@@ -97,15 +157,17 @@ int	process_heredocs(t_cmd *cmd_list, t_exec_context *ctx)
 {
 	t_cmd	*current;
 	int		result;
+	char	*delimiter_backup;
 
 	current = cmd_list;
 	while (current)
 	{
 		if (current->heredoc_delimiter)
 		{
+			delimiter_backup = current->heredoc_delimiter;
 			result = handle_heredoc_redirection(current,
-					current->heredoc_delimiter, ctx);
-			free(current->heredoc_delimiter);
+					current->heredoc_delimiter, ctx, cmd_list);
+			free(delimiter_backup);
 			current->heredoc_delimiter = NULL;
 			if (!result || g_signal_received == SIGINT)
 			{

@@ -33,7 +33,7 @@ void	cleanup_remaining_heredocs(t_cmd *current)
 }
 
 int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter,
-	t_exec_context *ctx)
+	t_exec_context *ctx, t_cmd *cmd_list)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -58,6 +58,6 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter,
 		return (0);
 	}
 	if (pid == 0)
-		heredoc_child(delimiter, pipe_fd);
+		heredoc_child_cleanup_and_run(delimiter, pipe_fd, cmd_list, ctx);
 	return (heredoc_parent(cmd, pipe_fd, pid, ctx));
 }

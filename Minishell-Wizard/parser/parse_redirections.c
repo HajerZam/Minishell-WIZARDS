@@ -73,6 +73,11 @@ int	case_redirection(t_cmd *cmd, t_token_type redir_type, char *filename)
 		if (cmd->heredoc_delimiter)
 			free(cmd->heredoc_delimiter);
 		cmd->heredoc_delimiter = ft_strdup(filename);
+		if (!cmd->heredoc_delimiter)
+		{
+			ft_putstr_fd("Memory allocation failed for heredoc delimiter\n", 2);
+			return (0);
+		}
 		return (cmd->heredoc_delimiter != NULL);
 	}
 	ft_putstr_fd("Unknown redirection type\n", 2);

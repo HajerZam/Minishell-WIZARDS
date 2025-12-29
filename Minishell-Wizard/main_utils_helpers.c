@@ -12,6 +12,13 @@
 
 #include "minishell.h"
 
+static void	free_input_and_tokens(char *expanded_input,
+	t_token *tokens)
+{
+	free_tokens(tokens);
+	free(expanded_input);
+}
+
 t_token	*tokenize_and_check_signal(char *expanded_input, t_exec_context *ctx)
 {
 	t_token	*tokens;
@@ -40,15 +47,20 @@ t_cmd	*parse_and_check_signal(t_token *tokens, char *expanded_input,
 
 	if (g_signal_received == SIGINT)
 	{
-		free_tokens(tokens);
-		free(expanded_input);
+		free_input_and_tokens(expanded_input, tokens);
 		ctx->last_exit_status = 130;
 		g_signal_received = 0;
 		return (NULL);
 	}
 	cmd_list = parse_command_line(tokens);
-	free_tokens(tokens);
-	free(expanded_input);
+	free_input_and_tokens(expanded_input, tokens);
+	if (g_signal_received == SIGINT && cmd_list)
+	{
+		free_cmd_list(cmd_list);
+		ctx->last_exit_status = 130;
+		g_signal_received = 0;
+		return (NULL);
+	}
 	if (!cmd_list)
 	{
 		ctx->last_exit_status = 2;

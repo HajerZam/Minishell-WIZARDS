@@ -93,7 +93,8 @@ int	execute_single_command(t_cmd *cmd, t_exec_context *ctx, int cmd_index,
 	{
 		if (cmd->heredoc_delimiter)
 		{
-			if (!handle_heredoc_redirection(cmd, cmd->heredoc_delimiter, ctx))
+			if (!handle_heredoc_redirection(cmd, cmd->heredoc_delimiter,
+					ctx, cmd_list))
 				return (1);
 			free(cmd->heredoc_delimiter);
 			cmd->heredoc_delimiter = NULL;

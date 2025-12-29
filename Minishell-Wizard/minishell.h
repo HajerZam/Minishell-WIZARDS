@@ -74,7 +74,6 @@ typedef struct s_cmd
 	int				is_heredoc;
 	char			*heredoc_delimiter;
 	int				is_builtin;
-	char			**envp;
 	int				exit_status;
 }		t_cmd;
 
@@ -202,6 +201,8 @@ char		*duplicate_string(const char *str);
 char		**allocate_argv(int argc);
 void		cleanup_parser_error(t_parser *parser, t_cmd *partial_cmd);
 void		safe_cmd_append(t_cmd **head, t_cmd *new_cmd);
+void		free_cmd_list_except_delimiter(t_cmd *cmd_list,
+				const char *keep_delimiter);
 
 /* Export utility functions */
 int			parse_assignment(const char *arg, char **key, char **value);
@@ -318,7 +319,7 @@ int			setup_pipes(t_exec_context *ctx, int cmd_count);
 int			is_directory(char *path);
 int			setup_pipe_fds(t_cmd *cmd, t_exec_context *ctx, int cmd_index);
 int			handle_heredoc_redirection(t_cmd *cmd,
-				const char *delimiter, t_exec_context *ctx);
+				const char *delimiter, t_exec_context *ctx, t_cmd *cmd_list);
 int			process_heredocs(t_cmd *cmd_list, t_exec_context *ctx);
 
 /* Executor helpers */
@@ -334,7 +335,10 @@ int			setup_redirections(t_cmd *cmd);
 int			restore_std_fds(t_exec_context *ctx);
 int			backup_std_fds(t_exec_context *ctx);
 void		heredoc_sigint_handler(int sig);
-int			heredoc_child(const char *delimiter, int pipe_fd[2]);
+int			heredoc_child(char *delimiter, int pipe_fd[2]);
+void		heredoc_child_process(const char *delimiter, int pipe_fd[2]);
+void		heredoc_child_cleanup_and_run(const char *delimiter, int pipe_fd[2],
+				t_cmd *cmd_list, t_exec_context *ctx);
 int			handle_heredoc_wait(pid_t pid, int pipe_fd[2]);
 int			heredoc_parent(t_cmd *cmd, int pipe_fd[2], pid_t pid,
 				t_exec_context *ctx);
