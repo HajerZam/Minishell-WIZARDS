@@ -201,8 +201,6 @@ char		*duplicate_string(const char *str);
 char		**allocate_argv(int argc);
 void		cleanup_parser_error(t_parser *parser, t_cmd *partial_cmd);
 void		safe_cmd_append(t_cmd **head, t_cmd *new_cmd);
-void		free_cmd_list_except_delimiter(t_cmd *cmd_list,
-				const char *keep_delimiter);
 
 /* Export utility functions */
 int			parse_assignment(const char *arg, char **key, char **value);

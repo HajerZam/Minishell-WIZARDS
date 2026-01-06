@@ -61,3 +61,43 @@ int	handle_heredoc_redirection(t_cmd *cmd, const char *delimiter,
 		heredoc_child_cleanup_and_run(delimiter, pipe_fd, cmd_list, ctx);
 	return (heredoc_parent(cmd, pipe_fd, pid, ctx));
 }
+
+int	heredoc_parent(t_cmd *cmd, int pipe_fd[2], pid_t pid, t_exec_context *ctx)
+{
+	if (!handle_heredoc_wait(pid, pipe_fd))
+	{
+		ctx->last_exit_status = 130;
+		g_signal_received = SIGINT;
+		return (0);
+	}
+	if (cmd->input_fd != 0)
+		close(cmd->input_fd);
+	cmd->input_fd = pipe_fd[0];
+	cmd->is_heredoc = 1;
+	return (1);
+}
+
+int	process_heredocs(t_cmd *cmd_list, t_exec_context *ctx)
+{
+	t_cmd	*current;
+	int		result;
+
+	current = cmd_list;
+	while (current)
+	{
+		if (current->heredoc_delimiter)
+		{
+			result = handle_heredoc_redirection(current,
+					current->heredoc_delimiter, ctx, cmd_list);
+			free(current->heredoc_delimiter);
+			current->heredoc_delimiter = NULL;
+			if (!result || g_signal_received == SIGINT)
+			{
+				cleanup_remaining_heredocs(current);
+				return (0);
+			}
+		}
+		current = current->next;
+	}
+	return (1);
+}
