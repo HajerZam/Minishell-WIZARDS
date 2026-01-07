@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:37:57 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/18 19:59:09 by halzamma         ###   ########.fr       */
+/*   Updated: 2026/01/07 15:51:18 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,15 @@ static char	*validate_command_path(t_cmd *cmd, t_exec_context *ctx)
 	command_path = find_command_path(cmd->argv[0]);
 	if (!command_path)
 	{
-		print_execution_error(cmd->argv[0], "command not found");
-		ctx->last_exit_status = 127;
+		if (!ft_strchr(cmd->argv[0], '/'))
+		{
+			print_execution_error(cmd->argv[0], "command not found");
+			ctx->last_exit_status = 127;
+		}
+		else if (is_directory(cmd->argv[0]))
+			ctx->last_exit_status = 126;
+		else
+			ctx->last_exit_status = 127;
 		return (NULL);
 	}
 	return (command_path);
@@ -67,7 +74,7 @@ int	execute_external_single(t_cmd *cmd, t_exec_context *ctx)
 
 	command_path = validate_command_path(cmd, ctx);
 	if (!command_path)
-		return (127);
+		return (ctx->last_exit_status);
 	free(command_path);
 	pid = fork();
 	if (pid == -1)

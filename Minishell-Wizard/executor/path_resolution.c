@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path_resolution.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: halzamma <halzamma@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 19:47:11 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/06 22:08:55 by halzamma         ###   ########.fr       */
+/*   Updated: 2026/01/07 15:47:43 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,14 @@ char	*handle_absolute_path(char *command)
 		print_execution_error(command, "is a directory");
 		return (NULL);
 	}
+	if (access(command, F_OK) != 0)
+	{
+		print_execution_error(command, "No such file or directory");
+		return (NULL);
+	}
 	if (is_executable_file(command))
 		return (ft_strdup(command));
-	print_execution_error(command, "No such file or directory");
+	print_execution_error(command, "Permission denied");
 	return (NULL);
 }
 

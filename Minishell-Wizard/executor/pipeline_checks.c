@@ -6,7 +6,7 @@
 /*   By: halzamma <halzamma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 19:48:46 by halzamma          #+#    #+#             */
-/*   Updated: 2025/09/07 19:48:48 by halzamma         ###   ########.fr       */
+/*   Updated: 2026/01/07 15:39:18 by halzamma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,24 @@ char	*find_command_path(char *command)
 void	check_cmd(t_cmd *cmd, t_exec_context *ctx, t_cmd *cmd_list,
 		char *command_path)
 {
+	int	exit_code;
+
 	if (!command_path)
 	{
-		print_execution_error(cmd->argv[0], "command not found");
+		if (!ft_strchr(cmd->argv[0], '/'))
+		{
+			print_execution_error(cmd->argv[0], "command not found");
+			exit_code = 127;
+		}
+		else
+		{
+			if (is_directory(cmd->argv[0]))
+				exit_code = 126;
+			else
+				exit_code = 127;
+		}
 		cleanup_child_process(ctx, cmd_list);
-		exit(127);
+		exit(exit_code);
 	}
 }
 
