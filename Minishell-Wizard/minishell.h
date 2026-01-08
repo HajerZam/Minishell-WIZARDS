@@ -333,8 +333,9 @@ int			setup_redirections(t_cmd *cmd);
 int			restore_std_fds(t_exec_context *ctx);
 int			backup_std_fds(t_exec_context *ctx);
 void		heredoc_sigint_handler(int sig);
-int			heredoc_child(char *delimiter, int pipe_fd[2]);
-void		heredoc_child_process(const char *delimiter, int pipe_fd[2]);
+int			heredoc_child(char *delimiter, int pipe_fd[2], t_exec_context *ctx);
+void		heredoc_child_process(const char *delimiter, int pipe_fd[2],
+				t_exec_context *ctx);
 void		heredoc_child_cleanup_and_run(const char *delimiter, int pipe_fd[2],
 				t_cmd *cmd_list, t_exec_context *ctx);
 int			handle_heredoc_wait(pid_t pid, int pipe_fd[2]);

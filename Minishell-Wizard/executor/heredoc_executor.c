@@ -13,9 +13,10 @@
 #include "../minishell.h"
 
 static int	process_heredoc_line(const char *delimiter, int delim_len,
-		int pipe_fd[2])
+		int pipe_fd[2], t_exec_context *ctx)
 {
 	char	*line;
+	char	*expanded_line;
 
 	line = readline("heredoc> ");
 	if (!line)
@@ -29,8 +30,12 @@ static int	process_heredoc_line(const char *delimiter, int delim_len,
 		free(line);
 		return (1);
 	}
-	ft_putendl_fd(line, pipe_fd[1]);
+	expanded_line = expand_variable(line, ctx->env, ctx->last_exit_status);
 	free(line);
+	if (!expanded_line)
+		return (1);
+	ft_putendl_fd(expanded_line, pipe_fd[1]);
+	free(expanded_line);
 	return (0);
 }
 
@@ -41,30 +46,31 @@ void	heredoc_child_cleanup_and_run(const char *delimiter, int pipe_fd[2],
 
 	ft_strlcpy(delimiter_buffer, delimiter, sizeof(delimiter_buffer));
 	free_cmd_list(cmd_list);
-	if (ctx->env)
-		free_env(ctx->env);
 	signal(SIGINT, heredoc_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 	close(pipe_fd[0]);
 	rl_clear_history();
-	heredoc_child_process(delimiter_buffer, pipe_fd);
+	heredoc_child_process(delimiter_buffer, pipe_fd, ctx);
 }
 
-void	heredoc_child_process(const char *delimiter, int pipe_fd[2])
+void	heredoc_child_process(const char *delimiter, int pipe_fd[2],
+		t_exec_context *ctx)
 {
 	int	delim_len;
 
 	delim_len = ft_strlen(delimiter);
 	while (1)
 	{
-		if (process_heredoc_line(delimiter, delim_len, pipe_fd))
+		if (process_heredoc_line(delimiter, delim_len, pipe_fd, ctx))
 			break ;
 	}
+	if (ctx->env)
+		free_env(ctx->env);
 	close(pipe_fd[1]);
 	exit(0);
 }
 
-int	heredoc_child(char *delimiter, int pipe_fd[2])
+int	heredoc_child(char *delimiter, int pipe_fd[2], t_exec_context *ctx)
 {
 	int	delim_len;
 
@@ -75,7 +81,7 @@ int	heredoc_child(char *delimiter, int pipe_fd[2])
 	delim_len = ft_strlen(delimiter);
 	while (1)
 	{
-		if (process_heredoc_line(delimiter, delim_len, pipe_fd))
+		if (process_heredoc_line(delimiter, delim_len, pipe_fd, ctx))
 			break ;
 	}
 	close(pipe_fd[1]);
